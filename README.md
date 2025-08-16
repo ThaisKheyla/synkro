@@ -1,1 +1,1 @@
-# syndro
+# synkro
