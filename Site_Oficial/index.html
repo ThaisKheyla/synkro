@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Synkro | Página Inicial</title>
+
+    <link rel="stylesheet" href="./Css_Site/index.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="" href="">
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="container">
+            <ul class="navbar">
+                <li class="agora">
+                    <a class="a borda" href="#">Início</a>
+                </li>
+                <li>
+                    <a class="a borda"
+                        onclick="document.getElementById('sobreNos').scrollIntoView({behavior:'smooth'})">Sobre
+                        Nós</a>
+                </li>
+                <li>
+                    <a class="a borda"
+                        onclick="document.getElementById('nossosServicos').scrollIntoView({behavior:'smooth'})">Nossos
+                        Serviços</a>
+                </li>
+                <li>
+                    <a class="a borda" href="">Fale
+                        Conosco</a>
+                </li>
+                <li class="a">|</li>
+                <li>
+                    <a class="a borda" href="login.html">Login</a>
+                </li>
+                <li>
+                    <a class="a borda" href="cadastro.html">Cadastro</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="titulosMenu">
+
+        <div class="tituloComIcone">
+            <h1 class="tituloMenu">SYNKR</h1>
+            <img src="./midia/lupa_synkro.png">
+        </div>
+
+        <h2 class="subtituloMenu">cada ciclo em total synkronia</h2>
+
+        <center>
+            <button class="botaoMenu"
+                onclick="document.getElementById('!').scrollIntoView({behavior: 'smooth'})">Descubra</button>
+        </center>
+
+        <video class="videoMenu" autoplay muted loop src="./midia/videoMenu1.3.mp4"></video>
+
+    </section>
+
+
+    <div class="corpo2" id="sobreNos">
+
+
+
+    </div>
+
+    <div class="corpo3" id="nossosServicos">
+
+
+
+    </div>
+
+    <div class="corpo4">
+
+
+
+    </div>
+
+    <div class="corpo5">
+
+
+
+    </div>
+
+    <div class="corpo6" id="!">
+
+
+
+    </div>
+
+
+    <!-- compartimento referente ao rodapé -->
+    <div class="footer">
+        <div class="container">
+
+            <div class="conteudo">
+                <p>&copy; 2025 Synkro<span class="marca-registrada">®</span>. Todos os direitos reservados.</p>
+                <div class="redes-sociais">
+                    <a href="https://www.instagram.com/7synkro?igsh=ZGF1eTJjM3p3bXF3" target="_blank"><img src="./imgs/instaIcon.png"
+                            alt="Instagram" style="height: 4vh; width: auto;"></a>
+                    <a href="" target="_blank"><img
+                            src="./imgs/linkedinIcon.png" alt="LinkedIn" style="height: 3vh; width: auto;"></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- fim desse compartimento -->
+
+
+
+
+
+
+    <script>
+
+
+        window.addEventListener('scroll', function () {         // é um ouvinte que fica sempre atento ao evento de rolagem, ou seja,
+            // sempre que a página rolar (scroll), a função será ativada. Resumo: escuta o evento de rolagem "scroll"
+
+            const header = document.querySelector('.header');     // na constante "header", ela busca um elemento HTML. O document.querySelector('.header') busca o primeiro 
+            // elemento com a classe ".header", depois ele guarda esse elemento na variável "header". Ou seja, ele pega o cabeçalho. Resumo: pega o elemento ".header"
+
+            header.classList.toggle('rolar', window.scrollY > 0); // aqui é onde jaz o efeito: se a página tiver sido rolada (ou seja, se o scrollY for maior que 0), ele adiciona
+            // a classe "rolar", do css; se não, ele remove essa classe - a classe "rolar". Resumo: Adiciona ou remove a classe "rolar"
+        });
+
+
+    </script>
+
+
+
+
+</body>
+
+</html>
