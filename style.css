@@ -1,0 +1,84 @@
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body{
+    height: 90%;
+    width: 90%;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 80px;
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #eeee;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+    margin-left: 35px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.dados_cadastro {
+    height: fit-content;
+    width: 400px;
+    margin-top: 150px;
+    gap: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 25px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #eeee;
+    
+}
+
+
+
+#video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+}
+
+input, select{
+    width: 500px;
+    height: 25px;
+    border-radius: 10px;
+    border: none;
+    background-color: #eeee;
+}
+
+button{
+    height: 135px;
+    font-size: 25px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #eeee;
+    background: none;
+    border: none;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+button:hover{
+    font-size: 27px;
+}
