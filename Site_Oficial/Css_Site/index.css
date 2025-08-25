@@ -231,7 +231,6 @@ html {
 }
 
 
-
 .corpo3 {
     width: 100%;
     height: 700px;
@@ -248,7 +247,63 @@ html {
     width: 50%;
     background: linear-gradient(153deg, #000000 0%, #2c274b 100%);
     float: right;
+}
 
+
+.containerH1 {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.containerH1 h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.containerServicos {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 15%;
+    flex-wrap: wrap;
+    padding: 0 20px;
+}
+
+
+.cardServico {
+    text-align: center;
+    max-width: 250px;
+    color: #fff;
+    transition: 0.5s;
+}
+
+.cardServico:hover{
+    transform: scale(1.1);
+}
+
+
+.cardServico img {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+    background: #fff;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+
+.cardServico h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+
+.cardServico p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #dcdcdc;
 }
 
 .corpo4 {
