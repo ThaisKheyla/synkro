@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Synkro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- <div class="navbar">
+        <button>Início</button>
+        <button>Sobre nós</button>
+        <button>Nossos serviços</button>
+        <button>Fale conosco</button>
+        |
+        <button><a href="login.html">Login</a></button>
+        <button>Cadastrar-se</button>
+    </div> -->
+    <div class="container">
+        <div class="wallpaper">
+            <img src="SYNKRO (1).png" alt="" height="300px">
+        </div>
+        <div class="box_dados">
+
+            <div class="titulo"><label for="">Cadastro</label></div>
+
+            <label for="ipt_token">Token de acesso:</label>    
+            <input type="text" name="" id="ipt_token">
+
+            <label for="ipt_nome">Nome: </label> 
+            <input type="text" name="" id="ipt_nome">
+
+            <label for="ipt_email">Email: </label> 
+            <input type="text" name="" id="ipt_email">
+
+            <label for="ipt_senha">Senha: </label> 
+            <input type="password" name="" id="ipt_senha"> 
+
+            <label for="ipt_confirmacao_senha">Confirme sua senha:</label>
+            <input type="password" name="" id="ipt_confirmacao_senha">
+
+            <label for="ipt_cargo">Cargo: </label>
+            <select name="" id="ipt_cargo">
+                <option value="#">Selecione seu cargo:</option>
+                <option value="analista">Analista</option>
+                <option value="gestor">Gestor</option>
+            </select>
+
+            <button onclick="cadastrar()">Cadastrar</button>
+
+        </div>
+    </div>
+    
+</body>
+
+<script>
+    function cadastrar(){
+        var tokenVar = ipt_token.value;
+        var nomeVar = ipt_nome.value;
+        var emailVar = ipt_email.value;
+        var senhaVar = ipt_senha.value;
+        var confirmacaoSenhaVar = ipt_confirmacao_senha.value;
+        var cargoVar = ipt_cargo.value;
+
+        if (
+            tokenVar == "" ||
+            nomeVar == "" ||
+            emailVar == "" ||
+            senhaVar == "" ||
+            confirmacaoSenhaVar == "" ||
+            cargoVar == "#"
+        ) {
+            // ERRO
+            console.log("Preencha todos os campos")
+        } else if (
+            tokenVar.length <= 5 ||
+            nomeVar.length <= 5 ||
+            emailVar.length <= 5 ||
+            !emailVar.includes("@") ||
+            !emailVar.includes(".") ||
+            senhaVar.length <= 5 ||
+            confirmacaoSenhaVar.length != senhaVar
+        ) {
+            // ERRO
+            console.log("Preenchimento inadequado / Campos inválidos")
+        } else {
+            console.log("CADASTRO OK")
+        }
+
+        fetch("/cadastroEmpresa/cadastrar",{
+            body: JSON.stringify({
+                tokenServer:  tokenVar,
+                nomeServer: nomeVar,
+                emailServer: emailVar,
+                senhaServer: senhaVar,
+                cargoServer: cargoVar
+            })
+        })
+            .then(function (resposta){
+                console.log("resposta: ", resposta);
+
+                if (resposta.ok){
+                    console.log("cadastro realizado com sucesso")
+                    console.log("redirecionando para tela de login")
+                } else{
+                    throw "Houve um erro ao tentar realizar o cadastro!";
+                }
+            })
+            .catch(function(resposta){
+                console.log(`#ERRO: ${resposta}`);
+            });
+    }
+</script>
+
+</html>
