@@ -454,6 +454,13 @@ html {
     background-color: #000000;
     height: 400px;
     width: 100%;
+    transition: 0.5s;
+
+}
+
+.inicioFooter p:hover{
+    text-decoration: underline;
+    color: rgb(166, 215, 243);
 
 }
 
@@ -463,8 +470,103 @@ html {
     flex-direction: row;
     width: 30%;
     height: 80%;
-    background-color: #fff;
+    position: relative;
+    top: 40px;
 
+}
+
+
+.textoRodape_cadastrogin{
+    display: flex;
+    position: relative;
+    justify-content: flex-end;
+    flex-direction: column-reverse;
+    width: fit-content;
+    height: auto;
+    margin: 0;
+    bottom: 70%;
+    left: 80%;
+
+
+}
+
+.textoRodape p{
+    cursor: pointer;
+    width: fit-content;
+    height: fit-content;
+    padding: 8px;
+    font-size: 16px;
+    margin: 10px;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+
+}
+
+.textoRodape_logindrasto p{
+    cursor: pointer;
+    width: fit-content;
+    height: fit-content;
+    text-decoration: none;      
+    margin: 20px;
+    padding: 15px;
+    color: #fff;
+
+}
+
+.redesSociais{
+    width: fit-content;
+    height: fit-content;
+    margin: 20px;
+    padding-left: 30px;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    position: relative;
+    bottom: 75%;
+    left: 8%;
+
+}
+
+.redesSociais img{
+    height: 45px;
+    width: auto;
+    margin: 10px;
+    padding: 10px;
+    cursor: pointer;
+    
+
+}
+
+.logoFooter{
+    display: flex;
+    position: relative;
+    justify-content: flex-end;
+    flex-direction: row;
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    padding: 0;
+    bottom: 45%;
+    left: 82%;
+
+}
+
+.logoFooter img{
+    position: relative;
+    height: 120px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    transition: 0.5s;
+
+}
+
+.logoFooter img:hover{
+    transform: scale(1.1);
+    filter: contrast(10%);
 
 }
 
@@ -492,36 +594,4 @@ html {
     max-width: 800px;
     margin: 0 auto;
 
-}
-
-.marca-registrada {
-    font-size: 1em;
-    vertical-align: super;
-    margin-left: 2px;
-
-}
-
-.redes-sociais {
-    margin-top: 15px;
-
-}
-
-.redes-sociais a {
-    margin: 0 10px;
-    display: inline-block;
-    /*oculta o link de direcionamento */
-
-}
-
-.redes-sociais img {
-    width: 24px;
-    height: 24px;
-    filter: brightness(0) invert(1);
-    /* deixa branco se o ícone for escuro */
-    transition: transform 0.3s;
-
-}
-
-.redes-sociais a:hover img {
-    transform: scale(1.2);
 }
