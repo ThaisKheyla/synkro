@@ -2,8 +2,6 @@ var cadastroEmpresaModel = require("../models/cadastroEmpresaModel");
 
 function cadastrar(req, res) {
     // Crie uma variável que vá recuperar os valores do arquivo cadastro.html
-    var token = req.body.tokenServer;
-
     var nome = req.body.nomeServer;
     var email = req.body.emailServer;
     var senha = req.body.senhaServer;
