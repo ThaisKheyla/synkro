@@ -218,6 +218,68 @@ html {
 
 }
 
+.fundoBrancoSobreNos{
+    position: relative;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%;
+    float: left;
+
+}
+
+.textoSobreNos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    position: relative;
+    top: 40px;
+
+}
+
+.textoSobreNos p{
+    width: 25%;
+    font-size: 20px;
+
+}
+
+.nossosServicoss{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    top: 10%;
+    
+}
+
+.nossosServicoss img{
+    height: 800px;
+    width: fit-content;
+
+
+}
+
+.imagemSobreNos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    top: 3%;
+    filter: drop-shadow(-70px 30px 10px rgba(0, 0, 0, 0.863))
+
+}
+
+.imagemSobreNos img{
+    height: 800px;
+    width: fit-content;
+
+}
+
 .fundoCinzaSobreNos{
     position: relative;
     z-index: 1;
@@ -225,7 +287,7 @@ html {
     right: 0;
     height: 100%;
     width: 50%;
-    background-color: #c7ced186;
+    background-color: #c7ced136;
     float: right;
 
 }
@@ -252,13 +314,14 @@ html {
 
 .containerH1 {
     text-align: center;
-    margin-bottom: 40px;
+
+
 }
 
 .containerH1 h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #fff;
+    color: #000000;
 }
 
 .containerServicos {
@@ -313,6 +376,8 @@ html {
     background: linear-gradient(40deg, #000000 0%, #2c274b 100%);
     justify-content: space-between;
     flex-direction: row;
+    position: relative;
+    z-index: 1;
 }
 
 .textosTime{
