@@ -1,6 +1,8 @@
 var usuarioModel = require("../models/usuarioModel");
 
 function autenticar(req, res) {
+    console.log("indo para o usuarioController - autenticar");
+    
     var email = req.body.emailServer;
     var senha = req.body.senhaServer;
 
@@ -18,6 +20,11 @@ function autenticar(req, res) {
 
                     if (resultadoAutenticar.length == 1) {
                         console.log(resultadoAutenticar);
+
+                        res.json({ // adicionado do individual
+                                 id: resultadoAutenticar[0].id, // adicionado do individual
+                        }) // adicionado do individual
+
 
                     } else if (resultadoAutenticar.length == 0) {
                         res.status(403).send("Email e/ou senha inválido(s)");
