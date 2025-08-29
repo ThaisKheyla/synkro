@@ -1,4 +1,4 @@
-/* fontes importadas para a página */
+
 @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
 
@@ -15,6 +15,8 @@ body {
     --tamanho-header: 80px;
 
 }
+
+
 
 .header {
     position: fixed;
@@ -130,33 +132,25 @@ html {
 }
 
 
-
-
-
-
-
 .videoMenu {
     position: absolute;
     width: 100%;
-    height: 950px;
+    height: 100vh;
     object-fit: cover;
     z-index: 1;
-    top: 0;
-    left: 0;
     filter: brightness(0.5);
-
 }
 
 .titulosMenu {
     position: relative;
     width: 100%;
-    height: 950px;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 2;
-
+    text-align: center;
 }
 
 .tituloMenu,
@@ -185,7 +179,6 @@ html {
 .tituloComIcone img {
     height: 200px;
     width: auto;
-
 }
 
 .botaoMenu {
@@ -211,163 +204,113 @@ html {
 
 }
 
+
+
 .corpo2 {
-    width: 100%;
-    height: 700px;
-    background-color: rgb(255, 255, 255);
-
+    display: flex;
+    flex-direction: row;
+    min-height: 700px;
 }
 
-.fundoBrancoSobreNos {
-    position: relative;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 50%;
-    float: left;
-
+.corpo3 {
+    display: flex;
+    flex-direction: row;
+    min-height: 700px;
 }
 
-.textoSobreNos {
+.nossosServicoss img {
+    max-width: 90%;
+    height: auto;
+}
+
+
+.fundoBrancoSobreNos,
+.fundoCinzaSobreNos,
+.fundoRoxoNossosServicos {
+    flex: 1 1 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    text-align: center;
-    position: relative;
-    top: 10%;
+    padding: 50px 20px;
+}
 
+.fundoBrancoSobreNos {
+    background-color: #ffffff;
+}
+
+.fundoCinzaSobreNos {
+    background-color: #f5f5f5;
+}
+
+.fundoRoxoNossosServicos {
+    background: linear-gradient(40deg, #000000 0%, #000425 100%);
+}
+
+.textoSobreNos {
+    text-align: center;
+    max-width: 600px;
+}
+
+.textoSobreNos h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #000;
 }
 
 .textoSobreNos p {
-    width: 27%;
     font-size: 20px;
-
+    line-height: 1.6;
+    margin-top: 20px;
 }
 
+.imagemSobreNos,
 .nossosServicoss {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    position: relative;
-    top: 15%;
-
-}
-
-.nossosServicoss img {
-    height: 600px;
-    width: fit-content;
-
-
-}
-
-.imagemSobreNos {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
-    top: 3%;
-    filter: drop-shadow(-70px 30px 10px rgba(0, 0, 0, 0.863))
-}
-
-.imagemSobreNos img {
-    height: 800px;
-    width: fit-content;
-
-}
-
-.fundoCinzaSobreNos {
-    position: relative;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: 50%;
-    /*background-color: #c7ced136;*/
-    background-color: #ffffff;
-    float: right;
-
-}
-
-
-.corpo3 {
     width: 100%;
-    height: 700px;
-    background-color: rgb(255, 255, 255);
-
 }
 
-.fundoRoxoNossosServicos {
-    position: relative;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: 50%;
-    background: linear-gradient(153deg, #000000 0%, #000320 100%);
-    float: right;
+.imagemSobreNos img  {
+    max-width: 90%;
+    height: auto;
 }
 
-
-.containerH1 {
-    text-align: center;
-
-
-}
-
-.containerH1 h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #000000;
-}
 
 .containerServicos {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    gap: 15%;
+    gap: 120px;
     flex-wrap: wrap;
-    padding: 0 20px;
+    margin-top: 30px;
 }
-
 
 .cardServico {
     text-align: center;
     max-width: 280px;
     color: #fff;
-
+    margin-bottom: 40px;
 }
-
-.cardServico img {
-    transition: 0.3s;
-
-}
-
-.cardServico img:hover {
-    transform: scale(1.1);
-}
-
 
 .cardServico img {
     width: 280px;
     height: 280px;
     object-fit: cover;
     background: #fff;
-    margin-bottom: 3%;
-    border-radius: 100%;
-    position: relative;
+    border-radius: 50%;
+    transition: transform 0.3s;
 }
 
+.cardServico img:hover {
+    transform: scale(1.1);
+}
 
 .cardServico h4 {
     font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-top: 20px;
 }
-
 
 .cardServico p {
     font-size: 0.9rem;
@@ -375,278 +318,184 @@ html {
     color: #dcdcdc;
 }
 
+
 .corpo4 {
     display: flex;
-    width: 100%;
-    height: 700px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    min-height: 700px;
     background: linear-gradient(40deg, #000000 0%, #000320 100%);
-    justify-content: space-between;
-    flex-direction: row;
-    position: relative;
-    z-index: 1;
+    padding: 50px 20px;
+    gap: 50px;
 }
 
 .textosTime {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    margin-left: 5%;
+    flex: 1 1 500px;
+    text-align: center;
 }
 
 .textosTime h1 {
     color: white;
-    text-align: center;
-    position: relative;
-    z-index: 5;
+    font-size: 2.5rem;
 }
 
 .textosTime p {
     color: white;
-    text-align: center;
-    position: relative;
-    width: 700px;
-    z-index: 5;
+    max-width: 600px;
+    margin: 20px auto;
+    line-height: 1.6;
 }
 
 .imagemTime {
+    flex: 1 1 500px;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-    right: 55%;
-    float: right;
-    z-index: 5;
+    margin: 7%;
 }
 
 .imagemTime img {
-    width: 600px;
+    max-width: 100%;
+    height: fit-content;
+    border-radius: 12px;
+    border: solid white 5px;
 }
 
 .nebulaTime {
+    display: none;
+}
+
+
+.corpo5,
+.corpo6 {
+    min-height: 700px;
     display: flex;
-    position: relative;
-    justify-content: center;
     flex-direction: column;
-    height: fit-content;
-    width: fit-content;
-    z-index: 2;
-    right: 30%;
-    filter: opacity(25%);
-}
-
-.nebulaTime img {
-    height: 800px;
-    width: fit-content;
-    position: relative;
-    z-index: 2;
-
-}
-
-
-.corpo5 {
-    width: 100%;
-    height: 700px;
-    background-color: rgb(231, 231, 231);
-    display: flex;
     justify-content: center;
-    flex-direction: column;
-    position: relative;
-    z-index: 2;
-}
-
-.corpo5 h1 {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    margin: 2%;
+    padding: 50px 20px;
+}
+
+.corpo5 h1,
+.corpo6 h1 {
+    font-size: 50px;
+    text-align: center;
+    margin-bottom: 50px;
 }
 
 .cards {
     display: flex;
-    justify-content: space-evenly;
-    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    width: 100%;
+}
+
+.cardDepoimento,
+.cardValores {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 450px;
+    flex: 1 1 300px;
 }
 
 .cardDepoimento {
-    max-width: 40%;
-    margin-inline: 7%;
-}
-
-.imgDepoimento {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.imgDepoimento img {
-    width: 150px;
-    height: 150px;
-    border-radius: 100%;
-}
-
-.textoDepoimento h2,
-h3 {
-    text-align: center;
-}
-
-.corpo6 {
-    width: 100%;
-    height: 700px;
-    background-color: rgb(255, 255, 255);
-    display: flex;
-    justify-content: space-evenly;
-    flex-direction: column;
-}
-
-.corpo6 h1 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 2%;
+    background-color: #f5f5f5;
 }
 
 .cardValores {
     background: linear-gradient(40deg, #000000 0%, #000425 100%);
-    height: 430px;
-    width: 340px;
-    margin-inline: 3%;
     color: #fff;
-
 }
 
-.imgValores {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 4%;
-}
-
-
+.imgDepoimento img,
 .imgValores img {
     width: 150px;
     height: 150px;
-    border-radius: 100%;
-
-}
-
-.textoValores {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
 }
 
 .textoValores h3 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-size: 30px;
-
+    margin-top: 10px;
 }
 
 .textoValores p {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin-inline: 6%;
-    width: 300px;
     font-size: 15px;
-    color: #000000;
-
+    line-height: 1.5;
+    color: #dcdcdc;
+    margin-top: 10px;
 }
 
-.bordaTextoValores {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(255, 255, 255);
-    justify-content: center;
-    flex-direction: row;
-
-}
 
 .corpo7 {
     width: 100%;
-    height: 700px;
+    min-height: 500px;
     background-color: #dcdcdc;
-
-}
-
-
-
-
-
-
-.faq {
-  padding: 40px;
-  font-family: sans-serif;
-  text-align: center;
-
+    padding: 50px 20px;
+    text-align: center;
 }
 
 .faq h2 {
-  margin-bottom: 20px;
-
+    font-size: 2.5rem;
+    margin-bottom: 30px;
 }
 
 .faq-item {
-  max-width: 800px;
-  margin: 20px auto;
-  text-align: left;
-
+    max-width: 800px;
+    margin: 20px auto;
+    text-align: left;
 }
 
 .faq-item input {
-  display: none;
+    display: none;
 }
 
 .faq-card {
-  background: white;
-  border-radius: 12px;
-  padding: 25px 30px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-  cursor: pointer;
-  font-weight: bold;
-  display: block;
-  position: relative;
+    background: white;
+    border-radius: 12px;
+    padding: 25px 30px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    font-weight: bold;
+    display: block;
+    position: relative;
+    transition: background-color 0.3s;
+}
 
+.faq-card:hover {
+    background-color: #f0f0f0;
 }
 
 .faq-card .setaGiratoria {
-  float: right;
-  transition: transform 0.3s;
-  
+    float: right;
+    transition: transform 0.3s;
 }
 
-/* Conteúdo escondido */
 .faq-content {
-  background: white;
-  margin-top: 8px;
-  padding: 15px 20px;
-  border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-  display: none;
-
+    background: white;
+    margin-top: 8px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    display: none;
 }
 
-/* Quando marcado, mostra conteúdo e gira seta */
-.faq-item input:checked ~ .faq-content {
-  display: block;
-
+.faq-item input:checked+.faq-card .setaGiratoria {
+    transform: rotate(180deg);
 }
 
-.faq-item input:checked + .faq-card .setaGiratoria {
-  transform: rotate(180deg);
-  
+.faq-item input:checked~.faq-content {
+    display: block;
 }
-
-
-
-
-
-
-
 
 
 .inicioFooter {
@@ -796,5 +645,162 @@ h3 {
 .rodape .conteudo {
     max-width: 800px;
     margin: 0 auto;
+
+}
+
+
+@media (max-width: 768px) {
+    .header .container {
+        flex-direction: column;
+        height: auto;
+        padding: 15px 0;
+    }
+
+    .navbar {
+        display: none;
+        /* Esconde a navbar e pode ser substituída por um menu hambúrguer no HTML/JS */
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .titulosMenu h1 {
+        font-size: 80px;
+    }
+
+    .tituloComIcone {
+        flex-direction: column;
+    }
+
+    .tituloComIcone img {
+        height: 80px;
+    }
+.corpo2 {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.corpo3 {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.fundoBrancoSobreNos {
+    order: 1;
+    width: 100%;
+}
+
+.fundoCinzaSobreNos {
+    order: 2;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.fundoCinzaSobreNos img {
+    max-width: 80%;
+    height: auto;
+}
+
+    .textoSobreNos p {
+        font-size: 16px;
+    }
+
+    .cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cardDepoimento,
+    .cardValores {
+        max-width: 90%;
+        margin-bottom: 20px;
+    }
+
+        .inicioFooter {
+            background-color: #000000;
+            height: 400px;
+            width: 100%;
+            transition: 0.5s;
+    
+        }
+    
+        .textosFooter {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
+        }
+    
+        .textoRodape,
+        .textoRodape_cadastrogin,
+        .textoRodape_logindrasto {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+    
+        .textoRodape p,
+        .textoRodape_cadastrogin p,
+        .textoRodape_logindrasto p {
+            cursor: pointer;
+            padding: 8px;
+            font-size: 16px;
+            color: #fff;
+            transition: color 0.3s, text-decoration 0.3s;
+        }
+    
+        .textoRodape p:hover,
+        .textoRodape_cadastrogin p:hover,
+        .textoRodape_logindrasto p:hover {
+            text-decoration: underline;
+            color: rgb(166, 215, 243);
+        }
+    
+        .redesSociais {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+    
+        .redesSociais img {
+            height: 45px;
+            width: auto;
+            margin: 10px;
+            transition: transform 0.5s;
+        }
+    
+        .redesSociais img:hover {
+            transform: scale(1.3);
+        }
+    
+        .logoFooter {
+            margin-top: 20px;
+        }
+    
+        .logoFooter img {
+            height: 120px;
+            width: auto;
+            cursor: pointer;
+            transition: filter 0.5s;
+        }
+    
+        .logoFooter img:hover {
+            filter: contrast(10%);
+        }
+    
+        .footer {
+            background-color: rgb(0, 0, 0);
+            padding: 20px;
+            color: #fff;
+            font-size: 15px;
+            text-align: center;
+            border-top: 1px solid #fff;
+        }
 
 }
