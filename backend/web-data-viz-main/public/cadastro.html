@@ -5,51 +5,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro Synkro</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./css/logInSign.css">
 </head>
 
 <body>
-    <!-- <div class="navbar">
-        <button>Início</button>
-        <button>Sobre nós</button>
-        <button>Nossos serviços</button>
-        <button>Fale conosco</button>
-        |
-        <button><a href="login.html">Login</a></button>
-        <button>Cadastrar-se</button>
-    </div> -->
     <div class="container">
         <div class="wallpaper">
-            <img src="SYNKRO (1).png" alt="" height="300px">
+            <img src="./assets/imgs/SYNKRO (1).png" alt="">
         </div>
         <div class="box_dados">
 
             <div class="titulo"><label for="">Cadastro</label></div>
 
-            <!-- <label for="ipt_token">Token de acesso:</label>
-            <input type="text" name="" id="ipt_token"> -->
+            <div class="group-input">
+                <label for="ipt_nome_empresarial">Nome Empresarial:</label>    
+                <input type="text" name="" id="ipt_nome_empresarial">
+            </div>
 
-            <label for="ipt_nome">Nome: </label>
-            <input type="text" name="" id="ipt_nome">
+            <div class="group-input">
+                <label for="ipt_nome_representante">Nome do Representante: </label> 
+                <input type="number" name="" id="ipt_nome_representante">
+            </div>
 
-            <label for="ipt_email">Email: </label>
-            <input type="text" name="" id="ipt_email">
+            <div class="group-input">
+                <label for="ipt_ispb">Código ISPB </label> 
+                <input type="number" name="" id="ipt_ispb">                
+            </div>
 
-            <label for="ipt_senha">Senha: </label>
-            <input type="password" name="" id="ipt_senha">
-
-            <label for="ipt_confirmacao_senha">Confirme sua senha:</label>
-            <input type="password" name="" id="ipt_confirmacao_senha">
-
-            <label for="ipt_cargo">Cargo: </label>
-            <select name="" id="ipt_cargo">
-                <option value="#">Selecione seu cargo:</option>
-                <option value="analista">Analista</option>
-                <option value="gestor">Gestor</option>
-            </select>
-
-            <button onclick="cadastrar()">Cadastrar</button>
-
+            <div class="group-input">
+                <label for="ipt_email">E-mail Corporativo:</label> 
+                <input type="email" name="" id="ipt_email"> 
+            </div>
+            <div class="group-input">
+                <label for="ipt_confirmacao_senha">Status Operação:</label>
+                <select name="" id="">
+                    <option value="em-operacao">Em operação</option>
+                    <option value="liquidado-extrajudicialmente">Liquidado Extrajudicialmente</option>
+                    <option value="liquidacao-ordinaria">Liquidação Ordinária</option>
+                </select>
+            </div>
+            <div class="group-button">
+                <span>Já possui acesso? <label>Faça login!</label></span>
+                <button onclick="cadastrar()">Cadastrar</button>
+            </div>
         </div>
     </div>
 
