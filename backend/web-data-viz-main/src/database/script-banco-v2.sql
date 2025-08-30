@@ -2,7 +2,7 @@ create database if not exists synkro;
 use synkro;
 
 create table empresa(
-	id int not null,
+	id int not null auto_increment,
     nomeEmpresarial varchar(45),
     ispb varchar(8),
     email varchar(45),
@@ -13,7 +13,7 @@ create table empresa(
 );
 
 create table funcionario(
-	id int not null,
+	id int not null auto_increment,
     empresa_id int,
     nome varchar(45),
     email varchar(45),
@@ -25,7 +25,7 @@ create table funcionario(
 );
 
 create table mainframe(
-	id int not null,
+	id int not null auto_increment,
     nome varchar(45),
     empresa_id int,
     status_servidor varchar(45),
@@ -36,7 +36,7 @@ create table mainframe(
 );
 
 create table componente(
-	id int not null,
+	id int not null auto_increment,
     nome varchar(45),
     descricao varchar(45),
     
@@ -44,7 +44,7 @@ create table componente(
 );
 
 create table metrica(
-	id int not null,
+	id int not null auto_increment,
     nome varchar(45),
     unidade_medida varchar(45),
     
@@ -52,7 +52,7 @@ create table metrica(
 );
 
 create table configuracao_mainframe_componente(
-	id int not null,
+	id int not null auto_increment,
     mainframe_id int,
     componente_id int,
     metrica_id int, 
@@ -66,7 +66,7 @@ create table configuracao_mainframe_componente(
 );
 
 create table alerta(
-	id int not null,
+	id int not null auto_increment,
     dt_hora datetime,
     descricao varchar(45),
     valor_coletado varchar(45),
