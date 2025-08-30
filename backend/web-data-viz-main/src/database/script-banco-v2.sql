@@ -8,6 +8,7 @@ create table empresa(
     email varchar(45),
     nomeRepresentante varchar(45),
     statusOperacao varchar(45),
+    statusAcesso boolean default false,
     
     primary key(id)
 );
