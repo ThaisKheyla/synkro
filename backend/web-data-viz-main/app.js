@@ -22,6 +22,7 @@ var medidasRouter = require("./src/routes/medidas");
 var empresasRouter = require("./src/routes/empresas");
 // ==================== SYNKRO
 var cadastroEmpresaRouter = require("./src/routes/cadastroEmpresa");
+var aceitarEmpresasRouter = require("./src/routes/aceitarEmpresas");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -34,8 +35,9 @@ app.use("/usuarios", usuarioRouter);
 app.use("/avisos", avisosRouter);
 app.use("/medidas", medidasRouter);
 app.use("/empresas", empresasRouter);
-// =================== SYNKRO
+// =================== SYNKRO 
 app.use("/cadastroEmpresa", cadastroEmpresaRouter);
+app.use("/aceitarEmpresas", aceitarEmpresasRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`

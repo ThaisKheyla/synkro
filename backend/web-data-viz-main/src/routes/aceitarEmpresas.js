@@ -1,0 +1,11 @@
+var express = require("express");
+var router = express.Router();
+
+var aceitarEmpresasController = require("../controllers/aceitarEmpresasController");
+
+
+router.post("/buscar_cards", function (req, res) {
+    aceitarEmpresasController.buscar_cards(req, res);
+});
+
+module.exports = router;

@@ -1,3 +1,4 @@
+drop database synkro;
 create database if not exists synkro;
 use synkro;
 
@@ -8,7 +9,7 @@ create table empresa(
     email varchar(45),
     nomeRepresentante varchar(45),
     statusOperacao varchar(45),
-    statusAcesso boolean default false,
+    statusAcesso char(1) default 1,
     
     primary key(id)
 );
@@ -79,4 +80,19 @@ create table alerta(
 );
 
 
+-- INSERTS FICTICIOS PARA TESTE DA API:
+
+INSERT INTO empresa (nomeEmpresarial, ispb, email, nomeRepresentante, statusOperacao, statusAcesso)
+VALUES 
+('Banco Alpha S.A.', '12345678', 'contato@alpha.com', 'João Silva', 'Ativa', 1),
+('Tech Solutions LTDA', '87654321', 'suporte@techsolutions.com', 'Maria Oliveira', 'Ativa', 2),
+('Global Finance Corp', '13572468', 'finance@global.com', 'Carlos Souza', 'Inativa', 3),
+('NetService Telecom', '24681357', 'atendimento@netservice.com', 'Fernanda Lima', 'Ativa', 1),
+('EducaMais Instituições', '19283746', 'contato@educamais.org', 'Ricardo Santos', 'Ativa', 2),
+('Construtora Ideal', '56473829', 'contato@ideal.com', 'Patrícia Gomes', 'Em análise', 3),
+('LogiMax Transportes', '83746592', 'logimax@transp.com', 'Roberto Costa', 'Ativa', 1),
+('SoftDev Systems', '91827364', 'contato@softdev.com', 'Beatriz Ramos', 'Ativa', 2),
+('AgroVale Produtores', '37482910', 'comercial@agrovale.com', 'André Ferreira', 'Inativa', 3);
+
+SELECT * FROM empresa where statusAcesso in (1,2,3)
 

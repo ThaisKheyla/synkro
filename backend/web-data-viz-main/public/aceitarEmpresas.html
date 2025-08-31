@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/aceitar.css">
+</head>
+<body>
+
+        <div class="sideBar">
+            <img src="https://images.vexels.com/media/users/3/144131/isolated/preview/29576a7e0442960346703d3ecd6bac04-picture-doodle-icon.png" alt="" height="200px">
+            
+                <div class="logout-area" onclick="sair()">
+        <img src="assets/icon/logout.png" alt="" height="60px">
+        <span style="color: red;">Sair</span>
+                </div>
+         
+        
+        </div>
+        <div class="header" >
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 20px; height: 100%; margin-right: 20px;">
+                <span id="dataHeader"></span>
+                 <span style="color: blue;">Seu login</span>
+            </div>
+
+        </div>
+
+
+        <div class="filtros">
+            <div style="align-self: flex-end;">Aprovações</div>
+
+
+            <select onchange="criarCards()" style="align-self: flex-end;" id="filtro">Filtros-Aprovadas
+             <OPtion value="1,2,3">Todas as empresas</OPtion> 
+            <option value="1">Pendentes</option>
+            <option value="2">Reprovadas</option>
+            <option value="3">Aprovadas</option> </select>
+        </div>
+        <div class="conteudo" id="div_conteudo">conteudo</div>
+
+</body>
+    <script>
+
+        function sair() {
+            window.location = "login.html"
+        }
+        document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
+
+        var id = []
+
+        var nomeEmpresarial =  []
+        var nomeRepresentante = []
+        var statusOperacao = []
+        var statusAcesso = []
+
+
+        function criarCards() {
+        
+        div_conteudo.innerHTML = ''
+
+        var filtroVar = filtro.value;
+
+        fetch("/aceitarEmpresas/buscar_cards", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                filtroServer: filtroVar,
+            })
+        }).then(function (resposta) {
+            console.log("ESTOU NO THEN DO entrar()!")
+
+            if (resposta.ok) {
+                console.log(resposta);
+
+                resposta.json().then(json => {
+
+                    console.log(json);
+                    
+                    console.log("Esse é o json.stringify" +JSON.stringify(json));
+                    
+                    console.log("Tamanho volta" + json.length);
+                    
+                    
+                    
+                    // Salvando em variaveis os valores retornados
+
+                    for(i = 0; i < json.length; i++){
+                        id.push(json[i].id);
+                        nomeEmpresarial.push(json[i].nomeEmpresarial);
+                        nomeRepresentante.push(json[i].nomeRepresentante);
+                        statusOperacao.push(json[i].statusOperacao);
+                        statusAcesso.push(json[i].statusAcesso);
+                    }
+                    
+                    console.log(id);
+                    console.log(nomeEmpresarial);
+                    console.log(nomeRepresentante);
+                    console.log(statusOperacao);
+                    console.log(statusAcesso);
+                    
+                    // montando os cards
+                    
+                    console.log("Tamanho do vetor de id:" + id.length);
+                    
+            
+                    for(i = 0; i <= id.length; i++){
+            
+                        div_conteudo.innerHTML += `
+                    </div>
+                    <div id="div_empresa${i}"> Empresa ${i}</div> 
+                        
+                        `
+                        }
+
+
+
+
+
+
+
+
+
+
+
+                });
+
+            } else {
+
+                console.log("Houve um erro ao tentar buscar os cards");
+
+            }
+
+        }).catch(function (erro) {
+            console.log(erro);
+        })
+
+        return false;
+
+
+
+
+
+
+    }
+
+    criarCards()
+        
+
+
+    </script>
+</html>

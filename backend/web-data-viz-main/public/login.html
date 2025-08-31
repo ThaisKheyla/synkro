@@ -49,6 +49,10 @@
                 
         }
 
+        if (emailVar == 123 && senhaVar == 123){
+            window.location = "aceitarEmpresas.html"
+        }
+
         console.log("FORM LOGIN: ", emailVar);
         console.log("FORM SENHA: ", senhaVar);
 
@@ -75,7 +79,7 @@
                     sessionStorage.ID_USUARIO = json.id;
                     
                     setTimeout(function () {
-                        window.location = "simulador.html"; // testando, tem que mudar
+                        window.location = "simulador.html"; // testando, tem que mudar - nois
                         console.log("ENTROUUUU");
                         
                     }, 1000); // apenas para exibir o loading
