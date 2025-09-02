@@ -22,8 +22,8 @@ body{
 
 
 .container {
-    height: 90%;
-    width: 90%;
+    height: 95%;
+    width: 95%;
     /* margin-top: 60px; */
     display: flex;
     flex-direction: row;
