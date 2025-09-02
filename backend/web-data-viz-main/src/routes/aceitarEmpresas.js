@@ -8,4 +8,8 @@ router.post("/buscar_cards", function (req, res) {
     aceitarEmpresasController.buscar_cards(req, res);
 });
 
+router.put("/statusEmpresa", function (req, res) {
+    aceitarEmpresasController.editar(req, res);
+});
+
 module.exports = router;

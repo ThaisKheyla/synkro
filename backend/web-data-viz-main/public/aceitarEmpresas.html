@@ -48,7 +48,6 @@
         document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
 
         var id = []
-
         var nomeEmpresarial =  []
         var nomeRepresentante = []
         var statusOperacao = []
@@ -83,7 +82,17 @@
                     
                     console.log("Tamanho volta" + json.length);
                     
+
                     
+                    // Zerando os vetores das varievais, para poder repor os valores:
+
+                            id = []
+
+                            nomeEmpresarial =  []
+                            nomeRepresentante = []
+                            statusOperacao = []
+                            statusAcesso = []
+
                     
                     // Salvando em variaveis os valores retornados
 
@@ -105,12 +114,30 @@
                     
                     console.log("Tamanho do vetor de id:" + id.length);
                     
+                    
+                    var status = ''
+                    for(i = 0; i < id.length; i++){
             
-                    for(i = 0; i <= id.length; i++){
-            
+                        if(statusAcesso[i] == 1){
+                            status = 'Pendente'
+                        }
+
+                        if(statusAcesso[i] == 2){
+                            status = 'Reprovada'
+                        }
+
+                        if(statusAcesso[i] == 3){
+                            status = 'Aprovada'
+                        }
+                        
+
                         div_conteudo.innerHTML += `
-                    </div>
-                    <div id="div_empresa${i}"> Empresa ${i}</div> 
+                    <div class="caixa">
+                        <div id="div_empresa${i}"> Empresa ${i}
+                        <div"> Situação ${status}
+                        <button onclick="aprovar(${i})" id=aprovar${i}>Aprovar</button>
+                        <button onclick="reprovar(${i})"id=reprovar${i}>Reprovar</button>
+                    </div> 
                         
                         `
                         }
@@ -147,7 +174,47 @@
     }
 
     criarCards()
+
+    function aprovar(i){
+       var idEmpresa1 = id[i]
+       editar(idEmpresa1,3)
+    }
+
+
+    function reprovar(i){
+       var idEmpresa2 = id[i]
+       editar(idEmpresa2,2)
+
+    }
         
+
+
+    function editar(idEmpresaPassado,novoStatusPassado) {
+
+        console.log('editar ->', { idEmpresaPassado, novoStatusPassado });
+        fetch(`/aceitarEmpresas/statusEmpresa`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                novoStatus: novoStatusPassado,
+                idEmpresa: idEmpresaPassado
+            })
+        }).then(function (resposta) {
+
+            if (resposta.ok) {
+                window.alert("Situação de empresa atualizada com sucesso!");
+                window.location = "aceitarEmpresas.html"
+            } else if (resposta.status == 404) {
+                window.alert("Deu 404!");
+            } else {
+                throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+    }
 
 
     </script>

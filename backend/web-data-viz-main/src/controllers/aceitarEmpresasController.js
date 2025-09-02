@@ -33,10 +33,28 @@ function buscar_cards(req, res) {
 
 }
 
+function editar(req, res) {
+    var novoStatus = req.body.novoStatus;
+    var idEmpresa = req.body.idEmpresa;
 
+    aceitarEmpresaModel.editar(novoStatus, idEmpresa)
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        )
+        .catch(
+            function (erro) {
+                console.log(erro);
+                console.log("Houve um erro ao realizar o post: ", erro.sqlMessage);
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
 
+}
 
 
 module.exports = {
     buscar_cards,
+    editar
 }
