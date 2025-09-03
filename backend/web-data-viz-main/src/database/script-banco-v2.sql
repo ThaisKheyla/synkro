@@ -1,5 +1,6 @@
 drop database synkro;
 create database if not exists synkro;
+
 use synkro;
 
 create table empresa(
@@ -18,11 +19,12 @@ create table funcionario(
     empresa_id int,
     nome varchar(45),
     email varchar(45),
-	senha varchar(45),
+	senha varchar(255),
     tipoAcesso varchar(45),
     perfilAtivo boolean,
     primary key (id),
-    constraint fk_funcionario_empresa foreign key (empresa_id) references empresa(id)
+    constraint fk_funcionario_empresa foreign key (empresa_id) references empresa(id),
+    constraint chk_tipo_acesso check(tipoAcesso in ("Gerente", "Analista"))
 );
 
 create table mainframe(
@@ -73,6 +75,7 @@ create table alerta(
     primary key (id)
 );
 
+select * from empresa;
 
 -- INSERTS FICTICIOS PARA TESTE DA API:
 
@@ -99,15 +102,17 @@ ON empresa
 FOR EACH ROW
 BEGIN
 -- if que só vai dar o insert se a ação for de aprovação
-	IF NEW.statusAcesso = '3' AND OLD.statusOperacao <> '3' THEN
-					INSERT INTO funcionario VALUES (null,NEW.id, 
-							NEW.nomeRepresentante, 
-							concat(replace(NEW.nomeRepresentante, ' ', '_'),"@gmail.com"),
-							"123@900", 
-							"Gerente", true);
+	IF NEW.statusAcesso = '3' AND OLD.statusAcesso <> '3' AND ((select count(*) from funcionario where tipoAcesso = "Gerente" and empresa_id = OLD.id) < 1) THEN
+			INSERT INTO funcionario VALUES (null,NEW.id, 
+					NEW.nomeRepresentante, 
+					concat(replace(lower(NEW.nomeRepresentante),' ', '_'),"@gmail.com"),
+					SHA2(concat(substring(NEW.nomeEmpresarial,1,1),floor(rand() * 999999),"@"), 256), 
+					"Gerente", true);
 	END IF;
 END$$
 DELIMITER ;
 
-
 SHOW TRIGGERS;
+drop trigger criarPerfilAoLiberarAcessoEmpresa;
+select * from empresa;
+select * from funcionario;
