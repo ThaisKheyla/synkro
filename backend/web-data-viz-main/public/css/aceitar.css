@@ -11,24 +11,31 @@ html {
 }
 
 body{
-margin: 3%;
-display: grid;
-height: 90%;
-grid-template-areas:
-"sideBar header"
-"sideBar filtros"
-"sideBar conteudo";
-border: black;
-border-style: double;
+    margin: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 
-grid-template-rows: 10% 10% 80% ;
-grid-template-columns:20% 70% ;
-column-gap: 3%;
+}
+.container {
+    height: 95%;
+    width: 95%;
+    display: grid;
+    grid-template-areas:
+    "sideBar header"
+    "sideBar filtros"
+    "sideBar conteudo";
+    grid-template-rows: 15% 10% 75% ; 
+    grid-template-columns:20% 75% ;
+    column-gap: 3%;
 }
 
 .sideBar {
     grid-area: sideBar;
-    border-radius: 10px;
+    border-radius: 25px;
     background-color: #ffffff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     display: flex;
@@ -36,6 +43,10 @@ column-gap: 3%;
     justify-content: space-between; /* distribui topo e fim */
     align-items: center;
     height: 100%;
+}
+.link-sidebar {
+    height: 60%;
+    cursor: pointer;
 }
 
 .logout-area {
@@ -46,26 +57,83 @@ column-gap: 3%;
 }
 
 .header{
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center; 
     grid-area: header;
-    border-radius: 10px;
+    gap: 30px;
+    border-radius: 25px;
     background-color: red;
     background-color: #ffffff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
-
+#info_login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 30%;
+    height: 65%;
+    border-left: 1.5px solid black;
+}
+#dados_data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 10%;
+}
+#agenda_icon {
+    width: 45%;
+}
+#foto_padrao_login {
+    border-radius: 50%;
+    background-image: url('../assets/imgs/foto_perfil_padrao.webp');
+    width: 23.5%;
+    height: 90%;
+    background-position: center;
+    background-size: cover;
+}
 .filtros{
     grid-area: filtros;
-    
     display: flex;
-    justify-items: flex-end;
-    
-    gap: 81%;
-    
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+#title-filtros {
+    text-transform: uppercase;
+    font-weight: 800;
+    color: rgb(32, 32, 32);
+}
+#filtro {
+    height: 50%;
+    font-size: 18.5px;
+    font-family: "Poppins", sans-serif;
+    text-transform: uppercase;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    font-weight: 700;
+    width: 23%;
+    text-align: center;
+}
+#dados_login {
+    display: flex;
+    flex-direction: column;
+    width: 65%;
+}
+#nome_login {
+    font-weight: bold;
+}
+#email_login {
+    font-size: 14px;
+    color: gray;
+    font-style: italic;
 }
 
 .conteudo{
     grid-area: conteudo;
-    border-radius: 10px;
+    border-radius: 25px;
     background-color: #ffffff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }

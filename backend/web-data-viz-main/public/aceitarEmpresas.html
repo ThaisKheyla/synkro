@@ -8,36 +8,44 @@
 </head>
 <body>
 
+    <div class="container">
         <div class="sideBar">
-            <img src="https://images.vexels.com/media/users/3/144131/isolated/preview/29576a7e0442960346703d3ecd6bac04-picture-doodle-icon.png" alt="" height="200px">
-            
+            <img src="./assets/imgs/SYNKRO (3).png" alt="" height="150px">
+                <a href="" class="link-sidebar">
+                    <img src="./assets/imgs/aprovacoes_icon.png" alt="">
+                </a>
                 <div class="logout-area" onclick="sair()">
-        <img src="assets/icon/logout.png" alt="" height="60px">
-        <span style="color: red;">Sair</span>
+                    <img src="./assets/imgs/logoff_icon.png" alt="">
                 </div>
          
         
         </div>
         <div class="header" >
-            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 20px; height: 100%; margin-right: 20px;">
+            <div id="dados_data">
                 <span id="dataHeader"></span>
-                 <span style="color: blue;">Seu login</span>
+                <img id="agenda_icon" src="./assets/imgs/icon_agenda.jpg" alt="">
             </div>
-
+            <div id="info_login">
+                <div id="foto_padrao_login"></div>
+                <div id="dados_login">
+                    <span id="nome_login">Luciano Macedo</span>
+                    <span id="email_login">luci@gmail.com</span>
+                </div>
+            </div>
         </div>
 
 
-        <div class="filtros">
-            <div style="align-self: flex-end;">Aprovações</div>
-
-
-            <select onchange="criarCards()" style="align-self: flex-end;" id="filtro">Filtros-Aprovadas
-             <OPtion value="1,2,3">Todas as empresas</OPtion> 
-            <option value="1">Pendentes</option>
-            <option value="2">Reprovadas</option>
-            <option value="3">Aprovadas</option> </select>
+        <div class="filtros">          
+            <h2 id="title-filtros">Aprovações</h2>
+            <select onchange="criarCards()" id="filtro">
+                <option value="1,2,3">Todas as empresas</option> 
+                <option value="1">Pendentes</option>
+                <option value="2">Reprovadas</option>
+                <option value="3">Aprovadas</option> 
+            </select>
         </div>
         <div class="conteudo" id="div_conteudo">conteudo</div>
+    </div>
 
 </body>
     <script>
@@ -75,27 +83,18 @@
                 console.log(resposta);
 
                 resposta.json().then(json => {
-
                     console.log(json);
-                    
                     console.log("Esse é o json.stringify" +JSON.stringify(json));
-                    
                     console.log("Tamanho volta" + json.length);
-                    
-
-                    
+            
                     // Zerando os vetores das varievais, para poder repor os valores:
-
                             id = []
-
                             nomeEmpresarial =  []
                             nomeRepresentante = []
                             statusOperacao = []
                             statusAcesso = []
 
-                    
                     // Salvando em variaveis os valores retornados
-
                     for(i = 0; i < json.length; i++){
                         id.push(json[i].id);
                         nomeEmpresarial.push(json[i].nomeEmpresarial);
@@ -111,17 +110,12 @@
                     console.log(statusAcesso);
                     
                     // montando os cards
-                    
                     console.log("Tamanho do vetor de id:" + id.length);
-                    
-                    
                     var status = ''
                     for(i = 0; i < id.length; i++){
-            
                         if(statusAcesso[i] == 1){
                             status = 'Pendente'
                         }
-
                         if(statusAcesso[i] == 2){
                             status = 'Reprovada'
                         }
@@ -137,20 +131,9 @@
                         <div"> Situação ${status}
                         <button onclick="aprovar(${i})" id=aprovar${i}>Aprovar</button>
                         <button onclick="reprovar(${i})"id=reprovar${i}>Reprovar</button>
-                    </div> 
-                        
+                    </div>  
                         `
                         }
-
-
-
-
-
-
-
-
-
-
 
                 });
 
@@ -165,11 +148,6 @@
         })
 
         return false;
-
-
-
-
-
 
     }
 
