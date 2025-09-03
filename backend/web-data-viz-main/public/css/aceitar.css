@@ -132,10 +132,39 @@ body{
 }
 
 .conteudo{
+    padding: 15px;
     grid-area: conteudo;
     border-radius: 25px;
     background-color: #ffffff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+table {
+    width: 100%;
+    max-height: 100%;
+}
+table tr th {
+    text-align: start;
+}
+.id_table {
+    width: 50px;
+    text-align: center;
+
+}
+.acao_table {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+}
+table button {
+    outline: none;
+    border: none;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    width: 85px;
+    border-radius: 25px;
+    color: white;
 }
 
 .caixa {

@@ -37,21 +37,17 @@
 </body>
 <script>
         function entrar() {
-
         var emailVar = email_input.value;
         var senhaVar = senha_input.value;
 
         if (emailVar == "" || senhaVar == "") {
             return false;
-        }
-        else {
-                console.log("caiu no else da 49");
-                
-        }
-
-        if (emailVar == 123 && senhaVar == 123){
-            window.location = "aceitarEmpresas.html"
-        }
+        } if(emailVar == "synkro.adm@gmail.com" && senhaVar == "synkro.123@") {
+            sessionStorage.NOME_SYNKRO = `Perfil Administrativo`
+            sessionStorage.EMAIL_SYNKRO = emailVar
+            sessionStorage.SENHA_SYNKRO = senhaVar
+            window.location = `aceitarEmpresas.html`
+        } else {
 
         console.log("FORM LOGIN: ", emailVar);
         console.log("FORM SENHA: ", senhaVar);
@@ -99,8 +95,7 @@
         }).catch(function (erro) {
             console.log(erro);
         })
-
-        return false;
+        }
     }
 
 

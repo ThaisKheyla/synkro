@@ -12,6 +12,16 @@ function validarSessao() {
     }
 }
 
+function validarSessaoSynkro() {
+    if(sessionStorage.EMAIL_SYNKRO == undefined) {
+        sessionStorage.clear();
+        window.location = "./login.html?AcessoNegado"
+    } else {
+        nome_login.innerHMTL = sessionStorage.NOME_SYNKRO
+        email_login.innerHMTL = sessionStorage.EMAIL_SYNKRO
+    }
+}
+
 function limparSessao() {
     sessionStorage.clear();
     window.location = "../login.html";

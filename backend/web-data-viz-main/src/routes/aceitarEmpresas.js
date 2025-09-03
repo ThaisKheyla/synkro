@@ -4,7 +4,7 @@ var router = express.Router();
 var aceitarEmpresasController = require("../controllers/aceitarEmpresasController");
 
 
-router.post("/buscar_cards", function (req, res) {
+router.post("/buscarCards", function (req, res) {
     aceitarEmpresasController.buscar_cards(req, res);
 });
 

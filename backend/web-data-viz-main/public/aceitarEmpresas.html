@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="css/aceitar.css">
+    <script src="./js/sessao.js"></script>
 </head>
-<body>
-
+<body onload="validarSessaoSynkro()">
     <div class="container">
         <div class="sideBar">
             <img src="./assets/imgs/SYNKRO (3).png" alt="" height="150px">
@@ -17,8 +17,6 @@
                 <div class="logout-area" onclick="sair()">
                     <img src="./assets/imgs/logoff_icon.png" alt="">
                 </div>
-         
-        
         </div>
         <div class="header" >
             <div id="dados_data">
@@ -44,7 +42,9 @@
                 <option value="3">Aprovadas</option> 
             </select>
         </div>
-        <div class="conteudo" id="div_conteudo">conteudo</div>
+        <div class="conteudo" id="div_conteudo">
+            <table id="tabela_empresas"></table>
+        </div>
     </div>
 
 </body>
@@ -64,11 +64,18 @@
 
         function criarCards() {
         
-        div_conteudo.innerHTML = ''
-
         var filtroVar = filtro.value;
-
-        fetch("/aceitarEmpresas/buscar_cards", {
+        tabela_empresas.innerHTML = `
+                    <tr class="header_table">
+                        <th class="id_table">ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>ISPB</th>
+                        <th>Status Op.</th>
+                        <th class="acao_table">Ação</th>
+                    </tr>
+        `
+        fetch("/aceitarEmpresas/buscarCards", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -93,12 +100,16 @@
                             nomeRepresentante = []
                             statusOperacao = []
                             statusAcesso = []
+                            email = []
+                            ispb = []
 
                     // Salvando em variaveis os valores retornados
                     for(i = 0; i < json.length; i++){
                         id.push(json[i].id);
                         nomeEmpresarial.push(json[i].nomeEmpresarial);
+                        email.push(json[i].email)
                         nomeRepresentante.push(json[i].nomeRepresentante);
+                        ispb.push(json[i].ispb);
                         statusOperacao.push(json[i].statusOperacao);
                         statusAcesso.push(json[i].statusAcesso);
                     }
@@ -112,29 +123,34 @@
                     // montando os cards
                     console.log("Tamanho do vetor de id:" + id.length);
                     var status = ''
+                    var corTexto = ""
                     for(i = 0; i < id.length; i++){
                         if(statusAcesso[i] == 1){
                             status = 'Pendente'
+                            corTexto = `gray`
                         }
                         if(statusAcesso[i] == 2){
                             status = 'Reprovada'
+                            corTexto = "red"
                         }
 
                         if(statusAcesso[i] == 3){
                             status = 'Aprovada'
+                            corTexto = "green"
                         }
-                        
-
-                        div_conteudo.innerHTML += `
-                    <div class="caixa">
-                        <div id="div_empresa${i}"> Empresa ${i}
-                        <div"> Situação ${status}
-                        <button onclick="aprovar(${i})" id=aprovar${i}>Aprovar</button>
-                        <button onclick="reprovar(${i})"id=reprovar${i}>Reprovar</button>
-                    </div>  
-                        `
+                        tabela_empresas.innerHTML += `
+                            <tr>
+                                <td class="id_table">${id[i]}</td>
+                                <td>${nomeEmpresarial[i]}</td>
+                                <td>${email[i]}</td>
+                                <td>${ispb[i]}</td>
+                                <td style ="color:${corTexto};font-weight:500">${status}</td>
+                                <td class="acao_table">
+                                    ${status != 'Aprovada' ? `<button sytle="background-color: #5aff5a" onclick="aprovar(${i})" id=aprovar${i}>Aprovar</button>` : ""}
+                                    ${status != 'Reprovada' ? `<button style="background-color:  #ff4040" onclick="reprovar(${i})"id=reprovar${i}>Reprovar</button>` : ""}
+                                </td>
+                            </tr>`
                         }
-
                 });
 
             } else {
