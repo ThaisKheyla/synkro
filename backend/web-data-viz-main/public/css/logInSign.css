@@ -89,11 +89,12 @@ input, select{
 .group-button span {
     font-weight: normal;
 }
-.group-button label {
+.group-button a {
     color: #040f86;
     font-weight: bold;
     cursor: pointer;
     transition: 0.1s ease-in-out;
+    text-decoration: none;
 }
 .group-button label:hover {
     font-size: 18.5px;
@@ -131,4 +132,10 @@ label {
     align-self: flex-start;
 }
 
+#msg_erro {
+    color: rgb(155, 34, 34);
+    font-weight: 500;
+    font-style: italic;
+    width: 100%;
+}
 

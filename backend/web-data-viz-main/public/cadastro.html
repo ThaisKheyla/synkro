@@ -44,8 +44,9 @@
                     <option value="liquidacao-ordinaria">Liquidação Ordinária</option>
                 </select>
             </div>
+            <span id="msg_erro"></span>
             <div class="group-button">
-                <span>Já possui acesso? <label>Faça login!</label></span>
+                <span>Já possui acesso? <a href="login.html">Faça login!</a></span>
                 <button onclick="cadastrar()">Cadastrar</button>
             </div>
         </div>
@@ -60,35 +61,27 @@
         var ispbVar = ipt_ispb.value;
         var emailVar = ipt_email.value;
         var statusOperacaoVar = ipt_status.value;
-        // var senhaVar = ipt_senha.value;
-        // var confirmacaoSenhaVar = ipt_confirmacao_senha.value;
-        // var cargoVar = ipt_cargo.value;
 
         if (
             nomeEmpresarialVar == "" ||
             nomeRepresentanteVar == "" ||
             ispbVar == "" ||
             emailVar == ""
-            // statusOperacaoVar == "#"
         ) {
             // ERRO
-            console.log("Preencha todos os campos")
-        } else if (
-            nomeEmpresarialVar.length <= 2 ||
-            nomeRepresentanteVar.length <= 2 ||
-            ispbVar.length > 8 ||
-            emailVar.length <= 2 ||
-            !emailVar.includes("@") ||
-            !emailVar.includes(".")
-            // senhaVar.length <= 5 ||
-            // confirmacaoSenhaVar.length != senhaVar
-        ) {
-            // ERRO
-            console.log("Preenchimento inadequado / Campos inválidos")
+            msg_erro.innerHTML = "Preencha todos os campos!"
+        } else if(ispbVar.length != 8) {
+            msg_erro.innerHTML = `Código ISPB deve ter 8 caracteres!`
+        } else if(nomeEmpresarialVar.length < 10) {
+            msg_erro.innerHTML = `Insira um nomeEmpresarial válido! Nome muito pequeno.`
+        } else if(nomeRepresentanteVar.length < 3) {
+            msg_erro.innerHTML = `Insira um nome válido! Nome muito pequeno.`
+        } else if(emailVar.length < 5) {
+            msg_erro.innerHTML = `Preencha um email válido! Muito pequeno.`
+        } else if(!emailVar.includes("@") ||!emailVar.includes(".")) {
+            msg_erro.innerHTML = `Insira um e-mail válido!`
         } else {
             console.log("CADASTRO OK")
-
-
             fetch("/cadastroEmpresa/cadastrar", {
                 method: "POST",
                 headers: {

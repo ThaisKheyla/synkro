@@ -26,11 +26,19 @@
         </div>
         <div class="box_dados" style="height: 100%;">
             <div class="titulo"><label for="">Login</label></div>
-            <label for="email_input">Email: </label> 
-            <input type="text" name="" id="email_input" style="height: 8%;">
-            <label for="senha_input">Senha: </label> 
-            <input type="password" name="" id="senha_input" style="height: 8%;"> 
-            <button onclick="entrar()">Login</button>
+            <div class="group-input">
+                <label for="email_input">Email: </label> 
+                <input type="text" name="" id="email_input">
+            </div>
+            <div class="group-input">
+                <label for="senha_input">Senha: </label> 
+                <input type="password" name="" id="senha_input"> 
+            </div>
+            <span id="msg_erro"></span>
+            <div class="group-button">
+                <span>Ainda não possui acesso? <a href="cadastro.html">Cadastre-se!</a></span>
+                <button onclick="entrar()">Login</button>
+            </div>
         </div>
     </div>
     
@@ -41,7 +49,7 @@
         var senhaVar = senha_input.value;
 
         if (emailVar == "" || senhaVar == "") {
-            return false;
+            msg_erro.innerHTML = `Preencha todos os campos!`
         } if(emailVar == "synkro.adm@gmail.com" && senhaVar == "synkro.123@") {
             sessionStorage.NOME_SYNKRO = `Perfil Administrativo`
             sessionStorage.EMAIL_SYNKRO = emailVar
@@ -62,8 +70,6 @@
                 senhaServer: senhaVar
             })
         }).then(function (resposta) {
-            console.log("ESTOU NO THEN DO entrar()!")
-
             if (resposta.ok) {
                 console.log(resposta);
 
@@ -83,12 +89,8 @@
                 });
 
             } else {
-
-                console.log("Houve um erro ao tentar realizar o login!");
-
                 resposta.text().then(texto => {
-                    console.error(texto);
-                    finalizarAguardar(texto);
+                   msg_erro.innerHTML =  texto
                 });
             }
 
