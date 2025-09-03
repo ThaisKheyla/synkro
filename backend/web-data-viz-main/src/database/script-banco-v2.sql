@@ -20,6 +20,7 @@ create table funcionario(
     email varchar(45),
 	senha varchar(45),
     tipoAcesso varchar(45),
+    perfilAtivo boolean,
     primary key (id),
     constraint fk_funcionario_empresa foreign key (empresa_id) references empresa(id)
 );
@@ -87,5 +88,26 @@ VALUES
 ('SoftDev Systems', '91827364', 'contato@softdev.com', 'Beatriz Ramos', 'Ativa', 2),
 ('AgroVale Produtores', '37482910', 'comercial@agrovale.com', 'André Ferreira', 'Inativa', 3);
 
-SELECT * FROM empresa where statusAcesso in (1,2,3)
+SELECT * FROM empresa where statusAcesso in (1,2,3);
 
+-- TRIGGER MYSQL PARA CRIAR PERFIL AUTOMÁTICO
+-- Mysql entende ; como final de instrução, e nao pode, já que só vai encerrar no END
+DELIMITER $$ 
+CREATE TRIGGER criarPerfilAoLiberarAcessoEmpresa AFTER UPDATE
+ON empresa
+-- PARA CADA LINHA QUE FOR RODADA, SE EU DER 2 UPDATE ELE RODA 2 VEZES
+FOR EACH ROW
+BEGIN
+-- if que só vai dar o insert se a ação for de aprovação
+	IF NEW.statusAcesso = '3' AND OLD.statusOperacao <> '3' THEN
+					INSERT INTO funcionario VALUES (null,NEW.id, 
+							NEW.nomeRepresentante, 
+							concat(replace(NEW.nomeRepresentante, ' ', '_'),"@gmail.com"),
+							"123@900", 
+							"Gerente", true);
+	END IF;
+END$$
+DELIMITER ;
+
+
+SHOW TRIGGERS;
