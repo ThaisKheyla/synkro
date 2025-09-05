@@ -19,6 +19,9 @@ function autenticar(req, res) {
                     console.log(`Resultados: ${JSON.stringify(resultadoAutenticar)}`); // transforma JSON em String
 
                     if (resultadoAutenticar.length == 1) {
+                        if(resultadoAutenticar[0].perfilAtivo == false) {
+                            res.status(400).send("Perfil inativo, entre em contato conosco!")
+                        }
                         console.log(resultadoAutenticar);
 
                         res.json({ // adicionado do individual

@@ -96,7 +96,7 @@ SELECT * FROM empresa where statusAcesso in (1,2,3);
 -- TRIGGER MYSQL PARA CRIAR PERFIL AUTOMÁTICO
 -- Mysql entende ; como final de instrução, e nao pode, já que só vai encerrar no END
 DELIMITER $$ 
-CREATE TRIGGER criarPerfilAoLiberarAcessoEmpresa AFTER UPDATE
+CREATE TRIGGER criarPerfilAoLiberarAcessoEmpresa BEFORE UPDATE
 ON empresa
 -- PARA CADA LINHA QUE FOR RODADA, SE EU DER 2 UPDATE ELE RODA 2 VEZES
 FOR EACH ROW

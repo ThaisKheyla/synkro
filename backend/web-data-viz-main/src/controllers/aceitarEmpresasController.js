@@ -29,8 +29,6 @@ function buscar_cards(req, res) {
                     res.status(500).json(erro.sqlMessage);
                 }
             );
-    
-
 }
 
 function editar(req, res) {
