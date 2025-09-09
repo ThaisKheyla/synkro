@@ -96,18 +96,24 @@ SELECT * FROM empresa where statusAcesso in (1,2,3);
 -- TRIGGER MYSQL PARA CRIAR PERFIL AUTOMÁTICO
 -- Mysql entende ; como final de instrução, e nao pode, já que só vai encerrar no END
 DELIMITER $$ 
-CREATE TRIGGER criarPerfilAoLiberarAcessoEmpresa BEFORE UPDATE
+CREATE TRIGGER criarPerfilAoLiberarAcessoEmpresa AFTER UPDATE
 ON empresa
 -- PARA CADA LINHA QUE FOR RODADA, SE EU DER 2 UPDATE ELE RODA 2 VEZES
 FOR EACH ROW
 BEGIN
 -- if que só vai dar o insert se a ação for de aprovação
-	IF NEW.statusAcesso = '3' AND OLD.statusAcesso <> '3' AND ((select count(*) from funcionario where tipoAcesso = "Gerente" and empresa_id = OLD.id) < 1) THEN
+	IF NEW.statusAcesso = '3' AND OLD.statusAcesso <> '3' AND ((select count(*) from funcionario where tipoAcesso = "Gerente" and empresa_id = NEW.id) < 1) THEN
 			INSERT INTO funcionario VALUES (null,NEW.id, 
 					NEW.nomeRepresentante, 
 					concat(replace(lower(NEW.nomeRepresentante),' ', '_'),"@gmail.com"),
 					SHA2(concat(substring(NEW.nomeEmpresarial,1,1),floor(rand() * 999999),"@"), 256), 
 					"Gerente", true);
+    ELSEIF NEW.statusAcesso = '2' AND OLD.statusAcesso <> '2' THEN
+		UPDATE funcionario set perfilAtivo = false
+        where empresa_id = NEW.id;
+	ELSE
+			UPDATE funcionario set perfilAtivo = true
+            where empresa_id = NEW.id;
 	END IF;
 END$$
 DELIMITER ;
