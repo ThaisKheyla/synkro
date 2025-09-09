@@ -16,7 +16,107 @@ body {
 
 }
 
+/* hamburguer */
 
+.hamburguer {
+    display: none;
+    /* só aparece no mobile */
+    font-size: 28px;
+    cursor: pointer;
+    user-select: none;
+    padding: 10px;
+    color: rgb(255, 255, 255);
+    margin-left: auto;
+    /* joga o botão para a direita */
+    transition: 0.5s;
+}
+
+.header.rolar .hamburguer{
+    color: #000000;
+
+}
+
+/* Menu mobile*/
+.menuMobile {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    height: 100vh;
+    width: 250px;
+    background: #111;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 0 0 0 12px;
+    padding: 60px 20px;
+    z-index: 1000;
+    transition: right 0.3s ease-in-out;
+    color: #ffffff;
+}
+
+.menuMobile ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+}
+
+.menuMobile li {
+    margin: 20px 0;
+    color: #ffffff;
+}
+
+.menuMobile a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 10px;
+    border-radius: 6px;
+    transition: 0.2s, color 0.2s;
+}
+
+.menuMobile a:hover {
+    background: #222;
+    color: #7bc0c9;
+}
+
+.menuMobile.active {
+    right: 0;
+}
+
+/*botão de fechar*/
+.closeBtn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 26px;
+    cursor: pointer;
+    color: white;
+    transition: color 0.2s;
+}
+
+.closeBtn:hover {
+    color: #7bc0c9;
+}
+
+/* mostrar hamburguer no mobile */
+@media (max-width: 768px) {
+    .hamburguer {
+        display: block;
+    }
+
+    .header.rolar .menuMobile .a{
+
+    color: #ffffff;
+
+    }
+
+    .header.rolar .menuMobile .a:hover{
+
+    color: #7bc0c9;
+
+    }
+}
 
 .header {
     position: fixed;
@@ -658,7 +758,7 @@ html {
 
     .navbar {
         display: none;
-        /* Esconde a navbar e pode ser substituída por um menu hambúrguer no HTML/JS */
+        /* esconde a navbar e é substituída por um menu hambúrguer no HTML/JS */
         width: 100%;
         flex-direction: column;
         align-items: center;
@@ -803,4 +903,84 @@ html {
             border-top: 1px solid #fff;
         }
 
+}
+
+@media (max-width: 768px) {
+
+    /* FAQ */
+    .faq h2 {
+        font-size: 2rem;
+    }
+
+    .faq-item {
+        width: 100%;
+        max-width: 85%;
+    }
+
+    .faq-card {
+        font-size: 14px;
+        padding: 20px;
+    }
+
+    /* Footer */
+    .inicioFooter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: auto;
+        padding: 30px 20px;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .textosFooter {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .textoRodape {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .textoRodape_cadastrogin {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        bottom: auto;
+        left: auto;
+    }
+
+    .textoRodape_logindrasto {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .redesSociais {
+        position: static;
+        margin-top: 20px;
+        justify-content: center;
+    }
+
+    .logoFooter {
+        position: static;
+        margin-top: 20px;
+        justify-content: center;
+    }
+
+    .logoFooter img {
+        height: 90px;
+    }
+
+    .footer {
+        font-size: 13px;
+        padding: 15px;
+    }
 }
