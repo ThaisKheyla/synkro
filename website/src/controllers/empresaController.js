@@ -21,7 +21,6 @@ function buscarPorId(req, res) {
     res.status(200).json(resultado);
   });
 }
-
 function cadastrar(req, res) {
   var cnpj = req.body.cnpj;
   var razaoSocial = req.body.razaoSocial;
