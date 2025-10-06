@@ -153,9 +153,9 @@ CREATE TABLE alerta (
 
 -- Acesso
 INSERT INTO status_acesso (id, descricao) VALUES
-(1, 'Restrito'),
-(2, 'Em Análise'),
-(3, 'Liberado');
+(1, 'Pendente'),
+(2, 'Reprovado'),
+(3, 'Aprovado');
 
 -- Operação
 INSERT INTO status_operacao (id, descricao) VALUES
