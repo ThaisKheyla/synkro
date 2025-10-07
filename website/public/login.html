@@ -11,15 +11,7 @@
 </head>
 
 <body>
-    <!-- <div class="navbar">
-        <button>Início</button>
-        <button>Sobre nós</button>
-        <button>Nossos serviços</button>
-        <button>Fale conosco</button>
-        |
-        <button>Login</button>
-        <button><a href="cadastro.html">Cadastrar-se</a></button>
-    </div> -->
+
     <div class="container">
         <div class="wallpaper">
             <img src="assets/imgs/SYNKRO (1).png" alt="" >
@@ -40,6 +32,7 @@
                 <button onclick="entrar()">Login</button>
             </div>
         </div>
+    <p class="footer-link" onclick="document.getElementById('top').scrollIntoView({behavior: 'smooth'})">Início</p>
     </div>
     
 </body>
@@ -81,10 +74,9 @@
                     sessionStorage.ID_USUARIO = json.id;
                     
                     setTimeout(function () {
-                        window.location = "simulador.html"; // testando, tem que mudar - nois
+                        window.location = "dashboard.html";
                         console.log("ENTROUUUU");
-                        
-                    }, 1000); // apenas para exibir o loading
+                    }, 1000); 
 
                 });
 

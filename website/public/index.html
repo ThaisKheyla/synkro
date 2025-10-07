@@ -7,16 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./assets/imgs/SYNKRO (1).png">
     <title>Synkro | Página Inicial</title>
-
     <link rel="stylesheet" href="./css/index.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="" href="">
 </head>
-
 <body>
-
     <div class="header">
-        
         <div class="container">
             <ul class="navbar">
                 <li class="agora">
@@ -68,7 +63,7 @@
         </div>
     </div>
 
-    <section class="titulosMenu" id="#">
+    <section class="titulosMenu" id="top">
 
         <div class="tituloComIcone">
             <h1 class="tituloMenu">SYNKR</h1>
@@ -77,38 +72,38 @@
 
         <h2 class="subtituloMenu">cada ciclo em total sincronia</h2>
 
-        <center>
             <button class="botaoMenu"
                 onclick="document.getElementById('sobreNos').scrollIntoView({behavior: 'smooth'})">Descubra</button>
-        </center>
 
         <video class="videoMenu" autoplay muted loop src="./midia/videoMenu1.3.mp4"></video>
 
     </section>
 
 
-    <div class="corpo2" id="sobreNos">
+    <section class="corpo2" id="sobreNos">
 
         <div class="fundoBrancoSobreNos">
 
-            <div class="containerH1">
+            <div class="containerTitulo">
                 <h1>Sobre Nós</h1>
             </div>
 
 
             <div class="textoSobreNos">
 
-                <p>A <span style="font-weight: bold;">SYNKRO</span> garante <span
-                        style="text-decoration: underline;">confiabilidade</span> e <span
-                        style="text-decoration: underline;">inovação</span> no monitoramento de mainframes, assegurando
-                    <span style="text-decoration: underline;">estabilidade</span>,
-                    <span style="text-decoration: underline;">segurança</span> e <span
-                        style="text-decoration: underline;">desempenho</span> em operações críticas. Nossas soluções
-                    permitem antecipar <span style="text-decoration:line-through;">falhas</span>, reduzir
-                    <span style="text-decoration: line-through;">custos</span> e manter a continuidade dos negócios,
-                    oferecendo mais do que tecnologia: <span style="font-weight: bold;">parceria estratégica
+                <p>A <span>SYNKRO</span> garante <span
+                        >confiabilidade</span> e <span
+                        >inovação</span> no monitoramento de mainframes, assegurando
+                    <span >estabilidade</span>,
+                    <span >segurança</span> e <span
+                        >desempenho</span> em operações críticas. Nossas soluções
+                    permitem antecipar <span>falhas</span>, reduzir
+                    <span>custos</span> e manter a continuidade dos negócios,
+                    oferecendo mais do que tecnologia: <span>parceria estratégica
                         para quem não pode parar</span>.
                 </p>
+
+                <button class="btn-secondary" onclick="document.getElementById('nossosServicos').scrollIntoView({behavior:'smooth'})">Saiba mais</button>
 
             </div>
 
@@ -118,16 +113,19 @@
 
             <div class="imagemSobreNos">
 
-                <img src="./midia/sobreNos.png">
+                <figure class="sobreCard">
+                    <img src="./midia/sobreNos.png" alt="Equipe SYNKRO apresentando solução de monitoramento">
+                    <figcaption>Equipe SYNKRO — Monitoramento inteligente para mainframes</figcaption>
+                </figure>
 
             </div>
 
         </div>
 
 
-    </div>
+    </section>
 
-    <div class="corpo3" id="nossosServicos">
+    <section class="corpo3" id="nossosServicos">
 
         <div class="fundoBrancoSobreNos">
 
@@ -149,10 +147,10 @@
 
                     <h4>monitoramento Inteligente</h4>
                     <p>Acompanhamos componentes físicos essenciais do mainframe em tempo real, garantindo <span
-                            style="font-weight: bold;">alta
+                        >alta
                             disponibilidade e
                             desempenho estável</span>. Com nossa solução, é possível <span
-                            style="font-weight: bold;">detectar falhas antes que causem impactos,
+                        >detectar falhas antes que causem impactos,
                             planejar manutenções preventivas e assegurar operações bancárias contínuas</span>.</p>
                 </div>
 
@@ -161,7 +159,7 @@
 
                     <h4>Análise Preditiva</h4>
                     <p>Nosso sistema identifica tendências de desgaste e sobrecarga dos recursos do mainframe.
-                        Assim, ajudamos na <span style="font-weight: bold;">tomada de decisões estratégicas, otimizando
+                        Assim, ajudamos na <span>tomada de decisões estratégicas, otimizando
                             investimentos e evitando custos
                             inesperados com paradas não planejadas</span>.</p>
                 </div>
@@ -170,17 +168,17 @@
 
         </div>
 
-    </div>
+    </section>
 
 
     <!-- aqui fala sobre nosso time -->
-    <div class="corpo4" id="nossoTime">
+    <section class="corpo4" id="nossoTime">
 
         <div class="textosTime">
             <h1>Nosso time!</h1>
             <p>Somos um grupo formado por 6 profissionais desejosos por tecnologia, com experiências complementares em
                 infraestrutura, análise de dados, desenvolvimento e gestão de projetos.
-                <span style="font-weight: bold;">Nosso objetivo é transformar o monitoramento de mainframes em algo
+                <span>Nosso objetivo é transformar o monitoramento de mainframes em algo
                     inteligente, confiável e estratégico
                     para instituições financeiras que não podem parar.</span>
                 Trabalhamos juntos para criar soluções que antecipam problemas, garantem disponibilidade total e ajudam
@@ -200,9 +198,9 @@
 
 
 
-    </div>
+    </section>
 
-    <div class="corpo5">
+    <section class="corpo5">
 
         <h1 style="font-size: 50px;">Depoimentos</h1>
 
@@ -215,7 +213,7 @@
                     <h2>David Vélez</h2>
                     <h3>★★★★★</h3>
                     <h2>Gerente de Operações Bancárias</h2>
-                    <p style="font-style: italic;">"O monitoramento em tempo real do hardware de mainframe revolucionou
+                    <p>"O monitoramento em tempo real do hardware de mainframe revolucionou
                         nossa operação. Antes
                         lidávamos com incidentes inesperados; agora temos previsibilidade e conseguimos agir antes que
                         qualquer falha impacte os clientes. É uma tranquilidade incrível para toda a equipe."</p>
@@ -231,7 +229,7 @@
                     <h2>Camila Farani</h2>
                     <h3>★★★★★</h3>
                     <h2>Analista de Infraestrutura</h2>
-                    <p style="font-style: italic;">"Com o sistema, conseguimos identificar gargalos de desempenho no
+                    <p>"Com o sistema, conseguimos identificar gargalos de desempenho no
                         mainframe antes mesmo de
                         afetarem as transações. O sistema é preciso, intuitivo e nos deu diretrizes valiosoas para
                         otimizar
@@ -248,7 +246,7 @@
                     <h2>Guilherme Benchimol</h2>
                     <h3>★★★★★</h3>
                     <h2>Diretor de Tecnologia</h2>
-                    <p style="font-style: italic;">"A previsibilidade que alcançamos com este projeto é incomparável.
+                    <p>"A previsibilidade que alcançamos com este projeto é incomparável.
                         Conseguimos reduzir o tempo de
                         indisponibilidade e evitar falhas críticas. A confiabilidade do monitoramento trouxe ganhos
                         enormes em performance e confiança para nossos clientes."</p>
@@ -256,9 +254,9 @@
             </div>
 
         </div>
-    </div>
+    </section>
 
-    <div class="corpo6" id="nossosValores">
+    <section class="corpo6" id="nossosValores">
 
         <h1 style="font-size: 50px;">Nossos Valores</h1>
 
@@ -302,8 +300,8 @@
             </div>
         </div>
 
-    </div>
-    <div class="corpo7" id="FAQ">
+    </section>
+    <section class="corpo7" id="FAQ">
 
         <section class="faq">
             <h2>FAQ</h2>
@@ -343,14 +341,14 @@
 
         </section>
 
-    </div>
+    </section>
     <div class="inicioFooter">
 
         <div class="textosFooter">
 
             <div class="textoRodape">
 
-                <p onclick="document.getElementById('#').scrollIntoView({behavior: 'smooth'})">Início</p>
+                <p class="footer-link" onclick="document.getElementById('top').scrollIntoView({behavior: 'smooth'})">Início</p>
                 <p onclick="document.getElementById('sobreNos').scrollIntoView({behavior: 'smooth'})">Sobre Nós</p>
                 <p onclick="document.getElementById('nossosServicos').scrollIntoView({behavior: 'smooth'})">Nossos
                     Serviços</p>
@@ -377,8 +375,7 @@
         </div>
 
         <div class="logoFooter">
-            <img src="./midia/synkro_logo.png"
-                onclick="document.getElementById('#').scrollIntoView({behavior: 'smooth'})">
+            <img src="./midia/synkro_logo.png" onclick="document.getElementById('top').scrollIntoView({behavior: 'smooth'})">
         </div>
 
         <div class="redesSociais">
@@ -393,60 +390,14 @@
 
         </div>
 
-
     </div>
-
-
     <div class="footer">
         <div class="container">
-
             <div class="conteudo">
                 <p>&copy; Copyright - Synkro 2025. Todos os direitos reservados&reg;</p>
             </div>
 
         </div>
     </div>
-
-
-
-
-
-
-
-    <script>
-
-
-        window.addEventListener('scroll', function () {         // é um ouvinte que fica sempre atento ao evento de rolagem, ou seja,
-            // sempre que a página rolar (scroll), a função será ativada. Resumo: escuta o evento de rolagem "scroll"
-
-            const header = document.querySelector('.header');     // na constante "header", ela busca um elemento HTML. O document.querySelector('.header') busca o primeiro 
-            // elemento com a classe ".header", depois ele guarda esse elemento na variável "header". Ou seja, ele pega o cabeçalho. Resumo: pega o elemento ".header"
-
-            header.classList.toggle('rolar', window.scrollY > 0); // aqui é onde jaz o efeito: se a página tiver sido rolada (ou seja, se o scrollY for maior que 0), ele adiciona
-            // a classe "rolar", do css; se não, ele remove essa classe - a classe "rolar". Resumo: Adiciona ou remove a classe "rolar"
-        });
-
-        //fazendo o menu hamburguer
-        const hamburguer = document.getElementById("hamburguer");
-        const menuMobile = document.getElementById("menuMobile");
-        const closeBtn = document.getElementById("closeBtn");
-
-        // abrir menu mobile
-        hamburguer.addEventListener("click", () => {
-            menuMobile.classList.add("active");
-        });
-
-        // fechar menu mobile
-        closeBtn.addEventListener("click", () => {
-            menuMobile.classList.remove("active");
-        });
-
-
-    </script>
-
-
-
-
 </body>
-
 </html>

@@ -1,55 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/aceitar.css">
+    <title>Aprovação de Empresas - Synkro</title>
+    <link rel="stylesheet" href="css/dash.css">
     <script src="./js/sessao.js"></script>
 </head>
 <body onload="validarSessaoSynkro()">
-    <div class="container">
-        <div class="sideBar">
-            <img src="./assets/imgs/SYNKRO (3).png" alt="" height="150px">
-                <a href="" class="link-sidebar">
-                    <img src="./assets/imgs/aprovacoes_icon.png" alt="">
-                </a>
-                <div class="logout-area" onclick="sair()">
-                    <img src="./assets/imgs/logoff_icon.png" alt="">
-                </div>
-        </div>
-        <div class="header" >
-            <div id="dados_data">
-                <span id="dataHeader"></span>
-                <img id="agenda_icon" src="./assets/imgs/icon_agenda.jpg" alt="">
+    <div class="layout-principal">
+        <aside class="barra-lateral">
+            <div class="logo">Synkro</div>
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
+                <div class="nome-usuario" id="nome_login">Luciano Macedo</div>
+                <div class="email-usuario" id="email_login">luci@gmail.com</div>
             </div>
-            <div id="info_login">
-                <div id="foto_padrao_login"></div>
-                <div id="dados_login">
-                    <span id="nome_login">Luciano Macedo</span>
-                    <span id="email_login">luci@gmail.com</span>
+            <nav>
+                <ul>
+                    <li><a href="#" class="ativo">Aprovações</a></li>
+                    <li><a href="dashboard.html">Visão Geral</a></li>
+                    <li><a href="#" onclick="sair()">
+                        <img src="./assets/imgs/logoff_icon.png" alt="">
+                    </a></li>
+                </ul>
+
+            </nav>
+        </aside>
+        <main class="conteudo-principal">
+            <section class="painel-hardware">
+                <div class="cabecalho-painel">
+                    <h2>Aprovação de Empresas</h2>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <span id="dataHeader"></span>
+                        <img id="agenda_icon" src="./assets/imgs/icon_agenda.jpg" alt="" style="height:32px; border-radius:8px;">
+                    </div>
                 </div>
-            </div>
-        </div>
-
-
-        <div class="filtros">          
-            <h2 id="title-filtros">Aprovações</h2>
-            <select onchange="criarCards()" id="filtro">
-                <option value="1,2,3">Todas as empresas</option> 
-                <option value="1">Pendentes</option>
-                <option value="2">Reprovadas</option>
-                <option value="3">Aprovadas</option> 
-            </select>
-        </div>
-        <div class="conteudo" id="div_conteudo">
-            <table id="tabela_empresas"></table>
-        </div>
+                <div class="cartoes-resumo" style="margin-bottom: 24px;">
+                    <div class="cartao-resumo">
+                        <div class="rotulo">Filtro</div>
+                        <select onchange="criarCards()" id="filtro" style="margin-top:8px; padding:6px 12px; border-radius:8px; border:1px solid #ccc;">
+                            <option value="1,2,3">Todas as empresas</option>
+                            <option value="1">Pendentes</option>
+                            <option value="2">Reprovadas</option>
+                            <option value="3">Aprovadas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="graficos-row">
+                    <div class="grafico-box" style="width:100%; min-width:320px;">
+                        <h4>Empresas</h4>
+                        <div class="tabela-aprovacoes" style="overflow-x:auto;">
+                            <table id="tabela_empresas" style="width:100%; border-radius:12px; background:#fff;"></table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 
 </body>
     <script>
-
         function sair() {
             window.location = "login.html"
         }
@@ -61,155 +72,107 @@
         var statusOperacao = []
         var statusAcesso = []
 
-
         function criarCards() {
-        
-        var filtroVar = filtro.value;
-        tabela_empresas.innerHTML = `
-                    <tr class="header_table">
-                        <th class="id_table">ID</th>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>ISPB</th>
-                        <th>Status Op.</th>
-                        <th class="acao_table">Ação</th>
-                    </tr>
-        `
-        fetch("/aceitarEmpresas/buscarCards", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                filtroServer: filtroVar,
+            var filtroVar = filtro.value;
+            tabela_empresas.innerHTML = `
+                <tr class="header_table">
+                    <th class="id_table">ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>ISPB</th>
+                    <th>Status Op.</th>
+                    <th class="acao_table">Ação</th>
+                </tr>
+            `
+            fetch("/aceitarEmpresas/buscarCards", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    filtroServer: filtroVar,
+                })
+            }).then(function (resposta) {
+                if (resposta.ok) {
+                    resposta.json().then(json => {
+                        id = []
+                        nomeEmpresarial =  []
+                        nomeRepresentante = []
+                        statusOperacao = []
+                        statusAcesso = []
+                        email = []
+                        ispb = []
+                        for(i = 0; i < json.length; i++){
+                            id.push(json[i].id);
+                            nomeEmpresarial.push(json[i].nomeEmpresarial);
+                            email.push(json[i].email)
+                            nomeRepresentante.push(json[i].nomeRepresentante);
+                            ispb.push(json[i].ispb);
+                            statusOperacao.push(json[i].statusOperacao);
+                            statusAcesso.push(json[i].statusAcesso);
+                        }
+                        var status = ''
+                        var corTexto = ""
+                        for(i = 0; i < id.length; i++){
+                            if(statusAcesso[i] == 1){
+                                status = 'Pendente'
+                                corTexto = `gray`
+                            }
+                            if(statusAcesso[i] == 2){
+                                status = 'Reprovada'
+                                corTexto = "red"
+                            }
+                            if(statusAcesso[i] == 3){
+                                status = 'Aprovada'
+                                corTexto = "green"
+                            }
+                            tabela_empresas.innerHTML += `
+                                <tr>
+                                    <td class="id_table">${id[i]}</td>
+                                    <td>${nomeEmpresarial[i]}</td>
+                                    <td>${email[i]}</td>
+                                    <td>${ispb[i]}</td>
+                                    <td style ="color:${corTexto};font-weight:500">${status}</td>
+                                    <td class="acao_table">
+                                        ${status != 'Aprovada' ? `<button style="background-color: 	rgb(30,144,255)" onclick="aprovar(${i})"id=aprovar${i}>Aprovar</button>` : ""}
+                                        ${status != 'Reprovada' ? `<button style="background-color:  #ff4040" onclick="reprovar(${i})"id=reprovar${i}>Reprovar</button>` : ""}
+                                    </td>
+                                </tr>`
+                        }
+                    });
+                }
             })
-        }).then(function (resposta) {
-            console.log("ESTOU NO THEN DO entrar()!")
-
-            if (resposta.ok) {
-                console.log(resposta);
-
-                resposta.json().then(json => {
-                    console.log(json);
-                    console.log("Esse é o json.stringify" +JSON.stringify(json));
-                    console.log("Tamanho volta" + json.length);
-            
-                    // Zerando os vetores das varievais, para poder repor os valores:
-                            id = []
-                            nomeEmpresarial =  []
-                            nomeRepresentante = []
-                            statusOperacao = []
-                            statusAcesso = []
-                            email = []
-                            ispb = []
-
-                    // Salvando em variaveis os valores retornados
-                    for(i = 0; i < json.length; i++){
-                        id.push(json[i].id);
-                        nomeEmpresarial.push(json[i].nomeEmpresarial);
-                        email.push(json[i].email)
-                        nomeRepresentante.push(json[i].nomeRepresentante);
-                        ispb.push(json[i].ispb);
-                        statusOperacao.push(json[i].statusOperacao);
-                        statusAcesso.push(json[i].statusAcesso);
-                    }
-                    
-                    console.log(id);
-                    console.log(nomeEmpresarial);
-                    console.log(nomeRepresentante);
-                    console.log(statusOperacao);
-                    console.log(statusAcesso);
-                    
-                    // montando os cards
-                    console.log("Tamanho do vetor de id:" + id.length);
-                    var status = ''
-                    var corTexto = ""
-                    for(i = 0; i < id.length; i++){
-                        if(statusAcesso[i] == 1){
-                            status = 'Pendente'
-                            corTexto = `gray`
-                        }
-                        if(statusAcesso[i] == 2){
-                            status = 'Reprovada'
-                            corTexto = "red"
-                        }
-
-                        if(statusAcesso[i] == 3){
-                            status = 'Aprovada'
-                            corTexto = "green"
-                        }
-                        tabela_empresas.innerHTML += `
-                            <tr>
-                                <td class="id_table">${id[i]}</td>
-                                <td>${nomeEmpresarial[i]}</td>
-                                <td>${email[i]}</td>
-                                <td>${ispb[i]}</td>
-                                <td style ="color:${corTexto};font-weight:500">${status}</td>
-                                <td class="acao_table">
-                                    ${status != 'Aprovada' ? `<button style="background-color: 	rgb(30,144,255)" onclick="aprovar(${i})"id=aprovar${i}>Aprovar</button>` : ""}
-                                    ${status != 'Reprovada' ? `<button style="background-color:  #ff4040" onclick="reprovar(${i})"id=reprovar${i}>Reprovar</button>` : ""}
-                                </td>
-                            </tr>`
-                        }
-                });
-
-            } else {
-
-                console.log("Houve um erro ao tentar buscar os cards");
-
-            }
-
-        }).catch(function (erro) {
-            console.log(erro);
-        })
-
-        return false;
-
-    }
-
-    criarCards()
-
-    function aprovar(i){
-       var idEmpresa1 = id[i]
-       editar(idEmpresa1,3)
-    }
-
-
-    function reprovar(i){
-       var idEmpresa2 = id[i]
-       editar(idEmpresa2,2)
-
-    }
-        
-
-
-    function editar(idEmpresaPassado,novoStatusPassado) {
-
-        console.log('editar ->', { idEmpresaPassado, novoStatusPassado });
-        fetch(`/aceitarEmpresas/statusEmpresa`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                novoStatus: novoStatusPassado,
-                idEmpresa: idEmpresaPassado
-            })
-        }).then(function (resposta) {
-
-            if (resposta.ok) {
-                window.alert("Situação de empresa atualizada com sucesso!");
-                window.location = "aceitarEmpresas.html"
-            } else if (resposta.status == 404) {
-                window.alert("Deu 404!");
-            } else {
-                throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
-            }
-        }).catch(function (resposta) {
-            console.log(`#ERRO: ${resposta}`);
-        });
-    }
-
-
+            return false;
+        }
+        criarCards()
+        function aprovar(i){
+            var idEmpresa1 = id[i]
+            editar(idEmpresa1,3)
+        }
+        function reprovar(i){
+            var idEmpresa2 = id[i]
+            editar(idEmpresa2,2)
+        }
+        function editar(idEmpresaPassado,novoStatusPassado) {
+            fetch(`/aceitarEmpresas/statusEmpresa`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    novoStatus: novoStatusPassado,
+                    idEmpresa: idEmpresaPassado
+                })
+            }).then(function (resposta) {
+                if (resposta.ok) {
+                    window.alert("Situação de empresa atualizada com sucesso!");
+                    window.location = "aceitarEmpresas.html"
+                } else if (resposta.status == 404) {
+                    window.alert("Deu 404!");
+                }
+            }).catch(function (resposta) {
+                console.log(`#ERRO: ${resposta}`);
+            });
+        }
     </script>
 </html>
