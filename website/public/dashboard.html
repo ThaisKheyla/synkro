@@ -20,6 +20,7 @@
                 <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
                 <div class="nome-usuario">Usuário Synkro</div>
                 <div class="email-usuario">usuario@synkro.com</div>
+
             </div>
 
             <nav>
@@ -29,8 +30,15 @@
                     <li><a href="#">Alertas</a></li>
                 </ul>
 
-                <!-- Botão adicionado dentro da nav -->
-                <button class="btn-adicionar-componente">+ Adicionar Mainframe</button>
+                <!-- Botão de cadastrar mainframe -->
+                <button class="btn-adicionar-componente" onclick="window.location.href='mainframeCadastro.html';">
+                    Adicionar Mainframe
+                </button>
+
+                <!-- Botão de sair (redireciona para a página inicial)-->
+                <button class="btn-sair" onclick="window.location.href='index.html';">
+                    Sair
+                </button>
             </nav>
         </aside>
 
@@ -156,31 +164,31 @@
                 </a>
 
                 <a href="mainframe2.html" class="página de mainframe">
-                <div class="mainframe-evento warning">
-                    <div class="mainframe-numero">2</div>
-                    <div class="mainframe-desc">Mainframe 2</div>
-                </div>
+                    <div class="mainframe-evento warning">
+                        <div class="mainframe-numero">2</div>
+                        <div class="mainframe-desc">Mainframe 2</div>
+                    </div>
                 </a>
 
                 <a href="mainframe5.html" class="página de mainframe">
-                <div class="mainframe-evento">
-                    <div class="mainframe-numero">3</div>
-                    <div class="mainframe-desc">Mainframe 3</div>
-                </div>
+                    <div class="mainframe-evento">
+                        <div class="mainframe-numero">3</div>
+                        <div class="mainframe-desc">Mainframe 3</div>
+                    </div>
                 </a>
 
                 <a href="mainframe4.html" class="página de mainframe">
-                <div class="mainframe-evento">
-                    <div class="mainframe-numero">4</div>
-                    <div class="mainframe-desc">Mainframe 4</div>
-                </div>
+                    <div class="mainframe-evento">
+                        <div class="mainframe-numero">4</div>
+                        <div class="mainframe-desc">Mainframe 4</div>
+                    </div>
                 </a>
 
                 <a href="mainframe5.html" class="página de mainframe">
-                <div class="mainframe-evento">
-                    <div class="mainframe-numero">5</div>
-                    <div class="mainframe-desc">Mainframe 5</div>
-                </div>
+                    <div class="mainframe-evento">
+                        <div class="mainframe-numero">5</div>
+                        <div class="mainframe-desc">Mainframe 5</div>
+                    </div>
                 </a>
             </aside>
         </main>
@@ -311,7 +319,7 @@
         });
     }
 
-    const ANIMATION_INTERVAL = 3000; 
+    const ANIMATION_INTERVAL = 3000;
     setInterval(updateChartsAndValues, ANIMATION_INTERVAL);
 
     // executar imediatamente
