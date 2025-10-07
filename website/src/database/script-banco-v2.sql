@@ -1,7 +1,7 @@
 -- =====================================================
 -- Banco de dados Synkro
 -- =====================================================
-
+-- DROP DATABASE synkro;
 CREATE DATABASE synkro;
 USE synkro;
 
@@ -33,7 +33,7 @@ CREATE TABLE empresa (
   email VARCHAR(100),
   nomeRepresentante VARCHAR(100),
   statusOperacao TINYINT NOT NULL,
-  statusAcesso TINYINT NOT NULL,
+  statusAcesso TINYINT DEFAULT(1),
   PRIMARY KEY (id),
   CONSTRAINT fk_empresa_statusAcesso FOREIGN KEY (statusAcesso) REFERENCES status_acesso(id),
   CONSTRAINT fk_empresa_statusOperacao FOREIGN KEY (statusOperacao) REFERENCES status_operacao(id)
@@ -159,9 +159,9 @@ INSERT INTO status_acesso (id, descricao) VALUES
 
 -- Operação
 INSERT INTO status_operacao (id, descricao) VALUES
-(1, 'Ativa'),
-(2, 'Inativa'),
-(3, 'Em análise');
+(1, 'em-operacao'),
+(2, 'liquidado-extrajudicialmente'),
+(3, 'liquidacao-ordinaria');
 
 -- Perfil ativo
 INSERT INTO perfil_ativo (id, descricao) VALUES
@@ -310,3 +310,6 @@ JOIN status s ON a.fkStatus = s.id
 JOIN empresa e ON m.fkEmpresa = e.id
 ORDER BY m.id, a.dt_hora DESC;
 
+SELECT * FROM empresa;
+SELECT * FROM funcionario;
+DESC empresa;

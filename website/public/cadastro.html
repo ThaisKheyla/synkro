@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <div class="wallpaper">
-            <img src="./assets/imgs/SYNKRO (1).png" alt="" >
+            <img src="./assets/imgs/SYNKRO (1).png" alt="">
         </div>
         <div class="box_dados">
 
@@ -70,15 +70,15 @@
         ) {
             // ERRO
             msg_erro.innerHTML = "Preencha todos os campos!"
-        } else if(ispbVar.length != 8) {
+        } else if (ispbVar.length != 8) {
             msg_erro.innerHTML = `Código ISPB deve ter 8 caracteres!`
-        } else if(nomeEmpresarialVar.length < 10) {
+        } else if (nomeEmpresarialVar.length < 10) {
             msg_erro.innerHTML = `Insira um nomeEmpresarial válido! Nome muito pequeno.`
-        } else if(nomeRepresentanteVar.length < 3) {
+        } else if (nomeRepresentanteVar.length < 3) {
             msg_erro.innerHTML = `Insira um nome válido! Nome muito pequeno.`
-        } else if(emailVar.length < 5) {
+        } else if (emailVar.length < 5) {
             msg_erro.innerHTML = `Preencha um email válido! Muito pequeno.`
-        } else if(!emailVar.includes("@") ||!emailVar.includes(".")) {
+        } else if (!emailVar.includes("@") || !emailVar.includes(".")) {
             msg_erro.innerHTML = `Insira um e-mail válido!`
         } else {
             console.log("CADASTRO OK")
@@ -101,6 +101,9 @@
                     if (resposta.ok) {
                         console.log("cadastro realizado com sucesso")
                         console.log("redirecionando para tela de login")
+                        setTimeout(() => {
+                            window.location = "./login.html";
+                        }, "1500");
                     } else {
                         throw "Houve um erro ao tentar realizar o cadastro!";
                     }
