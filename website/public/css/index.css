@@ -320,33 +320,110 @@ html {
     display: flex;
     flex-direction: row;
     min-height: 700px;
+    align-items: stretch;
 }
 
-.nossosServicoss img {
-    max-width: 90%;
-    height: auto;
+/* === Nossos Serviços — visual e layout === */
+.corpo3{
+    align-items: stretch;
 }
 
-
-.fundoBrancoSobreNos,
-.fundoCinzaSobreNos,
-.fundoRoxoNossosServicos {
-    flex: 1 1 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 50px 20px;
+/* left panel (illustration) */
+.corpo3 .fundoBrancoSobreNos{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: linear-gradient(180deg,#ffffff,#f7fbff);
+    padding: 60px 30px;
 }
 
-.fundoBrancoSobreNos {
-    background-color: #ffffff;
+.corpo3 .nossosServicoss img{
+    width: 100%;
+    max-width: 420px;
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(2,6,23,0.08);
+    transition: transform 0.35s ease, filter 0.35s ease;
+}
+.corpo3 .nossosServicoss img:hover{ transform: translateY(-8px) scale(1.02); filter: saturate(1.05); }
+
+/* right panel (services) */
+.corpo3 .fundoRoxoNossosServicos{
+    padding: 60px 40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background: linear-gradient(160deg, #02021a 0%, #07031a 60%);
 }
 
+.corpo3 .containerH1 h1{
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.4rem;
+    margin: 0 0 18px 0;
+    color: #fff;
+    letter-spacing: 1px;
+    text-shadow: 0 6px 30px rgba(2,6,23,0.6);
+}
 
+.corpo3 .containerServicos{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
+    margin-top: 20px;
+}
 
-.fundoRoxoNossosServicos {
-    background: linear-gradient(40deg, #000000 0%, #000425 100%);
+.corpo3 .cardServico{
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border-radius: 14px;
+    padding: 18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    box-shadow: 0 12px 40px rgba(2,6,23,0.18);
+    transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.corpo3 .cardServico:hover{
+    transform: translateY(-10px);
+    box-shadow: 0 28px 80px rgba(2,6,23,0.28);
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+}
+
+.corpo3 .cardServico img{
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 50%;
+    background: #fff;
+    padding: 6px;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.14);
+    transition: transform 0.25s ease;
+}
+
+.corpo3 .cardServico h4{
+    margin-top: 16px;
+    color: #fff;
+    font-size: 1.1rem;
+    text-transform: capitalize;
+}
+
+.corpo3 .cardServico p{
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+/* Small decorative underline for titles */
+.corpo3 .cardServico h4::after{
+    content: '';
+    display:block;
+    width: 48px;
+    height: 4px;
+    background: linear-gradient(90deg,#00c2c7,#6c63ff);
+    margin: 12px auto 0 auto;
+    border-radius: 8px;
 }
 
 .containerTitulo{
@@ -1182,7 +1259,68 @@ section.corpo4{ border-top: 6px solid rgba(2,6,23,0.02); }
     padding: 0 20px;
 }
 
-@media (max-width: 768px){
-    section[class^="corpo"]{ padding: 36px 0; }
-    section .fundoBrancoSobreNos, section .fundoCinzaSobreNos{ width: calc(100% - 40px); }
+/* === Sobre Nós — layout em duas colunas e polimento visual === */
+.corpo2 .fundoBrancoSobreNos, .corpo2 .fundoCinzaSobreNos{
+    padding: 60px 30px;
+}
+
+.corpo2 .fundoBrancoSobreNos{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.corpo2 .textoSobreNos{
+    text-align: left;
+    max-width: 560px;
+}
+
+.corpo2 .textoSobreNos p{
+    font-size: 18px;
+    color: #26333a;
+    line-height: 1.7;
+}
+
+.corpo2 .containerTitulo h1{
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2.2rem;
+    color: #071026;
+    margin-bottom: 10px;
+}
+
+/* CTA refinado */
+.btn-secondary{
+    margin-top: 20px;
+    padding: 12px 26px;
+    border-radius: 999px;
+    background: linear-gradient(90deg,#00c2c7,#6c63ff);
+    color: #fff;
+    font-weight: 800;
+    box-shadow: 0 12px 40px rgba(108,99,255,0.12);
+}
+
+.btn-secondary:hover{ transform: translateY(-6px); box-shadow: 0 24px 60px rgba(108,99,255,0.16); }
+
+/* imagem estilizada dentro do card */
+.corpo2 .sobreCard{
+    max-width: 520px;
+    border-radius: 16px;
+    padding: 18px;
+    background: linear-gradient(180deg,#fbfdff,#ffffff);
+    box-shadow: 0 18px 60px rgba(2,6,23,0.06), 0 8px 30px rgba(108,99,255,0.04) inset;
+}
+
+.corpo2 .sobreCard img{ width: 100%; height: auto; border-radius: 12px; display: block; }
+.corpo2 .sobreCard figcaption{ margin-top: 10px; color: #4a636b; font-weight: 600; }
+
+/* duas colunas no desktop */
+.corpo2{ display: flex; gap: 30px; align-items: stretch; }
+.corpo2 .fundoBrancoSobreNos{ flex: 1 1 55%; }
+.corpo2 .fundoCinzaSobreNos{ flex: 1 1 45%; display:flex; align-items:center; }
+
+@media (max-width: 900px){
+    .corpo2{ flex-direction: column; }
+    .corpo2 .textoSobreNos{ text-align: center; }
+    .corpo2 .fundoBrancoSobreNos, .corpo2 .fundoCinzaSobreNos{ padding: 28px 16px; }
+    .corpo2 .sobreCard{ max-width: 360px; margin: 0 auto; }
 }
