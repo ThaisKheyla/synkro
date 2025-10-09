@@ -25,8 +25,8 @@
 
             <nav>
                 <ul>
-                    <li><a href="#" class="ativo">Informações gerais</a></li>
-                    <li><a href="#">Informações sobre o mainframe</a></li>
+                    <li><a href="#" class="btn-adicionar-componente">Informações gerais</a></li>
+                    <li><a href="#" class="btn-adicionar-componente">Informações sobre o mainframe</a></li>
                     <li><a href="#" class="btn-adicionar-componente">Adicionar funcionario</a></li>
                 </ul>
 
@@ -41,7 +41,7 @@
                 </button>
             </nav>
         </aside>
-        
+
         <!-- Conteúdo principal -->
         <main class="conteudo-principal">
             <section class="painel-hardware">
@@ -62,82 +62,51 @@
                 <!-- Cards de resumo -->
                 <div class="cartoes-resumo">
                     <div class="cartao-resumo">
-                        <div class="rotulo">CPU</div>
-                        <div id="cpuValue" class="valor">35%</div>
+                        <div class="rotulo">Nº de incidentes críticos (total todos mainframes)</div>
+                        <div id="cpuValue" class="valor">05</div>
                     </div>
                     <div class="cartao-resumo">
-                        <div class="rotulo">Memória RAM</div>
-                        <div id="ramValue" class="valor">4 GB / 8 GB</div>
-                    </div>
-                    <div class="cartao-resumo">
-                        <div class="rotulo">Disco</div>
-                        <div id="diskValue" class="valor">120 GB / 256 GB</div>
+                        <div class="rotulo">Tempo médio para resolução - MTTR (média todos os mainframes)</div>
+                        <div id="diskValue" class="valor">12 Horas</div>
                     </div>
                 </div>
 
                 <!-- Gráficos -->
-                <h3 style="font-size: 1.2em; font-weight: 600; color: #2563eb; margin-bottom: 12px;">Monitoramento em
-                    Tempo Real</h3>
+                <h3 style="font-size: 1.2em; font-weight: 600; color: #2563eb; margin-bottom: 12px;">Histórico médio de
+                    incidentes por mês (todos os mainframes)</h3>
                 <div class="graficos-row">
                     <div class="grafico-box">
                         <h4>CPU - Uso (%)</h4>
                         <canvas id="cpuChart" width="260" height="120"></canvas>
                     </div>
-                    <div class="grafico-box">
-                        <h4>RAM - Uso (GB)</h4>
-                        <canvas id="ramChart" width="260" height="120"></canvas>
-                    </div>
-                    <div class="grafico-box">
-                        <h4>Disco - Uso (GB)</h4>
-                        <canvas id="diskChart" width="260" height="120"></canvas>
-                    </div>
+
                 </div>
 
                 <!-- Alertas e status -->
                 <div class="alertas-status-row">
                     <div class="alertas">
                         <div class="alertas-header">
-                            <h3>Alertas do Sistema</h3>
+                            <h3>Insights</h3>
                             <a class="ver-tudo" href="#">Ver todos</a>
                         </div>
                         <ul class="lista-alertas">
                             <li class="alerta alerta-alta">
-                                <span class="dot"></span>
-                                <div class="alerta-text"><strong>CPU</strong> em uso elevado <span class="time">— agora
+                                <div class="alerta-text">Mainframes X e Y estão com crescimento de uso acima de 20% nos
+                                    últimos 30 dias.<span class="time">— agora
                                     </span></div>
                             </li>
-                            <li class="alerta alerta-media">
-                                <span class="dot"></span>
-                                <div class="alerta-text"><strong>Memória</strong> próxima do limite <span class="time">—
-                                        10
-                                        min</span></div>
+                            <li class="alerta alerta-alta">
+                                <div class="alerta-text">Mainframes X e Y estão com crescimento de uso acima de 20% nos
+                                    últimos 30 dias.<span class="time">— 2 minutos atrás
+                                    </span></div>
                             </li>
-                            <li class="alerta alerta-baixa">
-                                <span class="dot"></span>
-                                <div class="alerta-text"><strong>Disco</strong> quase cheio <span class="time">— 1
-                                        h</span>
-                                </div>
+                            <li class="alerta alerta-alta">
+                                <div class="alerta-text">Mainframes X e Y estão com crescimento de uso acima de 20% nos
+                                    últimos 30 dias.<span class="time">— 10 minutos atrás
+                                    </span></div>
                             </li>
-                            <li class="alerta alerta-media">
-                                <span class="dot"></span>
-                                <div class="alerta-text"><strong>Memória</strong> próxima do limite <span class="time">—
-                                        3 h</span></div>
-                            </li>
+
                         </ul>
-                    </div>
-                    <div class="status">
-                        <div class="status-box">
-                            <div class="status-value">28 h</div>
-                            <div class="status-label">Tempo de uso</div>
-                        </div>
-                        <div class="status-box">
-                            <div class="status-value">18</div>
-                            <div class="status-label">Alertas resolvidos</div>
-                        </div>
-                        <div class="status-box">
-                            <div class="status-value">Pro</div>
-                            <div class="status-label">Plano</div>
-                        </div>
                     </div>
                 </div>
 
@@ -194,8 +163,6 @@
 <script>
     /* ==== SEUS GRÁFICOS ==== */
     const cpuCtx = document.getElementById('cpuChart').getContext('2d');
-    const ramCtx = document.getElementById('ramChart').getContext('2d');
-    const diskCtx = document.getElementById('diskChart').getContext('2d');
 
     const cpuChart = new Chart(cpuCtx, {
         type: 'line',
@@ -217,46 +184,6 @@
         }
     });
 
-    const ramChart = new Chart(ramCtx, {
-        type: 'line',
-        data: {
-            labels: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
-            datasets: [{
-                label: 'RAM (GB)',
-                data: [2, 3, 3.5, 4, 4.2, 4, 4],
-                borderColor: '#059669',
-                backgroundColor: 'rgba(5,150,105,0.08)',
-                fill: true,
-                tension: 0.4,
-                pointRadius: 3
-            }]
-        },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, max: 8 } }
-        }
-    });
-
-    const diskChart = new Chart(diskCtx, {
-        type: 'line',
-        data: {
-            labels: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
-            datasets: [{
-                label: 'Disco (GB)',
-                data: [100, 110, 115, 120, 122, 121, 120],
-                borderColor: '#f59e42',
-                backgroundColor: 'rgba(245,158,66,0.08)',
-                fill: true,
-                tension: 0.4,
-                pointRadius: 3
-            }]
-        },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, max: 256 } }
-        }
-    });
-
     /* ====== ANIMAÇÃO ALEATÓRIA DOS DASHBOARDS ====== */
     function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
@@ -273,44 +200,6 @@
         const cpuData = cpuChart.data.datasets[0].data;
         cpuChart.data.datasets[0].data = shiftAndPush(cpuData, cpuNew);
         cpuChart.update();
-
-        // RAM: gerar novo valor entre 1 e 8
-        const ramNew = +(Math.random() * 8).toFixed(1);
-        const ramData = ramChart.data.datasets[0].data;
-        ramChart.data.datasets[0].data = shiftAndPush(ramData, ramNew);
-        ramChart.update();
-
-        // DISCO: gerar novo valor entre 90 e 250
-        const diskNew = rnd(90, 250);
-        const diskData = diskChart.data.datasets[0].data;
-        diskChart.data.datasets[0].data = shiftAndPush(diskData, diskNew);
-        diskChart.update();
-
-        // Atualiza os cartões de resumo
-        const cpuValueEl = document.getElementById('cpuValue');
-        const ramValueEl = document.getElementById('ramValue');
-        const diskValueEl = document.getElementById('diskValue');
-        if (cpuValueEl) cpuValueEl.textContent = cpuNew + '%';
-        if (ramValueEl) ramValueEl.textContent = ramNew + ' GB / 8 GB';
-        if (diskValueEl) diskValueEl.textContent = diskNew + ' GB / 256 GB';
-
-        // Atualiza status-box exemplos (pega os três primeiros)
-        const statusEls = document.querySelectorAll('.status .status-value');
-        if (statusEls.length >= 3) {
-            statusEls[0].textContent = cpuNew + ' h';
-            statusEls[1].textContent = rnd(0, 40);
-            statusEls[2].textContent = (Math.random() > 0.5) ? 'Importante' : 'Essencial';
-        }
-
-        // Atualiza pequenas cores de alerta aleatoriamente (exemplo visual)
-        const alertItems = document.querySelectorAll('.lista-alertas .alerta');
-        alertItems.forEach(item => {
-            const r = Math.random();
-            item.classList.remove('alerta-alta', 'alerta-media', 'alerta-baixa');
-            if (r > 0.75) item.classList.add('alerta-alta');
-            else if (r > 0.4) item.classList.add('alerta-media');
-            else item.classList.add('alerta-baixa');
-        });
     }
 
     const ANIMATION_INTERVAL = 3000;
