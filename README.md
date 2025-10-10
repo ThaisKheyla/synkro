@@ -1,4 +1,4 @@
-
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ThaisKheyla/synkro?style=flat-square)
 
 # SYNKRO - Sistema de Monitoramento Proativo de Mainframes
 
@@ -20,6 +20,10 @@ O sistema tem como objetivo **monitorar recursos críticos de mainframes (CPU, m
 > * Apoiar a **tomada de decisão proativa** na gestão de TI.
 
 ---
+<p align="center">
+  <img src="website/public/midia/servidor.gif" alt="Demonstração do sistema" width="600">
+</p>
+
 
 ## Funcionalidades
 
@@ -154,7 +158,7 @@ O sistema representa uma base sólida para futuras expansões voltadas à **aná
 >
 > * Felipe Hideki Inoue de Souza 
 > * Guilherme Aoki Eguchi
-> * Kheyla Quispe Paucara
+> * Kheyla Thais Quispe Paucara
 > * Lucas Hideo Kawakami
 > * Bianca Lopes Ortega
 > * Igor Cardoso Trindade
