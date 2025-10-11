@@ -59,13 +59,13 @@ O sistema tem como objetivo **monitorar recursos críticos de mainframes (CPU, m
 ### 1. Clonar o repositório
 
 ```bash
-https://github.com/ThaisKheyla/synkro.git
+git clone https://github.com/ThaisKheyla/synkro.git
 cd synkro
 code .
 ```
 
 ### 2. Instalar dependências
-#### Se o backend for em Node.js:
+#### Em Node.js:
 
 ```bash
 npm install
