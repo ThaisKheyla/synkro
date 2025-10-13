@@ -1,28 +1,53 @@
-var database = require("../database/config")
+var database = require("../database/config");
 
 function autenticar(email, senha) {
-    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function entrar(): ", email, senha)
-    var instrucaoSql = `
-        SELECT id, email, senha, fkperfilAtivo FROM funcionario WHERE email = '${email}' AND senha = SHA2('${senha}',256) AND fkperfilAtivo = 1;
-    `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+  console.log(`
+  📡 Entrando em usuarioModel.autenticar()
+  E-mail: ${email}
+  >> Se ocorrer "ECONNREFUSED", verifique o MySQL e o .env
+  `);
+
+  const instrucaoSql = `
+    SELECT 
+      f.id,
+      f.nome,
+      f.email,
+      f.fkCargo AS cargo,
+      e.nomeEmpresarial AS empresa,
+      f.fkPerfilAtivo AS perfilAtivo,
+      e.statusAcesso AS statusEmpresa
+    FROM funcionario AS f
+      JOIN empresa AS e ON f.fkEmpresa = e.id
+    WHERE f.email = '${email}'
+      AND f.senha = SHA2('${senha}', 256)
+    LIMIT 1;
+  `;
+
+  console.log("🧾 Executando SQL:\n" + instrucaoSql);
+  return database.executar(instrucaoSql);
 }
 
-// Coloque os mesmos parâmetros aqui. Vá para a var instrucaoSql
 function cadastrar(nome, email, senha, fkEmpresa) {
-    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, email, senha, fkEmpresa);
-    
-    // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
-    //  e na ordem de inserção dos dados.
-    var instrucaoSql = `
-        INSERT INTO usuario (nome, email, senha, fk_empresa) VALUES ('${nome}', '${email}', '${senha}', '${fkEmpresa}');
-    `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+  console.log(`
+  📡 Entrando em usuarioModel.cadastrar()
+  Nome: ${nome}
+  E-mail: ${email}
+  fkEmpresa: ${fkEmpresa}
+  `);
+
+  const instrucaoSql = `
+    INSERT INTO funcionario 
+      (nome, email, cpf, dtnascimento, senha, fkPerfilAtivo, fkCargo, fkEmpresa)
+    VALUES 
+      ('${nome}', '${email}', '000.000.000-00', CURDATE(), 
+      SHA2('${senha}', 256), 1, 2, ${fkEmpresa});
+  `;
+
+  console.log("🧾 Executando SQL:\n" + instrucaoSql);
+  return database.executar(instrucaoSql);
 }
 
 module.exports = {
-    autenticar,
-    cadastrar
+  autenticar,
+  cadastrar
 };
