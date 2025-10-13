@@ -471,3 +471,117 @@ body {
 @media (max-width: 1100px){
     .mainframes-cadastrados{ padding: 24px 18px; }
 }
+
+/* ======== FORMULÁRIO DE CADASTRO ======== */
+.form-cadastro {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.form-cadastro label {
+  font-weight: 600;
+  color: #071026;
+  font-size: 0.95em;
+}
+
+.form-cadastro input {
+  border: none;
+  background: #e5e7eb;
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-size: 0.95em;
+  color: #071026;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-cadastro input:focus {
+  background: #eef1ff;
+  box-shadow: 0 0 0 2px rgba(108,99,255,0.25);
+}
+
+.btn-cadastrar {
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-weight: 600;
+  margin: 20px auto 0;
+  display: block;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-cadastrar:hover {
+  background: #5b50e6;
+  transform: translateY(-3px);
+}
+
+/* ======== CONFIGURAÇÕES DE MÉTRICAS ======== */
+.btn-config {
+  background: transparent;
+  border: 2px dashed #6c63ff;
+  color: #6c63ff;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 600;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-config:hover {
+  background: rgba(108,99,255,0.08);
+  transform: translateY(-2px);
+}
+
+.configuracoes {
+  background: #f7f8ff;
+  border: 2px solid rgba(108,99,255,0.15);
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 14px;
+  animation: aparecer 0.3s ease;
+}
+
+.configuracoes h3 {
+  color: #071026;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.configuracoes label {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: #071026;
+}
+
+.configuracoes input,
+.configuracoes select {
+  background: #e5e7eb;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 16px;
+  margin-bottom: 10px;
+  width: 100%;
+  outline: none;
+  font-size: 0.9em;
+}
+
+.configuracoes input:focus,
+.configuracoes select:focus {
+  background: #eef1ff;
+  box-shadow: 0 0 0 2px rgba(108,99,255,0.25);
+}
+
+.oculto {
+  display: none;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
