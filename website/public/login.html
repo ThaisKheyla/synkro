@@ -48,9 +48,11 @@
       </div>
     </div>
 
-    <p class="footer-link" onclick="document.documentElement.scrollTop = 0">
-      Voltar ao início
-    </p>
+    <div class="div_voltar">
+      <a href="./index.html" class="voltar-home">
+        Home page
+      </a>
+    </div>
   </div>
 
   <script>
@@ -63,13 +65,6 @@
 
       if (!emailVar || !senhaVar) {
         msg.textContent = "Preencha todos os campos!";
-        return;
-      }
-
-      // Validação básica de formato de e-mail
-      const emailRegex = /^[\\w.-]+@[\\w.-]+\\.\\w+$/;
-      if (!emailRegex.test(emailVar)) {
-        msg.textContent = "Insira um e-mail válido!";
         return;
       }
 

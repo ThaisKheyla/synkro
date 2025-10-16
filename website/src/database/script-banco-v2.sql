@@ -1,7 +1,7 @@
 -- =====================================================
 -- Banco de dados Synkro
 -- =====================================================
--- DROP DATABASE synkro;
+DROP DATABASE synkro;
 CREATE DATABASE synkro;
 USE synkro;
 

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprovação de Empresas - Synkro</title>
     <link rel="stylesheet" href="css/dash.css">
+    <link rel="stylesheet" href="css/aceitar.css">
     <script src="./js/sessao.js"></script>
 </head>
 <body onload="validarSessaoSynkro()">
@@ -13,14 +14,14 @@
             <div class="logo">Synkro</div>
             <div class="perfil-usuario">
                 <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
-                <div class="nome-usuario" id="nome_login">Luciano Macedo</div>
-                <div class="email-usuario" id="email_login">luci@gmail.com</div>
+                <div class="nome-usuario" id="nome_login"></div>
+                <div class="email-usuario" id="email_login"></div>
             </div>
             <nav>
                 <ul>
                     <li><a href="#" class="ativo">Aprovações</a></li>
                     <li><a href="dashboard.html">Visão Geral</a></li>
-                    <li><a href="#" onclick="sair()">
+                    <li><a href="#" onclick="limparSessao()">
                         <img src="./assets/imgs/logoff_icon.png" alt="">
                     </a></li>
                 </ul>
@@ -61,9 +62,6 @@
 
 </body>
     <script>
-        function sair() {
-            window.location = "login.html"
-        }
         document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
 
         var id = []

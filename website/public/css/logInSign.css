@@ -31,6 +31,7 @@ body{
     justify-content: flex-start;
     gap: 25px;
     background-color: white;
+    position: relative;
 }
 
 .box_dados {
@@ -139,3 +140,22 @@ label {
     width: 100%;
 }
 
+.div_voltar {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.voltar-home {
+    text-decoration: none;
+    color: white;
+    background-color: #040f86;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 700;
+}
+
+.voltar-home:hover {
+    text-decoration: underline;
+    transition: 0.5s;
+}
