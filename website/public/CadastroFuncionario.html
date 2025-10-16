@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Synkro | Cadastrar Funcionário</title>
   <link rel="stylesheet" href="./css/dash.css">
+  <script src="./js/sessao.js"></script>
 </head>
-<body>
+
+<body onload="validarSessaoSynkro()">
   <div class="layout-principal">
     <!-- ====== BARRA LATERAL ====== -->
     <aside class="barra-lateral">
       <div class="logo">Synkro</div>
 
       <div class="perfil-usuario">
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Usuário">
-        <div class="nome-usuario">Usuário </div>
+        <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
+        <div class="cargo-usuario">Gerente</div>
+        <div class="nome-usuario" id="nome_login"></div>
+        <div class="email-usuario" id="email_login"></div>
       </div>
 
       <nav>
         <ul>
-          <li><a href="#">Informações gerais</a></li>
-          <li><a href="#">Informações Mainframe</a></li>
-          <li><a href="#" class="ativo">Adicionar Funcionário</a></li>
-          <li><a href="#">Adicionar Mainframe</a></li>
+          <li><a href="#" class="btn-adicionar-componente">Informações gerais</a></li>
+          <li><a href="#" class="btn-adicionar-componente">Informações sobre o mainframe</a></li>
+          <li><a href="dashboardGerente.html" class="btn-adicionar-componente">Dashboard</a></li>
         </ul>
-      </nav>
 
-      <button class="btn-sair">Sair</button>
+        <button class="btn-sair" onclick="limparSessao()">Sair</button>
+      </nav>
     </aside>
 
     <!-- ====== CONTEÚDO PRINCIPAL ====== -->
@@ -65,4 +69,5 @@
     </main>
   </div>
 </body>
+
 </html>

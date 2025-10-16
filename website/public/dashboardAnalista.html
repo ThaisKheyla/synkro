@@ -8,9 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/dash.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/sessao.js"></script>
 </head>
 
-<body>
+<body onload="validarSessaoSynkro()">
     <div class="layout-principal">
         <!-- Barra lateral -->
         <aside class="barra-lateral">
@@ -18,8 +19,9 @@
 
             <div class="perfil-usuario">
                 <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
-                <div class="nome-usuario">Usuário Synkro</div>
-                <div class="email-usuario">usuario@synkro.com</div>
+                <div class="cargo-usuario">Analista</div>
+                <div class="nome-usuario" id="nome_login"></div>
+                <div class="email-usuario" id="email_login"></div>
 
             </div>
 
@@ -31,17 +33,15 @@
                 </ul>
 
                 <!-- Botão de cadastrar mainframe -->
-                <button class="btn-adicionar-componente" onclick="window.location.href='mainframeCadastro.html';">
+                <button class="btn-adicionar-componente" onclick="window.location.href='CadastroMainframe.html';">
                     Adicionar Mainframe
                 </button>
 
                 <!-- Botão de sair (redireciona para a página inicial)-->
-                <button class="btn-sair" onclick="window.location.href='index.html';">
-                    Sair
-                </button>
+                <button class="btn-sair" onclick="limparSessao()">Sair</button>
             </nav>
         </aside>
-        
+
         <!-- Conteúdo principal -->
         <main class="conteudo-principal">
             <section class="painel-hardware">

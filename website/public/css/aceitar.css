@@ -107,7 +107,7 @@ body{
 }
 #filtro {
     height: 50%;
-    font-size: 18.5px;
+    font-size: auto;
     font-family: "Poppins", sans-serif;
     text-transform: uppercase;
     outline: none;
@@ -157,6 +157,7 @@ table tr th {
     text-align: center;
     gap: 10px;
 }
+
 table button {
     outline: none;
     border: none;
@@ -165,6 +166,12 @@ table button {
     width: 85px;
     border-radius: 25px;
     color: white;
+}
+
+table button:hover{
+    cursor: pointer;
+    color: black;
+    transition: 0.5s;
 }
 
 .caixa {

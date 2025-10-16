@@ -13,13 +13,13 @@ function validarSessao() {
 }
 
 function validarSessaoSynkro() {
-    if(sessionStorage.EMAIL_SYNKRO == undefined) {
+    if(sessionStorage.EMAIL_USUARIO == undefined) {
         sessionStorage.clear();
-        window.location = "./login.html?AcessoNegado"
-    } else {
-        nome_login.innerHMTL = sessionStorage.NOME_SYNKRO
-        email_login.innerHMTL = sessionStorage.EMAIL_SYNKRO
+        window.location = "./login.html"
+        return
     }
+    nome_login.innerHTML = sessionStorage.NOME_USUARIO
+    email_login.innerHTML = sessionStorage.EMAIL_USUARIO
 }
 
 function limparSessao() {

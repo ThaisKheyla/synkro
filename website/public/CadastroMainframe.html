@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Synkro | Cadastrar Mainframe</title>
   <link rel="stylesheet" href="./css/dash.css">
+  <script src="./js/sessao.js"></script>
 </head>
-<body>
+
+<body onload="validarSessaoSynkro()">
   <div class="layout-principal">
     <!-- ====== BARRA LATERAL ====== -->
     <aside class="barra-lateral">
@@ -14,19 +17,20 @@
 
       <div class="perfil-usuario">
         <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Usuário">
-        <div class="nome-usuario">Usuário Synkro</div>
+        <div class="nome-usuario" id="nome_login"></div>
+        <div class="email-usuario" id="email_login"></div>
       </div>
 
       <nav>
         <ul>
           <li><a href="#">Informações gerais</a></li>
           <li><a href="#">Informações Mainframes</a></li>
-          <li><a href="#">Adicionar Funcionário</a></li>
-          <li><a href="#" class="ativo">Adicionar Mainframe</a></li>
+          <li><a href="CadastroFuncionario.html">Adicionar Funcionário</a></li>
+          <li><a href="" class="ativo">Adicionar Mainframe</a></li>
         </ul>
       </nav>
 
-      <button class="btn-sair">Sair</button>
+      <button class="btn-sair" onclick="window.location.href='dashboardAnalista.html';">Voltar</button>
     </aside>
 
     <!-- ====== CONTEÚDO PRINCIPAL ====== -->
@@ -63,7 +67,8 @@
 
             <div id="metricasContainer"></div>
 
-            <button type="button" id="btnAddMetrica" class="btn-cadastrar" style="background:#4f46e5;">+ Adicionar Métrica</button>
+            <button type="button" id="btnAddMetrica" class="btn-cadastrar" style="background:#4f46e5;">+ Adicionar
+              Métrica</button>
           </div>
 
           <button type="submit" class="btn-cadastrar">CADASTRAR MAINFRAME</button>
@@ -73,8 +78,16 @@
       <!-- Painel lateral direito -->
       <section class="mainframes-cadastrados">
         <h4>Mainframes Cadastrados</h4>
-        <a href="#"><div class="mainframe-evento"><div class="mainframe-numero">1</div><span class="mainframe-desc">Mainframe 1</span></div></a>
-        <a href="#"><div class="mainframe-evento"><div class="mainframe-numero">2</div><span class="mainframe-desc">Mainframe 2</span></div></a>
+        <a href="#">
+          <div class="mainframe-evento">
+            <div class="mainframe-numero">1</div><span class="mainframe-desc">Mainframe 1</span>
+          </div>
+        </a>
+        <a href="#">
+          <div class="mainframe-evento">
+            <div class="mainframe-numero">2</div><span class="mainframe-desc">Mainframe 2</span>
+          </div>
+        </a>
       </section>
     </main>
   </div>
@@ -95,21 +108,29 @@
       const div = document.createElement('div');
       div.classList.add('bloco-metrica');
       div.innerHTML = `
-        <label>Componente:</label>
-        <select class="componente">
-          <option value="1">CPU</option>
-          <option value="2">Memória</option>
-          <option value="3">Disco</option>
-        </select>
+        <div class="configuracoes-metricas">
+          <label>Componente:</label>
+          <select class="componente">
+            <option value="1">CPU</option>
+            <option value="2">Memória</option>
+            <option value="3">Disco</option>
+          </select>  
+        </div>
 
-        <label>Métrica:</label>
-        <input type="text" class="descricao" placeholder="Ex: uso (%)">
-
-        <label>Valor Mínimo:</label>
-        <input type="number" step="0.1" class="min" placeholder="Ex: 0">
-
-        <label>Valor Máximo:</label>
-        <input type="number" step="0.1" class="max" placeholder="Ex: 100">
+        <div class="configuracoes-metricas">
+          <label>Métrica:</label>
+          <input type="text" class="descricao" placeholder="Ex: uso (%)">
+        </div>
+        
+        <div class="configuracoes-metricas">
+          <label>Valor Mínimo:</label>
+          <input type="number" step="0.1" class="min" placeholder="Ex: 0">  
+        </div>
+        
+        <div class="configuracoes-metricas">
+          <label>Valor Máximo:</label>
+          <input type="number" step="0.1" class="max" placeholder="Ex: 100">  
+        </div>
 
         <button type="button" class="btn-remover">Remover</button>
         <hr>
@@ -164,4 +185,5 @@
     });
   </script>
 </body>
+
 </html>
