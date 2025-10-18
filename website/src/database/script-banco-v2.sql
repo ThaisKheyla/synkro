@@ -1,7 +1,6 @@
 -- =====================================================
 -- Banco de dados Synkro
 -- =====================================================
-DROP DATABASE synkro;
 CREATE DATABASE synkro;
 USE synkro;
 
@@ -80,7 +79,7 @@ CREATE TABLE mainframe (
   id INT NOT NULL AUTO_INCREMENT,
   fabricante VARCHAR(100),
   modelo VARCHAR(100),
-  numeroDeSerie INT,
+  numeroDeSerie bigint,
   fkEmpresa INT NOT NULL,
   fkSetor INT NOT NULL,
   fkSistemaOperacional INT NOT NULL,
@@ -135,12 +134,12 @@ CREATE TABLE status (
 
 CREATE TABLE alerta (
   id INT NOT NULL AUTO_INCREMENT,
-  dt_hora DATETIME,
+  dt_hora varchar(35),
   descricao VARCHAR(255),
   valor_coletado DECIMAL(5,2),
   fkMainframe INT NOT NULL,
-  fkGravidade INT NOT NULL,
-  fkStatus INT NOT NULL,
+  fkGravidade INT,
+  fkStatus INT NOT NULL default 1,
   PRIMARY KEY (id),
   CONSTRAINT fk_alerta_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id),
   CONSTRAINT fk_alerta_gravidade FOREIGN KEY (fkGravidade) REFERENCES gravidade(id),
@@ -203,7 +202,7 @@ INSERT INTO sistema_operacional (nome) VALUES
 -- Mainframes
 INSERT INTO mainframe (fabricante, modelo, numeroDeSerie, fkEmpresa, fkSetor, fkSistemaOperacional)
 VALUES
-('IBM', 'Z15', 10001, 1, 1, 1),
+('IBM', 'Z15', 269058769682378, 1, 1, 1),
 ('IBM', 'Z14', 10002, 2, 2, 2),
 ('IBM', 'Z13', 10003, 3, 3, 1);
 
@@ -313,3 +312,10 @@ ORDER BY m.id, a.dt_hora DESC;
 SELECT * FROM empresa;
 SELECT * FROM funcionario;
 DESC empresa;
+
+select * from mainframe;
+update mainframe set numeroDeSerie = 269058769682378 where id = 1;
+
+select id from mainframe where numeroDeSerie = 269058769682378;
+
+select * from alerta;
