@@ -80,7 +80,7 @@ CREATE TABLE mainframe (
   id INT NOT NULL AUTO_INCREMENT,
   fabricante VARCHAR(100),
   modelo VARCHAR(100),
-  numeroDeSerie INT,
+  macAdress VARCHAR(100),
   fkEmpresa INT NOT NULL,
   fkSetor INT NOT NULL,
   fkSistemaOperacional INT NOT NULL,
@@ -135,14 +135,19 @@ CREATE TABLE status (
 
 CREATE TABLE alerta (
   id INT NOT NULL AUTO_INCREMENT,
+  codigo VARCHAR(50),
   dt_hora DATETIME,
   descricao VARCHAR(255),
   valor_coletado DECIMAL(5,2),
   fkMainframe INT NOT NULL,
-  fkGravidade INT NOT NULL,
+  fkComponente INT NOT NULL,
+  fkMetrica INT,
+  fkGravidade INT,
   fkStatus INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_alerta_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id),
+  CONSTRAINT fk_alerta_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
+  CONSTRAINT fk_alerta_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id),
   CONSTRAINT fk_alerta_gravidade FOREIGN KEY (fkGravidade) REFERENCES gravidade(id),
   CONSTRAINT fk_alerta_status FOREIGN KEY (fkStatus) REFERENCES status(id)
 );
@@ -180,7 +185,7 @@ VALUES
 ('Tech Solutions LTDA', '87654321', 'suporte@techsolutions.com', 'Maria Oliveira', 1, 3),
 ('Global Finance Corp', '13572468', 'finance@global.com', 'Carlos Souza', 2, 3);
 
--- Funcionários (2 por empresa)
+-- Funcionários
 INSERT INTO funcionario (nome, email, cpf, dtnascimento, senha, fkPerfilAtivo, fkCargo, fkEmpresa)
 VALUES
 ('João Silva', 'joao.silva@empresa1.com', '111.111.111-11', '1980-01-01', SHA2('senha123',256), 1, 1, 1),
@@ -191,27 +196,23 @@ VALUES
 ('Fernanda Lima', 'fernanda.lima@empresa3.com', '333.333.333-32', '1991-07-12', SHA2('senha123',256), 1, 2, 3);
 
 -- Setores
-INSERT INTO setor (nome) VALUES
-('TI'),
-('Financeiro'),
-('Operações');
+INSERT INTO setor (nome) VALUES ('TI'),('Financeiro'),('Operações');
 
 -- Sistemas operacionais
-INSERT INTO sistema_operacional (nome) VALUES
-('Linux'),('Windows');
+INSERT INTO sistema_operacional (nome) VALUES ('Linux'),('Windows');
 
 -- Mainframes
-INSERT INTO mainframe (fabricante, modelo, numeroDeSerie, fkEmpresa, fkSetor, fkSistemaOperacional)
+INSERT INTO mainframe (fabricante, modelo, macAdress, fkEmpresa, fkSetor, fkSistemaOperacional)
 VALUES
-('IBM', 'Z15', 10001, 1, 1, 1),
-('IBM', 'Z14', 10002, 2, 2, 2),
-('IBM', 'Z13', 10003, 3, 3, 1);
+('IBM', 'Z15', '00:11:22:33:44:55', 1, 1, 1),
+('IBM', 'Z14', '11:11:22:33:44:55', 2, 2, 2),
+('IBM', 'Z13', '22:11:22:33:44:55', 3, 3, 1);
 
 -- Métricas
 INSERT INTO metrica (min, max, descricao) VALUES
-(0.0, 100.0, 'CPU Usage'),
-(0.0, 100.0, 'Memory Usage'),
-(0.0, 100.0, 'Disk Usage');
+(5.0, 90.0, 'CPU Usage'),
+(5.0, 85.0, 'Memory Usage'),
+(0.0, 80.0, 'Disk Usage');
 
 -- Componentes
 INSERT INTO componente (nome, descricao, fkMetrica) VALUES
@@ -226,22 +227,20 @@ INSERT INTO componente_mainframe (fkComponente, fkMainframe) VALUES
 (1,3),(2,3),(3,3);
 
 -- Gravidades
-INSERT INTO gravidade (descricao) VALUES
-('Baixa'),('Média'),('Alta');
+INSERT INTO gravidade (descricao) VALUES ('Baixa'),('Média'),('Alta');
 
--- Status de alerta
-INSERT INTO status (descricao) VALUES
-('Aberto'),('Em andamento'),('Resolvido');
+-- Status
+INSERT INTO status (descricao) VALUES ('Aberto'),('Em andamento'),('Resolvido');
 
--- Alertas
-INSERT INTO alerta (dt_hora, descricao, valor_coletado, fkMainframe, fkGravidade, fkStatus)
+-- Alertas (com fkComponente e fkMetrica)
+INSERT INTO alerta (codigo, dt_hora, descricao, valor_coletado, fkMainframe, fkComponente, fkMetrica, fkGravidade, fkStatus)
 VALUES
-(NOW(), 'CPU acima do limite', 95.5, 1, 3, 1),
-(NOW(), 'Memória quase cheia', 85.0, 1, 2, 2),
-(NOW(), 'Disco quase cheio', 90.0, 1, 2, 1),
-(NOW(), 'CPU crítica', 98.0, 2, 3, 1),
-(NOW(), 'Memória crítica', 92.0, 2, 3, 2),
-(NOW(), 'Disco crítico', 95.0, 3, 3, 1);
+('001', NOW(), 'CPU acima do esperado', 75.5, 1, 1, 1, 2, 1),
+('002', NOW(), 'Memória quase cheia', 85.0, 1, 2, 2, 3, 2),
+('003', NOW(), 'Disco pouco cheio', 20.0, 1, 3, 3, 1, 1),
+('004', NOW(), 'CPU crítica', 98.0, 2, 1, 1, 3, 1),
+('005', NOW(), 'Memória crítica', 92.0, 2, 2, 2, 3, 2),
+('006', NOW(), 'Disco crítico', 95.0, 3, 3, 3, 3, 1);
 
 -- =====================================================
 -- TRIGGER PARA CRIAR GERENTE AUTOMATICAMENTE
@@ -276,6 +275,75 @@ BEGIN
   END IF;
 END$$
 DELIMITER ;
+
+-- =====================================================
+-- TRIGGER DE GRAVIDADE
+-- =====================================================
+DELIMITER $$
+
+CREATE TRIGGER trg_definir_gravidade_auto
+BEFORE INSERT ON alerta
+FOR EACH ROW
+BEGIN
+    DECLARE vMin DECIMAL(5,2);
+    DECLARE vMax DECIMAL(5,2);
+
+    -- Busca min e max da métrica vinculada ao componente do alerta
+    SELECT mt.min, mt.max INTO vMin, vMax
+    FROM componente c
+    JOIN metrica mt ON c.fkMetrica = mt.id
+    WHERE c.id = NEW.fkComponente;
+
+    -- Define a gravidade com base no valor coletado
+    IF NEW.valor_coletado < vMin THEN
+        SET NEW.fkGravidade = 3; -- Alta
+    ELSEIF NEW.valor_coletado >= vMin AND NEW.valor_coletado < (vMax * 0.8) THEN
+        SET NEW.fkGravidade = 1; -- Baixa
+    ELSEIF NEW.valor_coletado >= (vMax * 0.8) AND NEW.valor_coletado <= vMax THEN
+        SET NEW.fkGravidade = 2; -- Média
+    ELSE
+        SET NEW.fkGravidade = 3; -- Alta
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+-- =========================
+-- ALERTAS DE TESTE
+-- =========================
+
+-- Componentes:
+-- 1 = Processador (CPU Usage, min=5, max=90)
+-- 2 = Memória RAM (Memory Usage, min=5, max=85)
+-- 3 = Disco Rígido (Disk Usage, min=0, max=80)
+
+-- PROCESSADOR
+INSERT INTO alerta (codigo, dt_hora, descricao, valor_coletado, fkMainframe, fkComponente, fkMetrica, fkGravidade, fkStatus)
+VALUES 
+('TESTE_CPU_BAIXA', NOW(), 'CPU abaixo do esperado', 4.0, 1, 1, NULL, NULL, 1),  
+('TESTE_CPU_MEDIA', NOW(), 'CPU normal', 70.0, 1, 1, NULL, NULL, 1),          
+('TESTE_CPU_ALTA', NOW(), 'CPU acima do limite', 95.0, 1, 1, NULL, NULL, 1);   
+
+-- MEMÓRIA RAM
+INSERT INTO alerta (codigo, dt_hora, descricao, valor_coletado, fkMainframe, fkComponente, fkMetrica, fkGravidade, fkStatus)
+VALUES
+('TESTE_RAM_BAIXA', NOW(), 'RAM abaixo do esperado', 3.0, 1, 2, NULL, NULL, 1),  
+('TESTE_RAM_MEDIA', NOW(), 'RAM normal', 70.0, 1, 2, NULL, NULL, 1),            
+('TESTE_RAM_ALTA', NOW(), 'RAM acima do limite', 90.0, 1, 2, NULL, NULL, 1);   
+
+-- DISCO RÍGIDO
+INSERT INTO alerta (codigo, dt_hora, descricao, valor_coletado, fkMainframe, fkComponente, fkMetrica, fkGravidade, fkStatus)
+VALUES
+('TESTE_DISCO_BAIXA', NOW(), 'Disco abaixo do esperado', -5.0, 1, 3, NULL, NULL, 1),
+('TESTE_DISCO_MEDIA', NOW(), 'Disco normal', 60.0, 1, 3, NULL, NULL, 1),            
+('TESTE_DISCO_ALTA', NOW(), 'Disco acima do limite', 85.0, 1, 3, NULL, NULL, 1);  
+
+SELECT a.codigo, a.descricao, a.valor_coletado, g.descricao AS gravidade
+FROM alerta a
+JOIN gravidade g ON a.fkGravidade = g.id
+WHERE a.codigo LIKE 'TESTE_%';
+
 
 -- =====================================================
 -- SELECTS
