@@ -1,105 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Synkro</title>
-    <link rel="stylesheet" href="css/logInSign.css">
-    <script src="./js/sessao.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Synkro</title>
+  <link rel="stylesheet" href="./css/logInSign.css" />
+  <script src="./js/sessao.js" defer></script>
 </head>
 
 <body>
-    <!-- <div class="navbar">
-        <button>Início</button>
-        <button>Sobre nós</button>
-        <button>Nossos serviços</button>
-        <button>Fale conosco</button>
-        |
-        <button>Login</button>
-        <button><a href="cadastro.html">Cadastrar-se</a></button>
-    </div> -->
-    <div class="container">
-        <div class="wallpaper">
-            <img src="assets/imgs/SYNKRO (1).png" alt="" >
-        </div>
-        <div class="box_dados" style="height: 100%;">
-            <div class="titulo"><label for="">Login</label></div>
-            <div class="group-input">
-                <label for="email_input">Email: </label> 
-                <input type="text" name="" id="email_input">
-            </div>
-            <div class="group-input">
-                <label for="senha_input">Senha: </label> 
-                <input type="password" name="" id="senha_input"> 
-            </div>
-            <span id="msg_erro"></span>
-            <div class="group-button">
-                <span>Ainda não possui acesso? <a href="cadastro.html">Cadastre-se!</a></span>
-                <button onclick="entrar()">Login</button>
-            </div>
-        </div>
+  <div class="container">
+    <div class="wallpaper">
+      <img src="./assets/imgs/SYNKRO (1).png" alt="Logo da Synkro" />
     </div>
-    
-</body>
-<script>
-        function entrar() {
-        var emailVar = email_input.value;
-        var senhaVar = senha_input.value;
 
-        if (emailVar == "" || senhaVar == "") {
-            msg_erro.innerHTML = `Preencha todos os campos!`
-        } if(emailVar == "synkro.adm@gmail.com" && senhaVar == "synkro.123@") {
-            sessionStorage.NOME_SYNKRO = `Perfil Administrativo`
-            sessionStorage.EMAIL_SYNKRO = emailVar
-            sessionStorage.SENHA_SYNKRO = senhaVar
-            window.location = `aceitarEmpresas.html`
-        } else {
+    <div class="box_dados">
+      <h1 class="titulo">Login</h1>
 
-        console.log("FORM LOGIN: ", emailVar);
-        console.log("FORM SENHA: ", senhaVar);
+      <div class="group-input">
+        <label for="email_input">E-mail:</label>
+        <input 
+          type="email" 
+          id="email_input" 
+          name="email" 
+          autocomplete="off" 
+          placeholder="exemplo@empresa.com" 
+          required 
+        />
+      </div>
 
-        fetch("/usuarios/autenticar", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                emailServer: emailVar,
-                senhaServer: senhaVar
-            })
-        }).then(function (resposta) {
-            if (resposta.ok) {
-                console.log(resposta);
+      <div class="group-input">
+        <label for="senha_input">Senha:</label>
+        <input 
+          type="password" 
+          id="senha_input" 
+          name="senha" 
+          placeholder="Digite sua senha" 
+          required 
+        />
+      </div>
 
-                resposta.json().then(json => {
-                    console.log(json);
-                    console.log(JSON.stringify(json));
-                    sessionStorage.EMAIL_USUARIO = json.email;
-                    sessionStorage.NOME_USUARIO = json.nome;
-                    sessionStorage.ID_USUARIO = json.id;
-                    
-                    setTimeout(function () {
-                        window.location = "simulador.html"; // testando, tem que mudar - nois
-                        console.log("ENTROUUUU");
-                        
-                    }, 1000); // apenas para exibir o loading
+      <span id="msg_erro" class="msg-erro"></span>
 
-                });
+      <div class="group-button">
+        <span>Não possui acesso? <a href="./cadastro.html">Cadastre-se</a></span>
+        <button type="button" onclick="entrar()">Entrar</button>
+      </div>
+    </div>
 
-            } else {
-                resposta.text().then(texto => {
-                   msg_erro.innerHTML =  texto
-                });
-            }
+    <div class="div_voltar">
+      <a href="./index.html" class="voltar-home">
+        Home page
+      </a>
+    </div>
+  </div>
 
-        }).catch(function (erro) {
-            console.log(erro);
-        })
+  <script>
+    async function entrar() {
+      const emailVar = document.getElementById("email_input").value.trim();
+      const senhaVar = document.getElementById("senha_input").value.trim();
+      const msg = document.getElementById("msg_erro");
+
+      msg.textContent = ""; // limpa mensagens anteriores
+
+      if (!emailVar || !senhaVar) {
+        msg.textContent = "Preencha todos os campos!";
+        return;
+      }
+
+      // --- LOGIN ADMINISTRATIVO LOCAL ---
+      if (emailVar === "synkro.adm@gmail.com" && senhaVar === "synkro.123@") {
+        sessionStorage.clear();
+        sessionStorage.setItem("ID_USUARIO", 0);
+        sessionStorage.setItem("NOME_USUARIO", "Administrador Synkro");
+        sessionStorage.setItem("CARGO_USUARIO", 3);
+        sessionStorage.setItem("EMAIL_USUARIO", emailVar);
+        window.location.href = "./aceitarEmpresas.html";
+        return;
+      }
+
+      try {
+        const resposta = await fetch("/usuarios/autenticar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            emailServer: emailVar,
+            senhaServer: senhaVar
+          })
+        });
+
+        if (!resposta.ok) {
+          const erro = await resposta.text();
+          msg.textContent = erro || "Credenciais inválidas.";
+          return;
         }
+
+        const json = await resposta.json();
+        console.log("Login bem-sucedido:", json);
+
+        // Armazena sessão
+        sessionStorage.clear();
+        sessionStorage.setItem("ID_USUARIO", json.id);
+        sessionStorage.setItem("NOME_USUARIO", json.nome);
+        sessionStorage.setItem("EMAIL_USUARIO", json.email);
+        sessionStorage.setItem("CARGO_USUARIO", json.cargo);
+        sessionStorage.setItem("EMPRESA_USUARIO", json.empresa);
+
+        // --- REDIRECIONAMENTO AUTOMÁTICO ---
+        switch (Number(json.cargo)) {
+          case 1:
+            window.location.href = "./dashboardGerente.html";
+            break;
+          case 2:
+            window.location.href = "./dashboardAnalista.html";
+            break;
+          case 3:
+            window.location.href = "./aceitarEmpresas.html";
+            break;
+          default:
+            msg.textContent = "Perfil de acesso inválido.";
+        }
+
+      } catch (erro) {
+        console.error("Erro no login:", erro);
+        msg.textContent = "Erro de conexão. Verifique o servidor.";
+      }
     }
-
-
-</script>
+  </script>
+</body>
 </html>

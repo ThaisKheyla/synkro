@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
 
@@ -8,6 +7,8 @@ body {
     padding: 0;
     font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
+    background: linear-gradient(180deg, #030315 0%, #071026 60%);
+    color: #e9f3fb;
 
 }
 
@@ -312,44 +313,122 @@ html {
 .corpo2 {
     display: flex;
     flex-direction: row;
-    min-height: 700px;
+    min-height: 820px;
 }
 
 .corpo3 {
     display: flex;
     flex-direction: row;
     min-height: 700px;
+    align-items: stretch;
 }
 
-.nossosServicoss img {
-    max-width: 90%;
-    height: auto;
+/* === Nossos Serviços — visual e layout === */
+.corpo3{
+    align-items: stretch;
 }
 
-
-.fundoBrancoSobreNos,
-.fundoCinzaSobreNos,
-.fundoRoxoNossosServicos {
-    flex: 1 1 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 50px 20px;
+/* left panel (illustration) */
+.corpo3 .fundoBrancoSobreNos{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: linear-gradient(180deg,#ffffff,#f7fbff);
+    padding: 60px 30px;
 }
 
-.fundoBrancoSobreNos {
-    background-color: #ffffff;
+.corpo3 .nossosServicoss img{
+    width: 100%;
+    max-width: 420px;
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(2,6,23,0.08);
+    transition: transform 0.35s ease, filter 0.35s ease;
+}
+.corpo3 .nossosServicoss img:hover{ transform: translateY(-8px) scale(1.02); filter: saturate(1.05); }
+
+/* right panel (services) */
+.corpo3 .fundoRoxoNossosServicos{
+    padding: 60px 40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background: linear-gradient(160deg, #02021a 0%, #07031a 60%);
 }
 
-.fundoCinzaSobreNos {
-    background-color: #f5f5f5;
+.corpo3 .containerH1 h1{
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.4rem;
+    margin: 0 0 18px 0;
+    color: #fff;
+    letter-spacing: 1px;
+    text-shadow: 0 6px 30px rgba(2,6,23,0.6);
 }
 
-.fundoRoxoNossosServicos {
-    background: linear-gradient(40deg, #000000 0%, #000425 100%);
+.corpo3 .containerServicos{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
+    margin-top: 20px;
 }
 
+.corpo3 .cardServico{
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border-radius: 14px;
+    padding: 18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    box-shadow: 0 12px 40px rgba(2,6,23,0.18);
+    transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.corpo3 .cardServico:hover{
+    transform: translateY(-10px);
+    box-shadow: 0 28px 80px rgba(2,6,23,0.28);
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+}
+
+.corpo3 .cardServico img{
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 50%;
+    background: #fff;
+    padding: 6px;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.14);
+    transition: transform 0.25s ease;
+}
+
+.corpo3 .cardServico h4{
+    margin-top: 16px;
+    color: #fff;
+    font-size: 1.1rem;
+    text-transform: capitalize;
+}
+
+.corpo3 .cardServico p{
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+/* Small decorative underline for titles */
+.corpo3 .cardServico h4::after{
+    content: '';
+    display:block;
+    width: 48px;
+    height: 4px;
+    background: linear-gradient(90deg,#00c2c7,#6c63ff);
+    margin: 12px auto 0 auto;
+    border-radius: 8px;
+}
+
+.containerTitulo{
+    color: #071026;
+}
 .textoSobreNos {
     text-align: center;
     max-width: 600px;
@@ -358,13 +437,14 @@ html {
 .textoSobreNos h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #000;
+    color: #071026;
 }
 
 .textoSobreNos p {
     font-size: 20px;
     line-height: 1.6;
     margin-top: 20px;
+    color: #071026;
 }
 
 .imagemSobreNos,
@@ -427,7 +507,7 @@ html {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    min-height: 700px;
+    min-height: 740px;
     background: linear-gradient(40deg, #000000 0%, #000320 100%);
     padding: 50px 20px;
     gap: 50px;
@@ -511,7 +591,10 @@ html {
 .cardDepoimento {
     background-color: #f5f5f5;
 }
-
+.textoDepoimento{
+    color: #071026;
+    font-style: italic;
+}
 .cardValores {
     background: linear-gradient(40deg, #000000 0%, #000425 100%);
     color: #fff;
@@ -534,7 +617,7 @@ html {
 .textoValores p {
     font-size: 15px;
     line-height: 1.5;
-    color: #dcdcdc;
+    color: #071026;
     margin-top: 10px;
 }
 
@@ -986,4 +1069,258 @@ html {
         font-size: 13px;
         padding: 15px;
     }
+}
+
+/* === Visual polish overrides (added) === */
+
+:root{
+    --primary: #6C63FF; /* purple */
+    --accent: #00C2C7;  /* teal */
+    --bg-dark: #071026;
+    --muted: #d8e9ef;
+}
+
+/* page background subtle gradient to frame content */
+body{
+    background: linear-gradient(180deg, #030315 0%, #071026 60%);
+    color: #e9f3fb;
+}
+
+/* header refinements */
+.header{
+    background: transparent;
+    backdrop-filter: blur(6px);
+}
+
+.header a{ 
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+.header a:hover{ 
+    transform: translateY(-3px);
+}
+
+.header .agora .a{
+    background: linear-gradient(90deg,var(--accent),var(--primary));
+    color: #071026;
+    border: none;
+    box-shadow: 0 6px 20px rgba(108,99,255,0.12);
+}
+
+/* Hero: add dark overlay for readability and scale fonts responsively */
+.titulosMenu::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(7,16,36,0.65) 0%, rgba(7,16,36,0.45) 60%, rgba(7,16,36,0.65) 100%);
+    z-index: 1;
+}
+
+.videoMenu{
+    filter: brightness(0.45) saturate(1.05) contrast(1.02);
+}
+
+.titulosMenu h1{ 
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 700;
+    font-size: clamp(48px, 10vw, 120px);
+    letter-spacing: 2px;
+    margin: 0;
+    z-index: 2;
+    color: #ffffff;
+    text-shadow: 0 8px 40px rgba(2,6,23,0.6);
+}
+
+.subtituloMenu{
+    font-size: clamp(14px, 2.2vw, 22px);
+    margin-top: 6px;
+    color: #cfeff0;
+    z-index: 2;
+    opacity: 0.95;
+}
+
+.tituloComIcone img{ 
+    height: clamp(64px, 12vw, 160px);
+    z-index: 2;
+}
+
+.botaoMenu{
+    background: linear-gradient(90deg,var(--accent),var(--primary));
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(108,99,255,0.12);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.botaoMenu:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 22px 50px rgba(108,99,255,0.18);
+}
+
+/* Cards and service previews */
+.cardServico img, .imgDepoimento img, .imgValores img{
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.cardServico:hover, .cardDepoimento:hover, .cardValores:hover{
+    transform: translateY(-8px);
+    box-shadow: 0 18px 40px rgba(2,6,23,0.35);
+}
+.cardServico img:hover, .imgDepoimento img:hover, .imgValores img:hover{
+    transform: scale(1.05);
+}
+
+/* FAQ tweaks */
+.faq-card{
+    background: linear-gradient(180deg,#ffffff,#f5f7fb);
+}
+.faq-content{
+    background: #ffffff;
+    color: #071026;
+}
+
+/* Footer polish */
+.inicioFooter{
+    background: linear-gradient(90deg,#020217 0%, #071026 100%);
+    color: var(--muted);
+    padding-top: 40px;
+}
+
+.textosFooter{
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.logoFooter img{
+    height: 100px;
+    width: auto;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.45));
+}
+
+.redesSociais img{
+    filter: grayscale(10%);
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+.redesSociais img:hover{
+    transform: translateY(-6px) scale(1.06);
+    filter: none;
+}
+
+/* small UX improvements: footer links and header spacing */
+.footer-link{
+    cursor: pointer;
+    color: var(--muted);
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease;
+}
+.footer-link:hover{ background: rgba(255,255,255,0.03); transform: translateY(-2px); color: #cfeff0; }
+
+.header .container{ padding-left: 4%; padding-right: 4%; }
+
+/* Improve mobile menu look */
+.menuMobile a{ padding: 12px 8px; border-radius: 6px; }
+
+/* refine section CTA buttons */
+.btn-secondary{ box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+
+/* === Section layout and visual separators === */
+section[class^="corpo"], section.corpo5 {
+    padding: 60px 0;
+}
+
+/* centralizar e limitar linha de conteúdo */
+section .fundoBrancoSobreNos, section .fundoCinzaSobreNos, section .fundoRoxoNossosServicos{
+    max-width: 1200px;
+    margin: 0 auto;
+    width: calc(100% - 80px);
+}
+
+/* visual separators between sections */
+section.corpo2{ border-top: 6px solid rgba(108,99,255,0.04); }
+section.corpo3{ border-top: 6px solid rgba(5,194,199,0.03); }
+section.corpo4{ border-top: 6px solid rgba(2,6,23,0.02); }
+
+/* section headings */
+.containerTitulo h1, .corpo5 h1, .corpo6 h1{
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2rem;
+    letter-spacing: 0.6px;
+    margin-bottom: 12px;
+}
+
+/* small helper for internal containers */
+.section-inner{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* === Sobre Nós — layout em duas colunas e polimento visual === */
+.corpo2 .fundoBrancoSobreNos, .corpo2 .fundoCinzaSobreNos{
+    padding: 60px 30px;
+}
+
+.corpo2 .fundoBrancoSobreNos{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.corpo2 .textoSobreNos{
+    text-align: left;
+    max-width: 560px;
+}
+
+.corpo2 .textoSobreNos p{
+    font-size: 18px;
+    color: #26333a;
+    line-height: 1.7;
+}
+
+.corpo2 .containerTitulo h1{
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2.2rem;
+    color: #071026;
+    margin-bottom: 10px;
+}
+
+/* CTA refinado */
+.btn-secondary{
+    margin-top: 20px;
+    padding: 12px 26px;
+    border-radius: 999px;
+    background: linear-gradient(90deg,#00c2c7,#6c63ff);
+    color: #fff;
+    font-weight: 800;
+    box-shadow: 0 12px 40px rgba(108,99,255,0.12);
+}
+
+.btn-secondary:hover{ transform: translateY(-6px); box-shadow: 0 24px 60px rgba(108,99,255,0.16); }
+
+/* imagem estilizada dentro do card */
+.corpo2 .sobreCard{
+    max-width: 520px;
+    border-radius: 16px;
+    padding: 18px;
+    background: linear-gradient(180deg,#fbfdff,#ffffff);
+    box-shadow: 0 18px 60px rgba(2,6,23,0.06), 0 8px 30px rgba(108,99,255,0.04) inset;
+}
+
+.corpo2 .sobreCard img{ width: 100%; height: auto; border-radius: 12px; display: block; }
+.corpo2 .sobreCard figcaption{ margin-top: 10px; color: #4a636b; font-weight: 600; }
+
+/* duas colunas no desktop */
+.corpo2{ display: flex; gap: 30px; align-items: stretch; }
+.corpo2 .fundoBrancoSobreNos{ flex: 1 1 55%; }
+.corpo2 .fundoCinzaSobreNos{ flex: 1 1 45%; display:flex; align-items:center; }
+
+@media (max-width: 900px){
+    .corpo2{ flex-direction: column; }
+    .corpo2 .textoSobreNos{ text-align: center; }
+    .corpo2 .fundoBrancoSobreNos, .corpo2 .fundoCinzaSobreNos{ padding: 28px 16px; }
+    .corpo2 .sobreCard{ max-width: 360px; margin: 0 auto; }
 }
