@@ -12,6 +12,7 @@ function validarSessao() {
     }
 }
 
+
 function validarSessaoSynkro() {
     if(sessionStorage.EMAIL_USUARIO == undefined) {
         sessionStorage.clear();

@@ -231,9 +231,7 @@ html {
     border: #fff 1px solid;
     color: #fff;
     text-decoration: none;
-
 }
-
 
 .videoMenu {
     position: absolute;
@@ -314,116 +312,205 @@ html {
     display: flex;
     flex-direction: row;
     min-height: 820px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+}
+
+.fundoBrancoSobreNos {
+    flex: 1;
+    padding: 80px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.fundoBrancoSobreNos .containerTitulo h1 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3.5rem;
+    color: #071026;
+    margin-bottom: 40px;
+    position: relative;
+    text-align: center;
+}
+
+.fundoBrancoSobreNos .containerTitulo h1::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #00c2c7, #6c63ff);
+    margin: 15px auto 0;
+    border-radius: 2px;
+}
+
+.fundoCinzaSobreNos {
+    flex: 1;
+    background: linear-gradient(180deg, #f1f5fb 0%, #ffffff 100%);
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .corpo3 {
     display: flex;
-    flex-direction: row;
-    min-height: 700px;
-    align-items: stretch;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #030315 0%, #071026 100%);
 }
 
-/* === Nossos Serviços — visual e layout === */
-.corpo3{
-    align-items: stretch;
+/* Left side with floating animation */
+.servicos-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
+    border-right: 1px solid rgba(255,255,255,0.05);
 }
 
-/* left panel (illustration) */
-.corpo3 .fundoBrancoSobreNos{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background: linear-gradient(180deg,#ffffff,#f7fbff);
-    padding: 60px 30px;
-}
-
-.corpo3 .nossosServicoss img{
+.servicos-image {
     width: 100%;
-    max-width: 420px;
-    border-radius: 18px;
-    box-shadow: 0 24px 60px rgba(2,6,23,0.08);
-    transition: transform 0.35s ease, filter 0.35s ease;
-}
-.corpo3 .nossosServicoss img:hover{ transform: translateY(-8px) scale(1.02); filter: saturate(1.05); }
-
-/* right panel (services) */
-.corpo3 .fundoRoxoNossosServicos{
-    padding: 60px 40px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    background: linear-gradient(160deg, #02021a 0%, #07031a 60%);
+    max-width: 500px;
+    position: relative;
 }
 
-.corpo3 .containerH1 h1{
+.servicos-image img {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.3);
+}
+
+.floating-animation {
+    animation: floating 6s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Right side with content */
+.servicos-right {
+    flex: 1;
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(160deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
+}
+
+.servicos-header {
+    margin-bottom: 60px;
+    text-align: center;
+}
+
+.servicos-header h1 {
     font-family: 'Bebas Neue', cursive;
-    font-size: 2.4rem;
-    margin: 0 0 18px 0;
+    font-size: 3.5rem;
     color: #fff;
-    letter-spacing: 1px;
-    text-shadow: 0 6px 30px rgba(2,6,23,0.6);
+    margin: 0;
+    letter-spacing: 2px;
+    text-shadow: 0 4px 30px rgba(108,99,255,0.3);
 }
 
-.corpo3 .containerServicos{
+.header-line {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #00c2c7, #6c63ff);
+    margin: 20px auto;
+    border-radius: 2px;
+}
+
+.servicos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 28px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    align-items: start;
 }
 
-.corpo3 .cardServico{
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-    border-radius: 14px;
-    padding: 18px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-    box-shadow: 0 12px 40px rgba(2,6,23,0.18);
-    transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
-    border: 1px solid rgba(255,255,255,0.04);
+.servico-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+    border-radius: 20px;
+    padding: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
 }
 
-.corpo3 .cardServico:hover{
+.servico-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 28px 80px rgba(2,6,23,0.28);
-    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+    box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
 }
 
-.corpo3 .cardServico img{
-    width: 160px;
-    height: 160px;
+.servico-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.servico-icon img {
+    width: 120px;
+    height: 120px;
     object-fit: cover;
     border-radius: 50%;
-    background: #fff;
-    padding: 6px;
-    box-shadow: 0 8px 30px rgba(2,6,23,0.14);
-    transition: transform 0.25s ease;
+    padding: 8px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.corpo3 .cardServico h4{
-    margin-top: 16px;
+.servico-card:hover .servico-icon img {
+    transform: scale(1.05) rotate(5deg);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.3);
+}
+
+.servico-content h4 {
     color: #fff;
-    font-size: 1.1rem;
-    text-transform: capitalize;
+    font-size: 1.4rem;
+    margin: 0 0 20px 0;
+    position: relative;
+    padding-bottom: 15px;
 }
 
-.corpo3 .cardServico p{
-    color: rgba(255,255,255,0.85);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-top: 10px;
-}
-
-/* Small decorative underline for titles */
-.corpo3 .cardServico h4::after{
+.servico-content h4::after {
     content: '';
-    display:block;
-    width: 48px;
-    height: 4px;
-    background: linear-gradient(90deg,#00c2c7,#6c63ff);
-    margin: 12px auto 0 auto;
-    border-radius: 8px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #00c2c7, #6c63ff);
+    border-radius: 2px;
+}
+
+.servico-content p {
+    color: rgba(255,255,255,0.8);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin: 0;
+}
+
+.servico-content p span {
+    color: #fff;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .corpo3 {
+        flex-direction: column;
+    }
+    
+    .servicos-left,
+    .servicos-right {
+        padding: 40px 20px;
+    }
+    
+    .servicos-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .containerTitulo{
@@ -432,22 +519,73 @@ html {
 .textoSobreNos {
     text-align: center;
     max-width: 600px;
-}
-
-.textoSobreNos h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #071026;
+    padding: 0 20px;
 }
 
 .textoSobreNos p {
-    font-size: 20px;
-    line-height: 1.6;
-    margin-top: 20px;
-    color: #071026;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #2a3649;
+    margin-bottom: 40px;
 }
 
-.imagemSobreNos,
+.textoSobreNos p span {
+    color: #071026;
+    font-weight: 500;
+}
+
+.textoSobreNos .btn-secondary {
+    background: linear-gradient(135deg, #00c2c7 0%, #6c63ff 100%);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+}
+
+.textoSobreNos .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+}
+
+.imagemSobreNos {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.sobreCard {
+    position: relative;
+    margin: 0;
+    transition: transform 0.3s ease;
+}
+
+.sobreCard:hover {
+    transform: translateY(-10px);
+}
+
+.sobreCard img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(7, 16, 38, 0.1);
+}
+
+.sobreCard figcaption {
+    text-align: center;
+    color: #071026;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    font-style: italic;
+}
+
 .nossosServicoss {
     display: flex;
     justify-content: center;
@@ -508,7 +646,7 @@ html {
     justify-content: center;
     align-items: center;
     min-height: 740px;
-    background: linear-gradient(40deg, #000000 0%, #000320 100%);
+    background: linear-gradient(0deg, #000000 0%, #000320 100%);
     padding: 50px 20px;
     gap: 50px;
 }
@@ -550,6 +688,7 @@ html {
 }
 
 
+/* ======== SEÇÕES ======== */
 .corpo5,
 .corpo6 {
     min-height: 700px;
@@ -557,75 +696,202 @@ html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 50px 20px;
+    padding: 80px 6%;
+    text-align: center;
+    background: linear-gradient(0deg, #000320 0%, #000000 100%);
 }
 
+/* ======== TÍTULOS ======== */
 .corpo5 h1,
 .corpo6 h1 {
-    font-size: 50px;
-    text-align: center;
-    margin-bottom: 50px;
+font-family: 'Bebas Neue', cursive;
+    font-size: 3.5rem;
+    color: #fff;
+    margin: 0;
+    letter-spacing: 2px;
+    text-shadow: 0 4px 30px rgba(108,99,255,0.3);
 }
 
+.corpo5 h1::after,
+.corpo6 h1::after {
+    content: "";
+    width: 80px;
+    height: 5px;
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    display: block;
+    margin: 18px auto 0;
+    border-radius: 10px;
+}
+
+/* ======== GRID DE CARDS ======== */
 .cards {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 40px;
+    gap: 45px;
     width: 100%;
+}
+
+/* ======== CARDS DEPOIMENTOS ======== */
+.cardDepoimento {
+    background: #ffffff;
+    border-radius: 22px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    padding: 35px 25px 45px;
+    max-width: 400px;
+    flex: 1 1 320px;
+    transition: all 0.4s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cardDepoimento::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+}
+
+.cardDepoimento:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.imgDepoimento img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 4px solid #00b4d8;
+    box-shadow: 0 0 15px rgba(0, 180, 216, 0.5);
+}
+
+.textoDepoimento {
+    color: #071026;
+    font-style: italic;
+}
+
+.textoDepoimento h2 {
+    font-style: normal;
+    font-size: 22px;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.textoDepoimento h3 {
+    color: #ffb703;
+    font-size: 20px;
+    margin: 4px 0 10px;
+}
+
+.textoDepoimento h2:nth-of-type(2) {
+    color: #666;
+    font-weight: 400;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.textoDepoimento p {
+    font-size: 15.5px;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+/* ======== CARDS NOSSOS VALORES ======== */
+.cardValores {
+    background: linear-gradient(145deg, #000425 0%, #00113f 100%);
+    color: #fff;
+    border-radius: 22px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    padding: 40px 25px 50px;
+    max-width: 400px;
+    flex: 1 1 320px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.cardValores::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 123, 255, 0.2), rgba(0, 198, 255, 0.2));
+    opacity: 0;
+    transition: 0.4s ease;
+}
+
+.cardValores:hover::before {
+    opacity: 1;
+}
+
+.cardValores:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.imgValores img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 3px solid #00c6ff;
+    box-shadow: 0 0 15px rgba(0, 198, 255, 0.6);
+}
+
+.textoValores h3 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #00c6ff, #007bff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.textoValores p {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: #dfe6f0;
+    margin-top: 10px;
+}
+
+/* ======== ANIMAÇÃO DE ENTRADA ======== */
+@keyframes aparecer {
+    0% {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .cardDepoimento,
 .cardValores {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 450px;
-    flex: 1 1 300px;
+    opacity: 0;
+    animation: aparecer 0.8s ease forwards;
 }
 
-.cardDepoimento {
-    background-color: #f5f5f5;
-}
-.textoDepoimento{
-    color: #071026;
-    font-style: italic;
-}
-.cardValores {
-    background: linear-gradient(40deg, #000000 0%, #000425 100%);
-    color: #fff;
-}
+.cardDepoimento:nth-child(1),
+.cardValores:nth-child(1) { animation-delay: 0.2s; }
+.cardDepoimento:nth-child(2),
+.cardValores:nth-child(2) { animation-delay: 0.4s; }
+.cardDepoimento:nth-child(3),
+.cardValores:nth-child(3) { animation-delay: 0.6s; }
 
-.imgDepoimento img,
-.imgValores img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 20px;
-}
-
-.textoValores h3 {
-    font-size: 30px;
-    margin-top: 10px;
-}
-
-.textoValores p {
-    font-size: 15px;
-    line-height: 1.5;
-    color: #071026;
-    margin-top: 10px;
-}
 
 
 .corpo7 {
     width: 100%;
     min-height: 500px;
-    background-color: #dcdcdc;
+    background-color: #000320;
     padding: 50px 20px;
     text-align: center;
 }
@@ -655,6 +921,7 @@ html {
     display: block;
     position: relative;
     transition: background-color 0.3s;
+    color: #000320;
 }
 
 .faq-card:hover {
