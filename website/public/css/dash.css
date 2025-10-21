@@ -500,8 +500,8 @@ body {
 .top-widgets { 
     display: grid; 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 20px; 
-    margin-bottom: 24px; 
+    gap: 50px; 
+    margin-bottom: 30px; 
 }
 
 .widget { 
@@ -714,20 +714,20 @@ body {
 .widget-mainframes-small {
     background: linear-gradient(to bottom, #ffffff, #f8f9fa);
     border-radius: 16px;
-    padding: 20px;
+    padding: 30px;
     border: 1px solid rgba(7,16,38,0.08);
     box-shadow: 0 4px 20px rgba(7,16,38,0.05);
 }
 
 .widget-mainframes-small h3 {
     color: #071026;
-    font-size: 1.1em;
-    font-weight: 700;
-    margin: 0 0 16px 0;
+    font-size: 1.3em;
+    font-weight: 750;
+    margin: 0 0 20px 0;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-bottom: 12px;
+    padding-bottom: 15px;
     border-bottom: 1px solid rgba(7,16,38,0.08);
 }
 
@@ -757,7 +757,7 @@ body {
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 10px 12px;
+    padding: 20px 15px;
     border-radius: 10px;
     background: #ffffff;
     color: #071026;
