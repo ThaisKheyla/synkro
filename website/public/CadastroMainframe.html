@@ -9,7 +9,7 @@
   <script src="./js/sessao.js"></script>
 </head>
 
-<body onload="validarSessaoSynkro()">
+<body onload="validarSessaoSynkro(); carregarSelects();">
   <div class="layout-principal">
     <!-- ====== BARRA LATERAL ====== -->
     <aside class="barra-lateral">
@@ -47,14 +47,18 @@
           <label for="modelo">Modelo:</label>
           <input type="text" id="modelo" placeholder="Digite o modelo" required>
 
-          <label for="mac">Mac Adress:</label>
+          <label for="mac">MAC Address:</label>
           <input type="text" id="mac" placeholder="Ex: 00:1B:44:11:3A:B7" required>
 
           <label for="setor">Setor:</label>
-          <input type="text" id="setor" placeholder="Digite o setor responsável" required>
+          <select id="setor" required>
+            <option value="">Selecione o setor</option>
+          </select>
 
           <label for="sistema">Sistema Operacional:</label>
-          <input type="text" id="sistema" placeholder="Ex: z/OS, LinuxOne..." required>
+          <select id="sistema" required>
+            <option value="">Selecione o sistema</option>
+          </select>
 
           <div class="config-container">
             <button type="button" id="btnConfig" class="btn-config">+ Configurações</button>
@@ -66,8 +70,9 @@
 
             <div id="metricasContainer"></div>
 
-            <button type="button" id="btnAddMetrica" class="btn-cadastrar" style="background:#4f46e5;">+ Adicionar
-              Métrica</button>
+            <button type="button" id="btnAddMetrica" class="btn-cadastrar" style="background:#4f46e5;">
+              + Adicionar Métrica
+            </button>
           </div>
 
           <button type="submit" class="btn-cadastrar">CADASTRAR MAINFRAME</button>
@@ -77,16 +82,7 @@
       <!-- Painel lateral direito -->
       <section class="mainframes-cadastrados">
         <h4>Mainframes Cadastrados</h4>
-        <a href="#">
-          <div class="mainframe-evento">
-            <div class="mainframe-numero">1</div><span class="mainframe-desc">Mainframe 1</span>
-          </div>
-        </a>
-        <a href="#">
-          <div class="mainframe-evento">
-            <div class="mainframe-numero">2</div><span class="mainframe-desc">Mainframe 2</span>
-          </div>
-        </a>
+        <div id="listaMainframes"></div>
       </section>
     </main>
   </div>
@@ -98,49 +94,71 @@
     const btnAddMetrica = document.getElementById('btnAddMetrica');
     const formMainframe = document.getElementById('formMainframe');
 
+    // Mostrar/ocultar configurações
     btnConfig.addEventListener('click', () => {
       boxConfig.classList.toggle('oculto');
     });
 
-    // Função para criar novo bloco de métrica
-    function criarMetrica() {
+    // Criar bloco de métrica
+    function criarMetrica(componentes) {
       const div = document.createElement('div');
       div.classList.add('bloco-metrica');
       div.innerHTML = `
         <div class="configuracoes-metricas">
           <label>Componente:</label>
           <select class="componente">
-            <option value="1">CPU</option>
-            <option value="2">Memória</option>
-            <option value="3">Disco</option>
-          </select>  
+            ${componentes.map(c => `<option value="${c.id}">${c.nome}</option>`).join('')}
+          </select>
         </div>
 
         <div class="configuracoes-metricas">
-          <label>Métrica:</label>
-          <input type="text" class="descricao" placeholder="Ex: uso (%)">
+          <label>Descrição da Métrica:</label>
+          <input type="text" class="descricao" placeholder="Ex: Uso (%)">
         </div>
-        
+
         <div class="configuracoes-metricas">
           <label>Valor Mínimo:</label>
-          <input type="number" step="0.1" class="min" placeholder="Ex: 0">  
+          <input type="number" step="0.1" class="min" placeholder="Ex: 0">
         </div>
-        
+
         <div class="configuracoes-metricas">
           <label>Valor Máximo:</label>
-          <input type="number" step="0.1" class="max" placeholder="Ex: 100">  
+          <input type="number" step="0.1" class="max" placeholder="Ex: 100">
         </div>
 
         <button type="button" class="btn-remover">Remover</button>
         <hr>
       `;
+
       div.querySelector('.btn-remover').addEventListener('click', () => div.remove());
       metricasContainer.appendChild(div);
     }
 
-    btnAddMetrica.addEventListener('click', criarMetrica);
+    // Carregar selects (setor, sistema, componentes)
+    async function carregarSelects() {
+      try {
+        const [setores, sistemas, componentes] = await Promise.all([
+          fetch('http://localhost:3000/mainframes/setores').then(r => r.json()),
+          fetch('http://localhost:3000/mainframes/sistemas').then(r => r.json()),
+          fetch('http://localhost:3000/mainframes/componentes').then(r => r.json())
+        ]);
 
-    // Enviar dados
+        const setorSelect = document.getElementById('setor');
+        const sistemaSelect = document.getElementById('sistema');
+
+        setorSelect.innerHTML = setores.map(s => `<option value="${s.nome}">${s.nome}</option>`).join('');
+        sistemaSelect.innerHTML = sistemas.map(s => `<option value="${s.nome}">${s.nome}</option>`).join('');
+
+        // Adiciona evento do botão de métrica (agora que já temos os componentes)
+        btnAddMetrica.addEventListener('click', () => criarMetrica(componentes));
+
+        carregarMainframes();
+      } catch (err) {
+        alert('Erro ao carregar dados iniciais: ' + err.message);
+      }
+    }
+
+    // Cadastrar mainframe
     formMainframe.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -155,33 +173,49 @@
 
       document.querySelectorAll('.bloco-metrica').forEach((b) => {
         mainframe.metricas.push({
-          fkComponente: b.querySelector('.componente').value,
+          fkComponente: parseInt(b.querySelector('.componente').value),
           descricao: b.querySelector('.descricao').value,
           min: parseFloat(b.querySelector('.min').value || 0),
           max: parseFloat(b.querySelector('.max').value || 100)
         });
       });
 
-      console.log("Mainframe pronto para enviar:", mainframe);
-
-      // Envio simulado (POST real para API Node.js)
       try {
         const resp = await fetch("http://localhost:3000/mainframes", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(mainframe)
         });
+
         if (resp.ok) {
-          alert("Mainframe e métricas cadastrados com sucesso!");
+          alert("✅ Mainframe e métricas cadastrados com sucesso!");
           formMainframe.reset();
           metricasContainer.innerHTML = "";
+          carregarMainframes();
         } else {
-          alert("Erro ao cadastrar.");
+          const erro = await resp.json();
+          alert("❌ Erro ao cadastrar: " + (erro.erro || resp.status));
         }
       } catch (err) {
-        alert("Servidor indisponível: " + err.message);
+        alert("⚠️ Servidor indisponível: " + err.message);
       }
     });
+
+    // Listar mainframes cadastrados
+    async function carregarMainframes() {
+      try {
+        const lista = await fetch("http://localhost:3000/mainframes").then(r => r.json());
+        const container = document.getElementById('listaMainframes');
+        container.innerHTML = lista.map(m => `
+          <div class="mainframe-evento">
+            <div class="mainframe-numero">${m.id}</div>
+            <span class="mainframe-desc">${m.fabricante} ${m.modelo}</span>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.warn("Erro ao carregar mainframes:", err);
+      }
+    }
   </script>
 </body>
 
