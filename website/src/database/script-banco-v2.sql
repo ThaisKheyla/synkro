@@ -79,7 +79,7 @@ CREATE TABLE mainframe (
   id INT NOT NULL AUTO_INCREMENT,
   fabricante VARCHAR(100),
   modelo VARCHAR(100),
-  macAdress VARCHAR(100),
+  macAdress BIGINT,
   fkEmpresa INT NOT NULL,
   fkSetor INT NOT NULL,
   fkSistemaOperacional INT NOT NULL,
@@ -116,6 +116,8 @@ CREATE TABLE componente (
   CONSTRAINT fk_componente_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id)
 );
 
+alter table componente add unique (id);
+
 CREATE TABLE componente_mainframe(
   fkComponente INT NOT NULL,
   fkMainframe INT NOT NULL,
@@ -123,6 +125,8 @@ CREATE TABLE componente_mainframe(
   CONSTRAINT fk_componente_has_mainframe_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
   CONSTRAINT fk_componente_has_mainframe_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id)
 );
+
+
 
 -- =====================================================
 -- ALERTAS, GRAVIDADE E STATUS
@@ -149,8 +153,8 @@ CREATE TABLE alerta (
   fkGravidade INT NOT NULL,
   fkStatus INT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
-  CONSTRAINT fk_alerta_mainframe FOREIGN KEY (fkMainframe) REFERENCES componente_mainframe(fkMainframe),
-  CONSTRAINT fk_alerta_componente FOREIGN KEY (fkComponente) REFERENCES componente_mainframe(fkComponente),
+  CONSTRAINT fk_alerta_componente_mainframe FOREIGN KEY (fkComponente, fkMainframe)
+    REFERENCES componente_mainframe(fkComponente, fkMainframe),
   CONSTRAINT fk_alerta_gravidade FOREIGN KEY (fkGravidade) REFERENCES gravidade(id),
   CONSTRAINT fk_alerta_status FOREIGN KEY (fkStatus) REFERENCES status(id)
 );
@@ -207,9 +211,9 @@ INSERT INTO sistema_operacional (nome) VALUES ('Linux'),('Windows');
 -- Mainframes
 INSERT INTO mainframe (fabricante, modelo, macAdress, fkEmpresa, fkSetor, fkSistemaOperacional)
 VALUES
-('IBM', 'Z15', '00:11:22:33:44:55', 1, 1, 1),
-('IBM', 'Z14', '11:11:22:33:44:55', 2, 2, 2),
-('IBM', 'Z13', '22:11:22:33:44:55', 3, 3, 1);
+('IBM', 'Z15', '269058769682378', 1, 1, 1),
+('IBM', 'Z14', '842759136492781', 2, 2, 2),
+('IBM', 'Z13', '375920846173659', 3, 3, 1);
 
 -- Tipo
 INSERT INTO tipo (descricao) VALUES ('%'),('GB');
@@ -221,10 +225,27 @@ INSERT INTO metrica (min, max, fkTipo) VALUES
 (0.0, 750.0, 2);
 
 -- Componentes
-INSERT INTO componente (nome, descricao, fkMetrica) VALUES
-('Processador', 'Processador principal', 1),
-('Memória RAM', 'Memória principal', 2),
-('Disco Rígido', 'Armazenamento principal', 3);
+CREATE TABLE componente (
+  id INT NOT NULL AUTO_INCREMENT,
+  nome VARCHAR(100),
+  descricao VARCHAR(255),
+  
+  uso_cpu_total_percent DECIMAL(5,2),
+  uso_ram_total_percent DECIMAL(5,2),
+  swap_rate_mbs DECIMAL(10,2),
+  tempo_cpu_ociosa DECIMAL(10,2),
+  cpu_io_wait DECIMAL(10,2),
+  
+  uso_disco_total_percent DECIMAL(5,2),
+  disco_throughput_mbs DECIMAL(10,2),
+  disco_iops_total INT,
+  disco_read_count INT,
+  disco_write_count INT,
+  disco_latencia_ms DECIMAL(10,2),
+
+  PRIMARY KEY (id)
+);
+
 
 -- Componentes por mainframe
 INSERT INTO componente_mainframe (fkComponente, fkMainframe) VALUES
@@ -329,7 +350,7 @@ JOIN cargo c ON f.fkCargo = c.idCargo
 JOIN perfil_ativo p ON f.fkPerfilAtivo = p.id
 JOIN empresa e ON f.fkEmpresa = e.id
 ORDER BY e.id, c.idCargo;
-
+	
 SELECT 
     m.id AS idMainframe,
     m.fabricante,
@@ -350,4 +371,13 @@ ORDER BY m.id, a.dt_hora DESC;
 SELECT * FROM empresa;
 SELECT * FROM funcionario;
 DESC empresa;
+
+
+  SELECT *
+    FROM componente_mainframe cm
+    JOIN componente cp ON cm.fkcomponente = cp.id
+    JOIN metrica mt ON cp.fkMetrica = mt.id
+    WHERE fkMainframe = (SELECT id FROM mainframe WHERE macAdress ="269058769682378");
+
+select * from componente;
 
