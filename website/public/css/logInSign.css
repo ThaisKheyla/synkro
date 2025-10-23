@@ -143,23 +143,32 @@ button {
   font-size: 14px;
   font-style: italic;
 }
-
 .div_voltar {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 24px;
+  right: 24px;
 }
 
 .voltar-home {
+  display: inline-block;
+  padding: 4px 20px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #080d22;
+  background-color: transparent;
+  border: 1px solid #080d22;
+  border-radius: 100px;
   text-decoration: none;
-  color: #fff;
-  background-color: #080d22;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-weight: 600;
-  transition: background 0.3s;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  backdrop-filter: blur(2px);
 }
 
 .voltar-home:hover {
-  background-color: #0a1a3e;
+  background-color: #080d22;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(8, 13, 34, 0.15);
+  transform: translateY(-1px);
 }
