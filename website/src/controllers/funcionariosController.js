@@ -18,11 +18,17 @@ function listarEmpresas(req, res) {
     });
 }
 
- function cadastrarFuncionario(req, res) {
-  try {
-    const { nome, email, cpf, dtnascimento, senha, fkCargo, fkEmpresa } = req.body;
+function cadastrarFuncionario(req, res) {
 
-    if (!nome || !email || !cpf || !dtnascimento || !senha || !fkCargo || !fkEmpresa) {
+  
+    const fkEmpresa = req.usuario.fkEmpresa;
+  try {
+    const { nome, email, cpf, dtnascimento, senha, fkCargo } = req.body;
+    if (!req.usuario || !req.usuario.fkEmpresa) {
+      return res.status(401).json({ mensagem: "Usuário não autenticado ou empresa não encontrada." });
+    }
+
+    if (!nome || !email || !cpf || !dtnascimento || !senha || !fkCargo) {
       return res.status(400).json({ mensagem: "Campos obrigatórios ausentes." });
     }
 
