@@ -66,7 +66,7 @@ html, body {
   font-size: 16px;
 }
 
-input, select {
+input{
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -77,8 +77,27 @@ input, select {
   max-width: 500px;
 }
 
-input:focus, select:focus {
+select {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f0f4f8;
+  font-size: 15px;
+  color: #080d22;
+  font-family: "Poppins", sans-serif;
+  transition: border 0.3s, box-shadow 0.3s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M70 90 L40 50 H100 Z' fill='%23080d22'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+select:focus {
   border-color: #080d22;
+  box-shadow: 0 0 0 2px rgba(8, 13, 34, 0.2);
   outline: none;
 }
 
