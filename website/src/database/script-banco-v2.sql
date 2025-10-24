@@ -1,7 +1,7 @@
 -- =====================================================
 -- Banco de dados Synkro
 -- =====================================================
-CREATE DATABASE synkro;
+CREATE DATABASE IF NOT EXISTS synkro;
 USE synkro;
 
 -- =====================================================
@@ -93,9 +93,9 @@ CREATE TABLE mainframe (
 -- MÉTRICAS E COMPONENTES
 -- =====================================================
 CREATE TABLE tipo(
-id INT NOT NULL AUTO_INCREMENT,
-descricao VARCHAR(100),
-PRIMARY KEY (id)
+ id INT NOT NULL AUTO_INCREMENT,
+ descricao VARCHAR(100),
+ PRIMARY KEY (id)
 );
 
 CREATE TABLE metrica (
@@ -110,13 +110,11 @@ CREATE TABLE metrica (
 CREATE TABLE componente (
   id INT NOT NULL AUTO_INCREMENT,
   nome VARCHAR(100),
-  descricao VARCHAR(255),
   fkMetrica INT NOT NULL,
-  PRIMARY KEY (id, fkMetrica),
+  captura BOOLEAN NOT NULL,
+  PRIMARY KEY (id),
   CONSTRAINT fk_componente_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id)
 );
-
-alter table componente add unique (id);
 
 CREATE TABLE componente_mainframe(
   fkComponente INT NOT NULL,
@@ -125,8 +123,6 @@ CREATE TABLE componente_mainframe(
   CONSTRAINT fk_componente_has_mainframe_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
   CONSTRAINT fk_componente_has_mainframe_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id)
 );
-
-
 
 -- =====================================================
 -- ALERTAS, GRAVIDADE E STATUS
@@ -146,7 +142,6 @@ CREATE TABLE status (
 CREATE TABLE alerta (
   id INT NOT NULL AUTO_INCREMENT,
   dt_hora DATETIME,
-  descricao VARCHAR(255),
   valor_coletado DECIMAL(5,2),
   fkMainframe INT NOT NULL,
   fkComponente INT NOT NULL,
@@ -154,7 +149,7 @@ CREATE TABLE alerta (
   fkStatus INT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   CONSTRAINT fk_alerta_componente_mainframe FOREIGN KEY (fkComponente, fkMainframe)
-    REFERENCES componente_mainframe(fkComponente, fkMainframe),
+  REFERENCES componente_mainframe(fkComponente, fkMainframe),
   CONSTRAINT fk_alerta_gravidade FOREIGN KEY (fkGravidade) REFERENCES gravidade(id),
   CONSTRAINT fk_alerta_status FOREIGN KEY (fkStatus) REFERENCES status(id)
 );
@@ -162,7 +157,6 @@ CREATE TABLE alerta (
 -- =====================================================
 -- INSERTS DE EXEMPLO
 -- =====================================================
-
 -- Acesso
 INSERT INTO status_acesso (id, descricao) VALUES
 (1, 'Pendente'),
@@ -181,20 +175,16 @@ INSERT INTO perfil_ativo (id, descricao) VALUES
 (2, 'Inativo');
 
 -- Cargo
-INSERT INTO cargo (nome) VALUES
-('Gerente'),
-('Analista');
+INSERT INTO cargo (nome) VALUES ('Gerente'), ('Analista');
 
 -- Empresas
-INSERT INTO empresa (nomeEmpresarial, ispb, email, nomeRepresentante, statusOperacao, statusAcesso)
-VALUES
+INSERT INTO empresa (nomeEmpresarial, ispb, email, nomeRepresentante, statusOperacao, statusAcesso) VALUES
 ('Banco Alpha S.A.', '12345678', 'contato@alpha.com', 'João Silva', 1, 3),
 ('Tech Solutions LTDA', '87654321', 'suporte@techsolutions.com', 'Maria Oliveira', 1, 3),
 ('Global Finance Corp', '13572468', 'finance@global.com', 'Carlos Souza', 2, 3);
 
 -- Funcionários
-INSERT INTO funcionario (nome, email, cpf, dtnascimento, senha, fkPerfilAtivo, fkCargo, fkEmpresa)
-VALUES
+INSERT INTO funcionario (nome, email, cpf, dtnascimento, senha, fkPerfilAtivo, fkCargo, fkEmpresa) VALUES
 ('João Silva', 'joao.silva@empresa1.com', '111.111.111-11', '1980-01-01', SHA2('senha123',256), 1, 1, 1),
 ('Ana Pereira', 'ana.pereira@empresa1.com', '111.111.111-12', '1990-03-15', SHA2('senha123',256), 1, 2, 1),
 ('Maria Oliveira', 'maria.oliveira@empresa2.com', '222.222.222-21', '1985-05-10', SHA2('senha123',256), 1, 1, 2),
@@ -209,8 +199,7 @@ INSERT INTO setor (nome) VALUES ('TI'),('Financeiro'),('Operações');
 INSERT INTO sistema_operacional (nome) VALUES ('Linux'),('Windows');
 
 -- Mainframes
-INSERT INTO mainframe (fabricante, modelo, macAdress, fkEmpresa, fkSetor, fkSistemaOperacional)
-VALUES
+INSERT INTO mainframe (fabricante, modelo, macAdress, fkEmpresa, fkSetor, fkSistemaOperacional) VALUES
 ('IBM', 'Z15', '269058769682378', 1, 1, 1),
 ('IBM', 'Z14', '842759136492781', 2, 2, 2),
 ('IBM', 'Z13', '375920846173659', 3, 3, 1);
@@ -224,81 +213,72 @@ INSERT INTO metrica (min, max, fkTipo) VALUES
 (5.0, 90.0, 1),
 (0.0, 750.0, 2);
 
--- Componentes
-CREATE TABLE componente (
-  id INT NOT NULL AUTO_INCREMENT,
-  nome VARCHAR(100),
-  descricao VARCHAR(255),
-  
-  uso_cpu_total_percent DECIMAL(5,2),
-  uso_ram_total_percent DECIMAL(5,2),
-  swap_rate_mbs DECIMAL(10,2),
-  tempo_cpu_ociosa DECIMAL(10,2),
-  cpu_io_wait DECIMAL(10,2),
-  
-  uso_disco_total_percent DECIMAL(5,2),
-  disco_throughput_mbs DECIMAL(10,2),
-  disco_iops_total INT,
-  disco_read_count INT,
-  disco_write_count INT,
-  disco_latencia_ms DECIMAL(10,2),
-
-  PRIMARY KEY (id)
-);
-
+-- Componentes (ANTES da relação)
+INSERT INTO componente (nome, captura, fkMetrica) VALUES
+('uso_cpu', TRUE, 1),
+('uso_memoria', TRUE, 1),
+('uso_disco', TRUE, 1),
+('swap_rate', FALSE, 1),
+('cpu_ociosa', FALSE, 1),
+('cpu_io_wait', FALSE, 1),
+('disco_throughput', FALSE, 1),
+('disco_iops', FALSE, 1),
+('disco_read', FALSE, 1),
+('disco_write', FALSE, 1),
+('disco_latencia', FALSE, 1);
 
 -- Componentes por mainframe
-INSERT INTO componente_mainframe (fkComponente, fkMainframe) VALUES
-(1,1),(2,1),(3,1),
-(1,2),(2,2),(3,2),
-(1,3),(2,3),(3,3);
+
+INSERT INTO componente_mainframe (fkMainframe,fkComponente) VALUES
+-- Mainframe 1
+(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),
+(1,8),(1,9),(1,10),(1,11),
+-- Mainframe 2
+(2,1),(2,2),(2,3),(2,4),(2,5),(2,6),(2,7),
+(2,8),(2,9),(2,10),(2,11),
+
+-- Mainframe 3
+(3,1),(3,2),(3,3),(3,4),(3,5),(3,6),(3,7),
+(3,8),(3,9),(3,10),(3,11);
 
 -- Gravidades
-INSERT INTO gravidade (descricao) VALUES ('Urgente'),('Muito Urgente'),('Emergência');
+INSERT INTO gravidade (descricao) VALUES ('Baixa'),('Média'),('Alta');
 
 -- Status
 INSERT INTO status (descricao) VALUES ('Aberto'),('Em andamento'),('Resolvido');
 
--- Alertas (com fkComponente e fkMetrica)
-INSERT INTO alerta (dt_hora, descricao, valor_coletado, fkMainframe, fkComponente, fkGravidade, fkStatus)
-VALUES
-(NOW(), 'CPU acima do esperado', 75.5, 1, 1, 2, 1),
-(NOW(), 'Memória quase cheia', 85.0, 1, 2, 3, 2),
-(NOW(), 'Disco pouco cheio', 20.0, 1, 3, 1, 1),
-(NOW(), 'CPU crítica', 98.0, 2, 1, 3, 1),
-(NOW(), 'Memória crítica', 92.0, 2, 2, 3, 2),
-(NOW(), 'Disco crítico', 95.0, 3, 3, 3, 1);
+
+
 
 -- =====================================================
 -- TRIGGER PARA CRIAR GERENTE AUTOMATICAMENTE
 -- =====================================================
-DELIMITER $$ 
-CREATE TRIGGER criarPerfilAoLiberarAcessoEmpresa AFTER UPDATE ON empresa
+DELIMITER $$
+CREATE TRIGGER criarPerfilAoLiberarAcessoEmpresa
+AFTER UPDATE ON empresa
 FOR EACH ROW
 BEGIN
   DECLARE idCargoGerente INT;
-  
   SELECT idCargo INTO idCargoGerente FROM cargo WHERE nome = 'Gerente' LIMIT 1;
-  
+
   IF NEW.statusAcesso = 3 AND OLD.statusAcesso <> 3 AND
      ((SELECT COUNT(*) FROM funcionario WHERE fkCargo = idCargoGerente AND fkEmpresa = NEW.id) < 1) THEN
-     
-     INSERT INTO funcionario (nome, email, cpf, dtnascimento, senha, fkPerfilAtivo, fkCargo, fkEmpresa)
-     VALUES (
-       NEW.nomeRepresentante,
-       CONCAT(REPLACE(LOWER(NEW.nomeRepresentante), ' ', '_'), '@gmail.com'),
-       '000.000.000-00',
-       CURDATE(),
-       SHA2(CONCAT(SUBSTRING(NEW.nomeEmpresarial,1,1), FLOOR(RAND() * 999999), '@'), 256),
-       1,
-       idCargoGerente,
-       NEW.id
-     );
 
+       INSERT INTO funcionario (nome, email, cpf, dtnascimento, senha, fkPerfilAtivo, fkCargo, fkEmpresa)
+       VALUES (
+         NEW.nomeRepresentante,
+         CONCAT(REPLACE(LOWER(NEW.nomeRepresentante), ' ', '_'), '@gmail.com'),
+         '000.000.000-00',
+         CURDATE(),
+         SHA2(CONCAT(SUBSTRING(NEW.nomeEmpresarial,1,1), FLOOR(RAND() * 999999), '@'), 256),
+         1,
+         idCargoGerente,
+         NEW.id
+       );
   ELSEIF NEW.statusAcesso = 2 AND OLD.statusAcesso <> 2 THEN
-     UPDATE funcionario SET fkPerfilAtivo = 2 WHERE fkEmpresa = NEW.id;
+    UPDATE funcionario SET fkPerfilAtivo = 2 WHERE fkEmpresa = NEW.id;
   ELSE
-     UPDATE funcionario SET fkPerfilAtivo = 1 WHERE fkEmpresa = NEW.id;
+    UPDATE funcionario SET fkPerfilAtivo = 1 WHERE fkEmpresa = NEW.id;
   END IF;
 END$$
 DELIMITER ;
@@ -307,7 +287,6 @@ DELIMITER ;
 -- TRIGGER DE GRAVIDADE
 -- =====================================================
 DELIMITER $$
-
 CREATE TRIGGER trg_definir_gravidade_auto
 BEFORE INSERT ON alerta
 FOR EACH ROW
@@ -315,13 +294,11 @@ BEGIN
     DECLARE vMin DECIMAL(5,2);
     DECLARE vMax DECIMAL(5,2);
 
-    -- Busca min e max da métrica vinculada ao componente do alerta
     SELECT mt.min, mt.max INTO vMin, vMax
     FROM componente c
     JOIN metrica mt ON c.fkMetrica = mt.id
     WHERE c.id = NEW.fkComponente;
 
-    -- Define a gravidade com base no valor coletado
     IF NEW.valor_coletado < vMin THEN
         SET NEW.fkGravidade = 3; -- Alta
     ELSEIF NEW.valor_coletado >= vMin AND NEW.valor_coletado < (vMax * 0.8) THEN
@@ -332,31 +309,35 @@ BEGIN
         SET NEW.fkGravidade = 3; -- Alta
     END IF;
 END$$
-
 DELIMITER ;
 
 -- =====================================================
--- SELECTS
+-- SELECTS 
 -- =====================================================
+
+-- Selecionando EMPRESAS/STATUS
 SELECT e.id, e.nomeEmpresarial, sa.descricao AS statusAcesso, so.descricao AS statusOperacao
 FROM empresa e
 JOIN status_acesso sa ON e.statusAcesso = sa.id
 JOIN status_operacao so ON e.statusOperacao = so.id;
 
 
+
+-- Selecionando FUNCIONARIOS/STATUS/EMPRESAS
 SELECT f.nome, f.email, c.nome AS cargo, p.descricao AS perfilAtivo, e.nomeEmpresarial
 FROM funcionario f
 JOIN cargo c ON f.fkCargo = c.idCargo
 JOIN perfil_ativo p ON f.fkPerfilAtivo = p.id
 JOIN empresa e ON f.fkEmpresa = e.id
 ORDER BY e.id, c.idCargo;
-	
-SELECT 
+
+-- Selecionando MAINFRAME/ALERTAS
+SELECT
     m.id AS idMainframe,
     m.fabricante,
     m.modelo,
-    a.descricao AS alerta,
     a.valor_coletado,
+    cp.nome as Metrica,
     g.descricao AS gravidade,
     s.descricao AS status,
     e.nomeEmpresarial AS empresa,
@@ -366,18 +347,38 @@ JOIN mainframe m ON a.fkMainframe = m.id
 JOIN gravidade g ON a.fkGravidade = g.id
 JOIN status s ON a.fkStatus = s.id
 JOIN empresa e ON m.fkEmpresa = e.id
+JOIN componente cp on a.fkComponente = cp.id
 ORDER BY m.id, a.dt_hora DESC;
+
+
+
+
+
+
+
+
+
+
 
 SELECT * FROM empresa;
 SELECT * FROM funcionario;
-DESC empresa;
 
+SELECT *
+FROM componente_mainframe cm
+JOIN componente cp ON cm.fkcomponente = cp.id
+JOIN metrica mt ON cp.fkMetrica = mt.id
+WHERE fkMainframe = (SELECT id FROM mainframe WHERE macAdress = '842759136492781');
 
-  SELECT *
-    FROM componente_mainframe cm
-    JOIN componente cp ON cm.fkcomponente = cp.id
-    JOIN metrica mt ON cp.fkMetrica = mt.id
-    WHERE fkMainframe = (SELECT id FROM mainframe WHERE macAdress ="269058769682378");
+SELECT fkcomponente,min,max FROM componente_mainframe cm
+JOIN componente cp ON cm.fkcomponente = cp.id
+JOIN metrica mt ON cp.fkMetrica = mt.id
+WHERE fkMainframe = (SELECT id FROM mainframe WHERE macAdress = '842759136492781') and 
+cp.captura = 1;
 
-select * from componente;
+select * from componente_mainframe;
+
+SELECT * FROM componente ;
+
+-- Componentes
+
 
