@@ -100,6 +100,7 @@
 
       const senha = document.getElementById("senha").value;
       const confirmar = document.getElementById("confirmar").value;
+      const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO")
 
       if (senha !== confirmar) {
         alert("As senhas não coincidem!");
@@ -112,11 +113,12 @@
         dtnascimento: document.getElementById("nascimento").value,
         cpf: document.getElementById("cpf").value,
         senha: senha,
-        fkCargo: parseInt(document.getElementById("cargo").value)
+        fkCargo: parseInt(document.getElementById("cargo").value),
+        fkEmpresa: fkEmpresa
       };
 
       try {
-        const resp = await fetch("/funcionarios", {
+        const resp = await fetch("/funcionarios/cadastrar", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(funcionario)
