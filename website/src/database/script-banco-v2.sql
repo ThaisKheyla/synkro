@@ -115,6 +115,8 @@ CREATE TABLE componente (
   CONSTRAINT fk_componente_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id)
 );
 
+alter table componente add unique (id);
+
 CREATE TABLE componente_mainframe(
   fkComponente INT NOT NULL,
   fkMainframe INT NOT NULL,
@@ -122,6 +124,7 @@ CREATE TABLE componente_mainframe(
   CONSTRAINT fk_componente_has_mainframe_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
   CONSTRAINT fk_componente_has_mainframe_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id)
 );
+
 
 -- =====================================================
 -- ALERTAS, GRAVIDADE E STATUS
@@ -131,24 +134,22 @@ CREATE TABLE gravidade (
   descricao VARCHAR(255),
   PRIMARY KEY (id)
 );
-
 CREATE TABLE status (
   id INT NOT NULL AUTO_INCREMENT,
   descricao VARCHAR(255),
   PRIMARY KEY (id)
 );
-
 CREATE TABLE alerta (
   id INT NOT NULL AUTO_INCREMENT,
   dt_hora DATETIME,
-  valor_coletado DECIMAL(6,2),
+  valor_coletado DECIMAL(5,2),
   fkMainframe INT NOT NULL,
   fkComponente INT NOT NULL,
   fkGravidade INT NOT NULL,
   fkStatus INT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
-  CONSTRAINT fk_alerta_mainframe FOREIGN KEY (fkMainframe) REFERENCES componente_mainframe(fkMainframe),
-  CONSTRAINT fk_alerta_componente FOREIGN KEY (fkComponente) REFERENCES componente_mainframe(fkComponente),
+  CONSTRAINT fk_alerta_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id),
+  CONSTRAINT fk_alerta_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
   CONSTRAINT fk_alerta_gravidade FOREIGN KEY (fkGravidade) REFERENCES gravidade(id),
   CONSTRAINT fk_alerta_status FOREIGN KEY (fkStatus) REFERENCES status(id)
 );
@@ -205,9 +206,9 @@ INSERT INTO sistema_operacional (nome) VALUES ('Linux'),('Windows');
 -- Mainframes
 INSERT INTO mainframe (fabricante, modelo, macAdress, fkEmpresa, fkSetor, fkSistemaOperacional)
 VALUES
-('IBM', 'Z15', '001122334455', 1, 1, 1),
-('IBM', 'Z14', '111122334455', 2, 2, 2),
-('IBM', 'Z13', '221122334455', 3, 3, 1);
+('IBM', 'Z15', '269058769682378', 1, 1, 1),
+('IBM', 'Z14', '745683251336348', 2, 2, 2),
+('IBM', 'Z13', '978436525625487', 3, 3, 1);
 
 -- Tipo
 INSERT INTO tipo (descricao) VALUES ('%'),('GB');
@@ -216,7 +217,7 @@ INSERT INTO tipo (descricao) VALUES ('%'),('GB');
 INSERT INTO metrica (min, max, fkTipo) VALUES
 (5.0, 90.0, 1),
 (5.0, 90.0, 1),
-(0.0, 750.0, 2);
+(0.0, 75.0, 2);
 
 -- Componentes
 INSERT INTO componente (nome, fkMetrica) VALUES
@@ -347,5 +348,6 @@ ORDER BY m.id, a.dt_hora DESC;
 
 SELECT * FROM empresa;
 SELECT * FROM funcionario;
-DESC empresa;
+
+
 
