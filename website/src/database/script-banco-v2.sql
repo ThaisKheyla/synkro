@@ -32,7 +32,7 @@ CREATE TABLE empresa (
   email VARCHAR(100),
   nomeRepresentante VARCHAR(100),
   statusOperacao TINYINT NOT NULL,
-  statusAcesso TINYINT DEFAULT(1),
+  statusAcesso TINYINT DEFAULT 1,
   PRIMARY KEY (id),
   CONSTRAINT fk_empresa_statusAcesso FOREIGN KEY (statusAcesso) REFERENCES status_acesso(id),
   CONSTRAINT fk_empresa_statusOperacao FOREIGN KEY (statusOperacao) REFERENCES status_operacao(id)
@@ -110,7 +110,6 @@ CREATE TABLE metrica (
 CREATE TABLE componente (
   id INT NOT NULL AUTO_INCREMENT,
   nome VARCHAR(100),
-  descricao VARCHAR(255),
   fkMetrica INT NOT NULL,
   PRIMARY KEY (id, fkMetrica),
   CONSTRAINT fk_componente_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id)
@@ -142,8 +141,7 @@ CREATE TABLE status (
 CREATE TABLE alerta (
   id INT NOT NULL AUTO_INCREMENT,
   dt_hora DATETIME,
-  descricao VARCHAR(255),
-  valor_coletado DECIMAL(5,2),
+  valor_coletado DECIMAL(6,2),
   fkMainframe INT NOT NULL,
   fkComponente INT NOT NULL,
   fkGravidade INT NOT NULL,
@@ -221,10 +219,10 @@ INSERT INTO metrica (min, max, fkTipo) VALUES
 (0.0, 750.0, 2);
 
 -- Componentes
-INSERT INTO componente (nome, descricao, fkMetrica) VALUES
-('Processador', 'Processador principal', 1),
-('Memória RAM', 'Memória principal', 2),
-('Disco Rígido', 'Armazenamento principal', 3);
+INSERT INTO componente (nome, fkMetrica) VALUES
+('Processador', 1),
+('Memória RAM', 2),
+('Disco Rígido', 3);
 
 -- Componentes por mainframe
 INSERT INTO componente_mainframe (fkComponente, fkMainframe) VALUES
@@ -239,14 +237,14 @@ INSERT INTO gravidade (descricao) VALUES ('Urgente'),('Muito Urgente'),('Emergê
 INSERT INTO status (descricao) VALUES ('Aberto'),('Em andamento'),('Resolvido');
 
 -- Alertas (com fkComponente e fkMetrica)
-INSERT INTO alerta (dt_hora, descricao, valor_coletado, fkMainframe, fkComponente, fkGravidade, fkStatus)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMainframe, fkComponente, fkGravidade, fkStatus)
 VALUES
-(NOW(), 'CPU acima do esperado', 75.5, 1, 1, 2, 1),
-(NOW(), 'Memória quase cheia', 85.0, 1, 2, 3, 2),
-(NOW(), 'Disco pouco cheio', 20.0, 1, 3, 1, 1),
-(NOW(), 'CPU crítica', 98.0, 2, 1, 3, 1),
-(NOW(), 'Memória crítica', 92.0, 2, 2, 3, 2),
-(NOW(), 'Disco crítico', 95.0, 3, 3, 3, 1);
+(NOW(), 75.5, 1, 1, 2, 1),
+(NOW(), 85.0, 1, 2, 3, 2),
+(NOW(), 20.0, 1, 3, 1, 1),
+(NOW(), 98.0, 2, 1, 3, 1),
+(NOW(), 92.0, 2, 2, 3, 2),
+(NOW(), 95.0, 3, 3, 3, 1);
 
 -- =====================================================
 -- TRIGGER PARA CRIAR GERENTE AUTOMATICAMENTE
@@ -285,6 +283,7 @@ DELIMITER ;
 -- =====================================================
 -- TRIGGER DE GRAVIDADE
 -- =====================================================
+/*
 DELIMITER $$
 
 CREATE TRIGGER trg_definir_gravidade_auto
@@ -312,7 +311,7 @@ BEGIN
     END IF;
 END$$
 
-DELIMITER ;
+DELIMITER ;*/
 
 -- =====================================================
 -- SELECTS
@@ -334,7 +333,6 @@ SELECT
     m.id AS idMainframe,
     m.fabricante,
     m.modelo,
-    a.descricao AS alerta,
     a.valor_coletado,
     g.descricao AS gravidade,
     s.descricao AS status,
