@@ -57,12 +57,7 @@
           <select id="cargo" required>
             <option value="">Selecione um cargo</option>
           </select>
-
-          <label for="empresa">Empresa:</label>
-          <select id="empresa" required>
-            <option value="">Selecione uma empresa</option>
-          </select>
-
+          
           <label for="senha">Senha:</label>
           <input type="password" id="senha" placeholder="Crie uma senha" required>
 
@@ -85,31 +80,27 @@
       input.value = valor;
     }
 
-     function carregarEmpresasECargos() {
+    async function carregarEmpresasECargos() {
       try {
-        const [empresas, cargos] =  Promise.all([
-          fetch("http://localhost:8000/funcionarios/empresas").then(r => r.json()),
-          fetch("http://localhost:8000/funcionarios/cargos").then(r => r.json())
-        ]);
-
+        const cargosResp = await fetch("/funcionarios/cargos");
+        if (!cargosResp.ok) {
+          throw new Error(`Resposta inválida: cargos(${cargosResp.status})`);
+        }
+        const cargos = await cargosResp.json();
         const cargoSelect = document.getElementById("cargo");
-        const empresaSelect = document.getElementById("empresa");
-
-        cargoSelect.innerHTML = cargos.map(c => `<option value="${c.idCargo}">${c.nome}</option>`).join('');
-        empresaSelect.innerHTML = empresas.map(e => `<option value="${e.id}">${e.nomeEmpresarial}</option>`).join('');
+        cargoSelect.innerHTML = `<option value="">Selecione um cargo</option>` + cargos.map(c => `<option value="${c.idCargo}">${c.nome}</option>`).join('');
       } catch (err) {
-        alert("Erro ao carregar cargos ou empresas: " + err.message);
+        alert("Erro ao carregar cargos: " + err.message);
+        console.error(err);
       }
     }
 
-    // ==============================
-    // Submeter Cadastro
-    // ==============================
-    document.getElementById("formCadastro").addEventListener("submit",  (e) => {
+    document.getElementById("formCadastro").addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const senha = document.getElementById("senha").value;
       const confirmar = document.getElementById("confirmar").value;
+      const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO")
 
       if (senha !== confirmar) {
         alert("As senhas não coincidem!");
@@ -123,11 +114,11 @@
         cpf: document.getElementById("cpf").value,
         senha: senha,
         fkCargo: parseInt(document.getElementById("cargo").value),
-        fkEmpresa: parseInt(document.getElementById("empresa").value)
+        fkEmpresa: fkEmpresa
       };
 
       try {
-        const resp =  fetch("http://localhost:3000/funcionarios", {
+        const resp = await fetch("/funcionarios/cadastrar", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(funcionario)
@@ -137,11 +128,12 @@
           alert("✅ Funcionário cadastrado com sucesso!");
           document.getElementById("formCadastro").reset();
         } else {
-          const erro =  resp.json();
-          alert("❌ Erro: " + (erro.mensagem || resp.statusText));
+          const erro = await resp.json().catch(() => ({}));
+          alert(" Erro: " + (erro.mensagem || resp.statusText));
         }
       } catch (err) {
-        alert("⚠️ Servidor indisponível: " + err.message);
+        alert(" Servidor indisponível: " + err.message);
+        console.error(err);
       }
     });
   </script>

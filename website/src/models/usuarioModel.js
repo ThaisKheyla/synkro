@@ -13,6 +13,7 @@ function autenticar(email, senha) {
       f.nome,
       f.email,
       f.fkCargo AS cargo,
+      e.id AS idEmpresa,
       e.nomeEmpresarial AS empresa,
       f.fkPerfilAtivo AS perfilAtivo,
       e.statusAcesso AS statusEmpresa

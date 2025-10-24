@@ -205,9 +205,9 @@ INSERT INTO sistema_operacional (nome) VALUES ('Linux'),('Windows');
 -- Mainframes
 INSERT INTO mainframe (fabricante, modelo, macAdress, fkEmpresa, fkSetor, fkSistemaOperacional)
 VALUES
-('IBM', 'Z15', '00:11:22:33:44:55', 1, 1, 1),
-('IBM', 'Z14', '11:11:22:33:44:55', 2, 2, 2),
-('IBM', 'Z13', '22:11:22:33:44:55', 3, 3, 1);
+('IBM', 'Z15', '001122334455', 1, 1, 1),
+('IBM', 'Z14', '111122334455', 2, 2, 2),
+('IBM', 'Z13', '221122334455', 3, 3, 1);
 
 -- Tipo
 INSERT INTO tipo (descricao) VALUES ('%'),('GB');

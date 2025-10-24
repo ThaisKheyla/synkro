@@ -18,15 +18,15 @@ function listarEmpresas(req, res) {
     });
 }
 
- function cadastrarFuncionario(req, res) {
+async function cadastrarFuncionario(req, res) {
   try {
     const { nome, email, cpf, dtnascimento, senha, fkCargo, fkEmpresa } = req.body;
 
-    if (!nome || !email || !cpf || !dtnascimento || !senha || !fkCargo || !fkEmpresa) {
+    if (!nome || !email || !cpf || !dtnascimento || !senha || !fkCargo) {
       return res.status(400).json({ mensagem: "Campos obrigatórios ausentes." });
     }
 
-    funcionarioModel.cadastrarFuncionario(nome, email, cpf, dtnascimento, senha, fkCargo, fkEmpresa);
+    await funcionarioModel.cadastrarFuncionario(nome, email, cpf, dtnascimento, senha, fkCargo, fkEmpresa);
     res.status(201).json({ mensagem: "Funcionário cadastrado com sucesso!" });
   } catch (erro) {
     console.error("Erro ao cadastrar funcionário:", erro);

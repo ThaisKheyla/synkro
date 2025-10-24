@@ -137,17 +137,26 @@
     // Carregar selects (setor, sistema, componentes)
     async function carregarSelects() {
       try {
-        const [setores, sistemas, componentes] = await Promise.all([
-          fetch('http://localhost:3000/mainframes/setores').then(r => r.json()),
-          fetch('http://localhost:3000/mainframes/sistemas').then(r => r.json()),
-          fetch('http://localhost:3000/mainframes/componentes').then(r => r.json())
+        const [setoresResp, sistemasResp, componentesResp] = await Promise.all([
+          fetch('/mainframes/setores'),
+          fetch('/mainframes/sistemas'),
+          fetch('/mainframes/componentes')
         ]);
+
+        if (!setoresResp.ok || !sistemasResp.ok || !componentesResp.ok) {
+          throw new Error(`Respostas inválidas: setores(${setoresResp.status}) sistemas(${sistemasResp.status}) componentes(${componentesResp.status})`);
+        }
+
+        const setores = await setoresResp.json();
+        const sistemas = await sistemasResp.json();
+        const componentes = await componentesResp.json();
 
         const setorSelect = document.getElementById('setor');
         const sistemaSelect = document.getElementById('sistema');
 
-        setorSelect.innerHTML = setores.map(s => `<option value="${s.nome}">${s.nome}</option>`).join('');
-        sistemaSelect.innerHTML = sistemas.map(s => `<option value="${s.nome}">${s.nome}</option>`).join('');
+        // preserva a opção padrão e adiciona as opções vindas do back-end
+        setorSelect.innerHTML = `<option value="">Selecione o setor</option>` + setores.map(s => `<option value="${s.nome}">${s.nome}</option>`).join('');
+        sistemaSelect.innerHTML = `<option value="">Selecione o sistema</option>` + sistemas.map(s => `<option value="${s.nome}">${s.nome}</option>`).join('');
 
         // Adiciona evento do botão de métrica (agora que já temos os componentes)
         btnAddMetrica.addEventListener('click', () => criarMetrica(componentes));
@@ -155,6 +164,7 @@
         carregarMainframes();
       } catch (err) {
         alert('Erro ao carregar dados iniciais: ' + err.message);
+        console.error(err);
       }
     }
 
@@ -181,7 +191,7 @@
       });
 
       try {
-        const resp = await fetch("http://localhost:3000/mainframes", {
+        const resp = await fetch("/mainframes", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(mainframe)
@@ -193,18 +203,19 @@
           metricasContainer.innerHTML = "";
           carregarMainframes();
         } else {
-          const erro = await resp.json();
+          const erro = await resp.json().catch(() => ({}));
           alert("❌ Erro ao cadastrar: " + (erro.erro || resp.status));
         }
       } catch (err) {
         alert("⚠️ Servidor indisponível: " + err.message);
+        console.error(err);
       }
     });
 
     // Listar mainframes cadastrados
     async function carregarMainframes() {
       try {
-        const lista = await fetch("http://localhost:3000/mainframes").then(r => r.json());
+        const lista = await fetch("/mainframes").then(r => r.json());
         const container = document.getElementById('listaMainframes');
         container.innerHTML = lista.map(m => `
           <div class="mainframe-evento">
