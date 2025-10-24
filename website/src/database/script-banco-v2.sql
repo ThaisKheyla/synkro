@@ -92,67 +92,70 @@ CREATE TABLE mainframe (
 -- =====================================================
 -- MÉTRICAS E COMPONENTES
 -- =====================================================
-CREATE TABLE tipo(
+CREATE TABLE tipo( -- tipo de registro que vamos coletar do componente
 id INT NOT NULL AUTO_INCREMENT,
 descricao VARCHAR(100),
 PRIMARY KEY (id)
 );
 
-CREATE TABLE metrica (
-  id INT NOT NULL AUTO_INCREMENT,
-  min DECIMAL(6,2),
-  max DECIMAL(6,2),
-  fkTipo INT NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_metrica_tipo FOREIGN KEY (fkTipo) REFERENCES tipo(id)
-);
-
 CREATE TABLE componente (
   id INT NOT NULL AUTO_INCREMENT,
   nome VARCHAR(100),
-  fkMetrica INT NOT NULL,
-  PRIMARY KEY (id, fkMetrica),
-  CONSTRAINT fk_componente_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id)
-);
+  PRIMARY KEY (id));
 
-alter table componente add unique (id);
-
-CREATE TABLE componente_mainframe(
+CREATE TABLE metrica (
+  id INT NOT NULL,
   fkComponente INT NOT NULL,
-  fkMainframe INT NOT NULL,
-  PRIMARY KEY (fkComponente, fkMainframe),
-  CONSTRAINT fk_componente_has_mainframe_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
-  CONSTRAINT fk_componente_has_mainframe_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id)
+  min DECIMAL(6,2),
+  max DECIMAL(6,2),
+  fkTipo INT NOT NULL,
+  PRIMARY KEY (id, fkComponente),
+  CONSTRAINT fk_metrica_tipo FOREIGN KEY (fkTipo) REFERENCES tipo(id),
+  CONSTRAINT fk_componente FOREIGN KEY (fkComponente) REFERENCES componente(id)
 );
 
+CREATE TABLE componente_mainframe (
+    fkComponente INT NOT NULL,
+    fkMainframe INT NOT NULL,
+    fkMetrica INT NOT NULL,
+    PRIMARY KEY (fkComponente, fkMainframe, fkMetrica),
+    CONSTRAINT fk_componente_mainframe_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id),
+    CONSTRAINT fk_componente_mainframe_metrica FOREIGN KEY (fkMetrica, fkComponente) REFERENCES metrica(id, fkComponente)
+);
 
 -- =====================================================
 -- ALERTAS, GRAVIDADE E STATUS
 -- =====================================================
+
 CREATE TABLE gravidade (
   id INT NOT NULL AUTO_INCREMENT,
   descricao VARCHAR(255),
   PRIMARY KEY (id)
 );
+
 CREATE TABLE status (
   id INT NOT NULL AUTO_INCREMENT,
   descricao VARCHAR(255),
   PRIMARY KEY (id)
 );
+
 CREATE TABLE alerta (
-  id INT NOT NULL AUTO_INCREMENT,
-  dt_hora DATETIME,
-  valor_coletado DECIMAL(5,2),
-  fkMainframe INT NOT NULL,
-  fkComponente INT NOT NULL,
-  fkGravidade INT NOT NULL,
-  fkStatus INT NOT NULL DEFAULT 1,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_alerta_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id),
-  CONSTRAINT fk_alerta_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
-  CONSTRAINT fk_alerta_gravidade FOREIGN KEY (fkGravidade) REFERENCES gravidade(id),
-  CONSTRAINT fk_alerta_status FOREIGN KEY (fkStatus) REFERENCES status(id)
+   id INT NOT NULL AUTO_INCREMENT,
+   dt_hora DATETIME,
+   valor_coletado DECIMAL(5,2),
+   fkMainframe INT NOT NULL,
+   fkComponente INT NOT NULL,
+   fkGravidade INT NOT NULL,
+   fkMetrica INT NOT NULL,
+   fkStatus INT NOT NULL DEFAULT 1,
+   PRIMARY KEY (id),
+   CONSTRAINT fk_alerta_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id),
+   CONSTRAINT fk_alerta_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
+   CONSTRAINT fk_alerta_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id),
+   CONSTRAINT fk_alerta_gravidade FOREIGN KEY (fkGravidade) REFERENCES gravidade(id),
+   CONSTRAINT fk_alerta_status FOREIGN KEY (fkStatus) REFERENCES status(id)
 );
+
 
 -- =====================================================
 -- INSERTS DE EXEMPLO
@@ -211,25 +214,30 @@ VALUES
 ('IBM', 'Z13', '978436525625487', 3, 3, 1);
 
 -- Tipo
-INSERT INTO tipo (descricao) VALUES ('%'),('GB');
-
--- Métricas
-INSERT INTO metrica (min, max, fkTipo) VALUES
-(5.0, 90.0, 1),
-(5.0, 90.0, 1),
-(0.0, 75.0, 2);
+INSERT INTO tipo (descricao) VALUES ('Uso'),('Temperatura');
 
 -- Componentes
-INSERT INTO componente (nome, fkMetrica) VALUES
-('Processador', 1),
-('Memória RAM', 2),
-('Disco Rígido', 3);
+INSERT INTO componente (nome) VALUES
+('Processador'),
+('Memória RAM'),
+('Disco Rígido');
+
+-- Métricas
+INSERT INTO metrica (id,fkComponente, min, max, fkTipo) VALUES
+(1, 1, 5.0, 90.0, 1),
+(2, 2, 5.0, 90.0, 1),
+(3, 1, 0.0, 75.0, 2);
+
 
 -- Componentes por mainframe
-INSERT INTO componente_mainframe (fkComponente, fkMainframe) VALUES
-(1,1),(2,1),(3,1),
-(1,2),(2,2),(3,2),
-(1,3),(2,3),(3,3);
+INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica) VALUES
+(1,1, 1),
+(2,1, 2),
+(1,2, 1),
+(2,2, 2),
+(1,3, 1),
+(2,3, 2);
+
 
 -- Gravidades
 INSERT INTO gravidade (descricao) VALUES ('Urgente'),('Muito Urgente'),('Emergência');
@@ -238,14 +246,14 @@ INSERT INTO gravidade (descricao) VALUES ('Urgente'),('Muito Urgente'),('Emergê
 INSERT INTO status (descricao) VALUES ('Aberto'),('Em andamento'),('Resolvido');
 
 -- Alertas (com fkComponente e fkMetrica)
-INSERT INTO alerta (dt_hora, valor_coletado, fkMainframe, fkComponente, fkGravidade, fkStatus)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMainframe, fkComponente, fkGravidade, fkStatus, fkMetrica)
 VALUES
-(NOW(), 75.5, 1, 1, 2, 1),
-(NOW(), 85.0, 1, 2, 3, 2),
-(NOW(), 20.0, 1, 3, 1, 1),
-(NOW(), 98.0, 2, 1, 3, 1),
-(NOW(), 92.0, 2, 2, 3, 2),
-(NOW(), 95.0, 3, 3, 3, 1);
+(NOW(), 75.5, 1, 1, 2, 1, 1),
+(NOW(), 85.0, 1, 2, 3, 2, 1),
+(NOW(), 20.0, 1, 3, 1, 1, 1),
+(NOW(), 98.0, 2, 1, 3, 1, 1),
+(NOW(), 92.0, 2, 2, 3, 2, 1),
+(NOW(), 95.0, 3, 3, 3, 1, 1);
 
 -- =====================================================
 -- TRIGGER PARA CRIAR GERENTE AUTOMATICAMENTE
@@ -349,5 +357,9 @@ ORDER BY m.id, a.dt_hora DESC;
 SELECT * FROM empresa;
 SELECT * FROM funcionario;
 
-
+SELECT cp.* , m.min, m.max, m.fkTipo, t.descricao
+from componente_mainframe as cp
+JOIN metrica m on m.id = cp.fkMetrica and m.fkComponente = cp.fkComponente 
+join tipo t on m.fkTipo = t.id
+where cp.fkMainframe = 1;
 
