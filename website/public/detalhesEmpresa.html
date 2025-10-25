@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empresas Cadastradas - Synkro</title>
+    <link rel="stylesheet" href="css/detalhes.css">
+    <script src="./js/sessao.js" defer></script>
+    <script defer>
+        async function carregarTodasEmpresas() {
+            try {
+                const res = await fetch('/empresa/listarTodas');
+                if (!res.ok) throw new Error('Erro ao buscar dados');
+                const data = await res.json();
+
+                const container = document.getElementById('lista_empresas');
+                container.innerHTML = '';
+
+                for (const empresa of data) {
+                    const card = document.createElement('div');
+                    card.classList.add('card-empresa');
+
+                    let mainframesHTML = '';
+                    for (const mf of empresa.mainframes) {
+                        mainframesHTML += `<li>${mf.fabricante} - ${mf.modelo} <span class="mac">(${mf.macAdress})</span></li>`;
+                    }
+
+                    // Adiciona badge de status
+                    let statusOperacaoClass = empresa.statusOperacao.toLowerCase();
+                    let statusAcessoClass = empresa.statusAcesso.toLowerCase();
+
+                    card.innerHTML = `
+            <h3>${empresa.nomeEmpresarial}</h3>
+            <p><strong>Email:</strong> ${empresa.email}</p>
+            <p><strong>Representante:</strong> ${empresa.nomeRepresentante}</p>
+            <p><strong>ISPB:</strong> ${empresa.ispb}</p>
+            <p><strong>Status Operacional:</strong> <span class="status ${statusOperacaoClass}">${empresa.statusOperacao}</span></p>
+            <p><strong>Status de Acesso:</strong> <span class="status ${statusAcessoClass}">${empresa.statusAcesso}</span></p>
+            <div class="mainframes">
+              <strong>Mainframes:</strong>
+              <ul>${mainframesHTML}</ul>
+            </div>
+          `;
+
+                    container.appendChild(card);
+                }
+
+            } catch (erro) {
+                console.error('Erro ao buscar todas as empresas:', erro);
+                document.getElementById('lista_empresas').innerHTML = '<p class="erro">Erro ao carregar dados das empresas.</p>';
+            }
+        }
+
+        window.addEventListener('load', () => {
+            validarSessaoSynkro();
+            carregarTodasEmpresas();
+            document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="layout-principal">
+        <aside class="barra-lateral">
+            <div class="logo">Synkro</div>
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
+                <div class="nome-usuario" id="nome_login"></div>
+                <div class="email-usuario" id="email_login"></div>
+            </div>
+            <nav>
+                <ul class="menu-links">
+                    <li><a href="aceitarEmpresas.html">Aprovações</a></li>
+                    <li><a href="detalhesEmpresa.html" class="ativo">Ver detalhes</a></li>
+                </ul>
+
+
+                <button class="btn-sair" onclick="limparSessao()">Sair</button>
+            </nav>
+        </aside>
+
+        <main class="conteudo-principal">
+            <section class="detalhes-empresa">
+                <div class="cabecalho-painel">
+                    <h2>Empresas cadastradas</h2>
+                    <div class="data_atual">
+                        <p>Data de hoje: </p>
+                        <span id="dataHeader"></span>
+                        <img id="agenda_icon" src="./assets/imgs/icon_agenda.jpg" alt=""
+                            style="height:32px; border-radius:8px;">
+                    </div>
+                </div>
+
+                <div class="filtro-status">
+                    <button class="ativo" onclick="filtrarStatus('todos')">Todas</button>
+                    <button onclick="filtrarStatus('aprovado')">Aprovadas</button>
+                    <button onclick="filtrarStatus('pendente')">Pendentes</button>
+                    <button onclick="filtrarStatus('reprovado')">Reprovadas</button>
+                </div>
+
+                <div id="lista_empresas" class="lista-empresas"></div>
+            </section>
+        </main>
+    </div>
+        <!-- VLibras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+    <script>
+        function filtrarStatus(status) {
+            const cards = document.querySelectorAll('.card-empresa');
+            cards.forEach(card => {
+                if (status === 'todos') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = card.querySelector(`.status.${status}`) ? 'block' : 'none';
+                }
+            });
+            // Atualiza botão ativo
+            document.querySelectorAll('.filtro-status button').forEach(btn => btn.classList.remove('ativo'));
+            document.querySelector(`.filtro-status button[onclick="filtrarStatus('${status}')"]`).classList.add('ativo');
+        }
+    </script>
+</body>
+
+</html>

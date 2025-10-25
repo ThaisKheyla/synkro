@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Synkro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/historico.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/sessao.js"></script>
+</head>
+
+<body onload="validarSessaoSynkro()">
+    <div class="layout-principal">
+        <!-- Barra lateral -->
+        <aside class="barra-lateral">
+            <div class="logo">Synkro</div>
+
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
+                <div class="cargo-usuario">Gerente</div>
+                <div class="nome-usuario" id="nome_login"></div>
+                <div class="email-usuario" id="email_login"></div>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="#" class="ativo">Visão Geral</a></li>
+                    <li><a href="#">Desempenho</a></li>
+                    <li><a href="#">Alertas</a></li>
+                    <li><a href="CadastroFuncionario.html" class="btn-adicionar-componente">Adicionar funcionario</a>
+                    </li>
+                </ul>
+
+                <!-- Botão de sair (redireciona para a página inicial)-->
+                <button class="btn-sair" onclick="limparSessao()">Sair</button>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main class="conteudo-principal">
+            <div class="dashboard-grid">
+                <section class="visao-estrategica">
+                    <header class="visao-header">
+                        <h1>Visão Geral dos Mainframes em tempo real</h1>
+                        <p>Acompanhe os principais indicadores, histórico de alertas e tempo de resolução.</p>
+                    </header>
+
+                    <div class="top-widgets">
+                        <div class="widget widget-alertas">
+                            <h3>Histórico de alertas críticos</h3>
+                            <ul>
+                                <li class="alert-item"><span class="tag cpu">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag cpu">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag cpu">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- Mainframes (right column) -->
+                <aside class="mainframes-cadastrados">
+                    <div class="widget widget-pie-chart">
+                        <h3>Distribuição de alertas por componente</h3>
+                        <canvas id="pieChart" width="300" height="200"></canvas>
+                    </div>
+                    <div class="widget resumo-periodo">
+                        <h3>Visão geral</h3>
+                        <ol class="top-list">
+                            <li>Mainframes com alerta: 4</li>
+                            <li>Alertas Emergência: 2</li>
+                        </ol>
+                    </div>
+                </aside>
+            </div>
+        </main>
+</body>
+<script>
+    const pieCtx = document.getElementById('pieChart')?.getContext('2d');
+    let pieChart;
+    if (pieCtx) {
+        pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['CPU', 'RAM', 'Disco'],
+                datasets: [{ data: [50, 40, 10], backgroundColor: ['#071026', '#dc2626', '#fbbf24'] }]
+            },
+            options: { plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+    if (pieChart) {
+        const a = rnd(20, 60), b = rnd(10, 50), c = Math.max(0, 100 - (a + b));
+        pieChart.data.datasets[0].data = [a, b, c];
+        pieChart.update();
+    }
+    function rnd(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+
+    setInterval(updateDemoData, 4000);
+</script>
+
+</html>

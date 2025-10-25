@@ -12,15 +12,19 @@ function validarSessao() {
     }
 }
 
-
 function validarSessaoSynkro() {
-    if(sessionStorage.EMAIL_USUARIO == undefined) {
+    if (sessionStorage.EMAIL_USUARIO == undefined) {
         sessionStorage.clear();
-        window.location = "./login.html"
-        return
+        window.location = "./login.html";
+        return;
     }
-    nome_login.innerHTML = sessionStorage.NOME_USUARIO
-    email_login.innerHTML = sessionStorage.EMAIL_USUARIO
+
+    // pega os elementos do HTML
+    var nome_login = document.getElementById("nome_login");
+    var email_login = document.getElementById("email_login");
+
+    if (nome_login) nome_login.innerHTML = sessionStorage.NOME_USUARIO;
+    if (email_login) email_login.innerHTML = sessionStorage.EMAIL_USUARIO;
 }
 
 function limparSessao() {
@@ -31,17 +35,16 @@ function limparSessao() {
 // carregamento (loading)
 function aguardar() {
     var divAguardar = document.getElementById("div_aguardar");
-    divAguardar.style.display = "flex";
+    if(divAguardar) divAguardar.style.display = "flex";
 }
 
 function finalizarAguardar(texto) {
     var divAguardar = document.getElementById("div_aguardar");
-    divAguardar.style.display = "none";
+    if(divAguardar) divAguardar.style.display = "none";
 
     var divErrosLogin = document.getElementById("div_erros_login");
-    if (texto) {
+    if (texto && divErrosLogin) {
         divErrosLogin.style.display = "flex";
         divErrosLogin.innerHTML = texto;
     }
 }
-

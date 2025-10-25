@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Synkro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/dash.css">
+    <link rel="stylesheet" href="css/dash.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/sessao.js"></script>
 </head>
@@ -26,10 +26,16 @@
 
             <nav>
                 <ul>
-                    <li><a href="#" class="ativo">Visão Geral</a></li>
-                    <li><a href="#">Desempenho</a></li>
-                    <li><a href="#">Alertas</a></li>
-                    <li><a href="CadastroFuncionario.html" class="btn-adicionar-componente">Adicionar funcionario</a></li>
+                    <li>
+                        <a href="dashboardGerente.html" class="btn-visao-geral-componente">
+                            Visualizar Dashboards
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CadastroFuncionario.html" class="btn-adicionar-componente">
+                            Adicionar funcionario
+                        </a>
+                    </li>
                 </ul>
 
                 <!-- Botão de sair (redireciona para a página inicial)-->
@@ -37,7 +43,7 @@
             </nav>
         </aside>
 
-        
+
         <!-- Conteúdo principal -->
         <main class="conteudo-principal">
             <div class="dashboard-grid">
@@ -47,16 +53,72 @@
                         <p>Acompanhe os principais indicadores, histórico de alertas e tempo de resolução.</p>
                     </header>
 
+
+
+                    <div class="resumo-periodo">
+                        <div class="period-select">
+                            <select>
+                                <option value="1">Últimos 10 dias</option>
+                                <option value="2">Últimos 15 dias</option>
+                                <option value="3">Últimos 20 dias</option>
+                            </select>
+                        </div>
+
+                        <div class="counters">
+                            <div class="counter">
+                                <div class="label">Total de alertas<br>(7 dias)</div>
+                                <div class="value">100</div>
+                            </div>
+                            <div class="counter">
+                                <div class="label">Alertas de CPU<br>(7 dias)</div>
+                                <div class="value">50</div>
+                            </div>
+                            <div class="counter">
+                                <div class="label">Alertas de RAM<br>(7 dias)</div>
+                                <div class="value">40</div>
+                            </div>
+                            <div class="counter">
+                                <div class="label">Alertas de Disco<br>(7 dias)</div>
+                                <div class="value">10</div>
+                            </div>
+                        </div>
+                        <div class="big-chart">
+                            <h4>Histórico de alertas críticos nos últimos 7 dias</h4>
+                            <canvas id="historicoChart" width="900" height="220"></canvas>
+                        </div>
+
+                        <div class="small-charts-row">
+                            <div class="small-chart">
+                                <h5>Alertas por componente (%)</h5>
+                                <canvas id="pieChart" width="150" height="150"></canvas>
+                            </div>
+                            <div class="small-chart">
+                                <h5>Histórico de alertas críticos por componentes nos últimos 7 dias</h5>
+                                <canvas id="lineComponentsChart" width="150" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
                     <div class="top-widgets">
                         <div class="widget widget-alertas">
                             <h3>Histórico de alertas críticos</h3>
                             <ul>
-                                <li class="alert-item"><span class="tag cpu">CPU</span><span class="alert-desc"><strong>Alerta: 001</strong> — Mainframe 1</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag cpu">CPU</span><span class="alert-desc"><strong>Alerta: 002</strong> — Mainframe 2</span><span class="time">19/10/25 • 18:40</span></li>
-                                <li class="alert-item"><span class="tag ram">RAM</span><span class="alert-desc"><strong>Alerta: 003</strong> — Mainframe 1</span><span class="time">20/10/25 • 20:21</span></li>
-                                
+                                <li class="alert-item"><span class="tag cpu">CPU</span><span
+                                        class="alert-desc"><strong>Alerta: 001</strong> — Mainframe 1</span><span
+                                        class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag cpu">CPU</span><span
+                                        class="alert-desc"><strong>Alerta: 002</strong> — Mainframe 2</span><span
+                                        class="time">19/10/25 • 18:40</span></li>
+                                <li class="alert-item"><span class="tag ram">RAM</span><span
+                                        class="alert-desc"><strong>Alerta: 003</strong> — Mainframe 1</span><span
+                                        class="time">20/10/25 • 20:21</span></li>
+                                <div>
+                                    <!--Opção para direcionar para a página de mais alertas-->
+                                    <li class="ver-mais-alertas"><a href="./historico.html">Ver histórico...</a></li>
+                                </div>
                             </ul>
                         </div>
+                        <!--Função do analista-->
+                        <!--
                         <div class="widget widget-tempo">
                             <h3>Tempo para resolução do alerta</h3>
                             <ul>
@@ -66,72 +128,38 @@
                                 <li><span class="alert-id">Alerta: 003</span><span class="tempo badge">8h</span></li>
                             </ul>
                         </div>
-                    </div>
-
-                    <div class="resumo-periodo">
-                        <div class="period-select">
-                            <label>Últimos 7 dias</label>
-                        </div>
-
-                        <div class="counters">
-                            <div class="counter"> 
-                                <div class="label">Alertas Críticos (7 dias)</div>
-                                <div class="value">100</div>
-                            </div>
-                            <div class="counter"> 
-                                <div class="label">Alertas de CPU (7 dias)</div>
-                                <div class="value">50</div>
-                            </div>
-                            <div class="counter"> 
-                                <div class="label">Alertas de RAM (7 dias)</div>
-                                <div class="value">40</div>
-                            </div>
-                            <div class="counter"> 
-                                <div class="label">Alertas de Disco (7 dias)</div>
-                                <div class="value">10</div>
-                            </div>
-                        </div>
-
-                        <div class="big-chart">
-                            <h4>Histórico de alertas críticos nos últimos 7 dias</h4>
-                            <canvas id="historicoChart" width="900" height="220"></canvas>
-                        </div>
-
-                        <div class="small-charts-row">
-                            <div class="small-chart">
-                                <h5>Alertas por componente (%)</h5>
-                                <canvas id="pieChart" width="260" height="200"></canvas>
-                            </div>
-                            <div class="small-chart">
-                                <h5>Histórico de alertas críticos por componentes nos últimos 7 dias</h5>
-                                <canvas id="lineComponentsChart" width="260" height="200"></canvas>
-                            </div>
-                        </div>
+                    -->
                     </div>
                 </section>
 
-                <!-- Mainframes (right column) -->
                 <aside class="mainframes-cadastrados">
                     <div class="widget widget-mainframes-small">
-                        <h3>Mainframes Cadastrados</h3>
-                        <ol class="lista-mainframes-small">
-                            <li><span class="mf-pill">Mainframe1</span></li>
-                            <li><span class="mf-pill">Mainframe2</span></li>
-                            <li><span class="mf-pill">Mainframe3</span></li>
-                            <li><span class="mf-pill">Mainframe4</span></li>
-                            <li><span class="mf-pill">Mainframe5</span></li>
+                        <h3>Mainframes com mais alertas</h3>
+                        <ol class="top-list">
+                            <li>
+                                <div class="left"><span class="rank">1</span><span class="mf">Mainframe2</span></div>
+                                <span class="count">20 alertas</span>
+                            </li>
+                            <li>
+                                <div class="left"><span class="rank">2</span><span class="mf">Mainframe7</span></div>
+                                <span class="count">12 alertas</span>
+                            </li>
+                            <li>
+                                <div class="left"><span class="rank">3</span><span class="mf">Mainframe3</span></div>
+                                <span class="count">7 alertas</span>
+                            </li>
+                            <li>
+                                <div class="left"><span class="rank">4</span><span class="mf">Mainframe1</span></div>
+                                <span class="count">5 alertas</span>
+                            </li>
+                            <li>
+                                <div class="left"><span class="rank">5</span><span class="mf">Mainframe5</span></div>
+                                <span class="count">2 alertas</span>
+                            </li>
+                            <!--Opção para direcionar para a página de mainframes cadastrados -->
+                            <ol class="ver-mais-alertas"><a href="./alertas.html">Visualizar todos os alertas</a></ol>
                         </ol>
                     </div>
-
-                    <h4>Mainframes com mais alertas</h4>
-                    <ol class="top-list">
-                        <li><div class="left"><span class="rank">1</span><span class="mf">Mainframe2</span></div><span class="count">20 alertas</span></li>
-                        <li><div class="left"><span class="rank">2</span><span class="mf">Mainframe7</span></div><span class="count">12 alertas</span></li>
-                        <li><div class="left"><span class="rank">3</span><span class="mf">Mainframe3</span></div><span class="count">7 alertas</span></li>
-                        <li><div class="left"><span class="rank">4</span><span class="mf">Mainframe1</span></div><span class="count">5 alertas</span></li>
-                        <li><div class="left"><span class="rank">5</span><span class="mf">Mainframe5</span></div><span class="count">2 alertas</span></li>
-                    </ol>
-
                 </aside>
             </div>
         </main>
@@ -178,9 +206,9 @@
             data: {
                 labels: ['20/10', '21/10', '22/10', '23/10', '24/10', '25/10', '26/10'],
                 datasets: [
-                    { label: 'Alertas CPU', data: [10, 20, 25, 18, 30, 35, 28], borderColor: '#071026', tension: 0.3, fill: false },
-                    { label: 'Alertas Disco', data: [5, 8, 10, 12, 18, 20, 19], borderColor: '#fbbf24', tension: 0.3, fill: false },
-                    { label: 'Alertas RAM', data: [8, 6, 10, 14, 22, 18, 15], borderColor: '#dc2626', tension: 0.3, fill: false }
+                    { label: 'CPU', data: [10, 20, 25, 18, 30, 35, 28], borderColor: '#071026', tension: 0.3, fill: false },
+                    { label: 'Disco', data: [5, 8, 10, 12, 18, 20, 19], borderColor: '#fbbf24', tension: 0.3, fill: false },
+                    { label: 'RAM', data: [8, 6, 10, 14, 22, 18, 15], borderColor: '#dc2626', tension: 0.3, fill: false }
                 ]
             },
             options: { plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }

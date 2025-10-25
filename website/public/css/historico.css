@@ -15,11 +15,10 @@ body {
 }
 /* ======== BARRA LATERAL ======== */
 .barra-lateral {
-    background: linear-gradient(180deg, #ffffff 0%, #f0f2ff 100%);
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.05);
-    border-right: 1px solid #e0e0e0;
-    width: 207px;
+    width: 200px;
     min-width: 175px;
+    background: #fff;
+    box-shadow: 2px 0 30px rgba(0, 0, 0, 0.08);
     padding: 30px 20px;
     display: flex;
     flex-direction: column;
@@ -81,11 +80,10 @@ body {
     color: #777;
 }
 
-/* ======== BOTÃO ADICIONAR COMPONENTE ======== */
 .barra-lateral .btn-adicionar-componente {
     margin-top: 12px;
     background: transparent;
-    color: #00021d;
+    color: #6c63ff;
     border: 2px solid rgba(108, 99, 255, 0.16);
     padding: 10px 18px;
     border-radius: 10px;
@@ -109,41 +107,13 @@ body {
     font-size: 0.95em;
     opacity: 0.9;
 }
-/* ======== BOTÃO VISUALIZAR DASHBOARD ======== */
-.barra-lateral .btn-visao-geral-componente {
-    margin-top: 12px;
-    background: transparent;
-    color: #00021d;
-    border: 2px solid rgba(108, 99, 255, 0.16);
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.22s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.barra-lateral .btn-visao-geral-componente:hover {
-    background: linear-gradient(90deg, rgba(108, 99, 255, 0.12), rgba(0, 194, 199, 0.08));
-    transform: translateY(-3px);
-    color: #00021d;
-    border-color: rgba(108, 99, 255, 0.28);
-}
-
-.barra-lateral .btn-visao-geral-componente::before {
-    content: '+';
-    font-size: 0.95em;
-    opacity: 0.9;
-}
 
 /* ======== BOTÃO SAIR ======== */
 
 .btn-sair {
     margin-top: 12px;
     background: transparent;
-    color: #00021d;
+    color: #6c63ff;
     border: 2px solid rgba(108, 99, 255, 0.16);
     padding: 10px 18px;
     border-radius: 10px;
@@ -163,8 +133,10 @@ body {
     border-color: rgba(108, 99, 255, 0.28);
 }
 
+/* small icon using pseudo-element */
 .btn-sair::before {
-    content: '\21A4';
+    content: '\2190';
+    /* left arrow */
     font-size: 0.95em;
     opacity: 0.9;
 }
@@ -176,14 +148,10 @@ body {
     }
 }
 
-/* ======== MENU LATERAL ======== */
+/* ======== MENU ======== */
 .barra-lateral nav {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
-
 
 .barra-lateral nav ul {
     list-style: none;
@@ -460,7 +428,8 @@ body {
 .mainframes-cadastrados {
     width: 280px;
     min-width: 250px;
-    max-width: 100%;
+    max-height: 100%;
+    min-height: 94%;
     background: #ffffff;
     border-radius: 24px;
     box-shadow: 0 12px 36px rgba(7,16,38,0.08);
@@ -844,7 +813,6 @@ body {
     transform-origin: left;
     transition: transform 0.3s ease;
 }
-
 
 
 .counter:hover::before {
