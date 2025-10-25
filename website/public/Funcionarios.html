@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funcionários - Synkro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dash.css">
+</head>
+
+<body onload="carregarFuncionarios()">
+    <div class="layout-principal">
+        <!-- BARRA LATERAL -->
+        <aside class="barra-lateral">
+            <div class="logo">Synkro</div>
+
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
+                <div class="nome-usuario" id="nomeUsuario">Usuário Synkro</div>
+                <div class="email-usuario" id="emailUsuario">usuario@synkro.com</div>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="dashboardGerente.html">Visão Geral</a></li>
+                    <li><a href="Mainframe.html">Mainframes</a></li>
+                    <li><a href="#" class="ativo">Funcionários</a></li>
+                </ul>
+            </nav>
+
+            <button class="btn-sair" onclick="sair()">Sair</button>
+        </aside>
+
+        <main class="conteudo-principal">
+            <section class="painel-hardware">
+                <div class="dashboard-grid">
+                    <div class="visao-estrategica">
+                        <div class="visao-header">
+                            <h1>Funcionários Cadastrados</h1>
+                        </div>
+
+                        <div class="top-widgets">
+                            <div class="widget-mainframes-small" style="width: 100%;">
+                                <h3>Lista de Funcionários</h3>
+
+                                <table id="tabelaFuncionarios" style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: #f5f7fd; color: #071026; text-align: left;">
+                                            <th style="padding: 12px;">Nome</th>
+                                            <th style="padding: 12px;">E-mail</th>
+                                            <th style="padding: 12px;">Cargo</th>
+                                            <th style="padding: 12px;">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyFuncionarios">
+                                        <tr>
+                                            <td colspan="4" style="text-align:center; padding: 20px; color: #777;">
+                                                Carregando...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div style="display:flex; justify-content:flex-end; align-items:center; gap:12px; margin:12px 0;">
+                                    <a href="CadastroFuncionario.html"
+                                       aria-label="Adicionar Funcionário"
+                                       style="display:inline-flex; align-items:center; gap:10px; padding:8px 14px; background:linear-gradient(90deg,#4f46e5,#2563eb); color:#fff; text-decoration:none; border-radius:10px; font-weight:700; box-shadow:0 8px 20px rgba(37,99,235,0.12); transition:transform .12s ease, box-shadow .12s ease;">
+                                        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:rgba(255,255,255,0.12); font-size:14px; line-height:1;">+</span>
+                                        Adicionar Funcionário
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal de edição -->
+    <div id="modalEditar"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:50;">
+        <div>
+            <h3 style="margin-top:0;">Editar Funcionário</h3>
+            <form id="formEditar">
+                <input type="hidden" id="editId">
+                <label>Nome</label>
+                <input id="editNome" required style="width:100%; margin-bottom:8px;">
+                <label>E-mail</label>
+                <input id="editEmail" type="email" required style="width:100%; margin-bottom:4px;">
+                <div class="campo-erro" id="editEmailError" style="color:#b91c1c; font-size:0.9rem; height:1.2rem;">
+                </div>
+                <label>Data de nascimento</label>
+                <input id="editNascimento" type="date" style="width:100%; margin-bottom:8px;">
+                <label>CPF</label>
+                <input id="editCpf" maxlength="14" placeholder="000.000.000-00" oninput="formatarCPF(this)"
+                    style="width:100%; margin-bottom:4px;">
+                <div class="campo-erro" id="editCpfError" style="color:#b91c1c; font-size:0.9rem; height:1.2rem;"></div>
+                <label>Cargo</label>
+                <select id="editCargo" style="width:100%; margin-bottom:12px;"></select>
+                <label>Status</label>
+                <select id="editStatus" style="width:100%; margin-bottom:12px;">
+                    <option value="1">Ativo</option>
+                    <option value="0">Inativo</option>
+                </select>
+
+                <div style="display:flex; gap:8px; justify-content:flex-end;">
+                    <button type="button" id="btnCancelarEdit"
+                        style="background:#9ca3af; color:#fff; border:none; padding:8px 12px; border-radius:6px;">Cancelar</button>
+                    <button type="submit"
+                        style="background:#2563eb; color:#fff; border:none; padding:8px 12px; border-radius:6px;">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        async function carregarFuncionarios() {
+            const idEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+            const cargoUsuarioRaw = sessionStorage.getItem("CARGO_USUARIO") || "";
+            const cargoUsuario = String(cargoUsuarioRaw).toLowerCase(); // normaliza
+            const isGerente = cargoUsuario === "gerente";
+
+            const tbody = document.getElementById("tbodyFuncionarios");
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px;">Carregando...</td></tr>`;
+
+            try {
+                const resposta = await fetch(`/funcionarios/empresa/${idEmpresa}`);
+                if (!resposta.ok) throw new Error("Erro ao buscar funcionários");
+
+                const funcionarios = await resposta.json();
+                if (funcionarios.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#777;">Nenhum funcionário cadastrado.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+
+                funcionarios.forEach(func => {
+                    const id = func.id ?? func.idFuncionario ?? func.id;
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+            <td style="padding:10px;">${func.nome}</td>
+            <td style="padding:10px;">${func.email}</td>
+            <td style="padding:10px;">${func.cargo || ''}</td>
+            <td style="padding:10px;">
+              ${''}
+              <button class="btn-editar" data-id="${id}" style="background:#2563eb; color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-weight:600; margin-right:6px;">Editar</button>
+              <button class="btn-excluir" data-id="${id}" style="background:#dc2626; color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-weight:600;">Excluir</button>
+            </td>
+          `;
+                    tbody.appendChild(tr);
+                });
+
+
+                tbody.addEventListener('click', (ev) => {
+                    const btn = ev.target.closest('button');
+                    if (!btn) return;
+                    const id = btn.dataset.id;
+                    if (!id) return;
+
+                    if (btn.classList.contains('btn-editar')) {
+                        abrirEditar(id);
+                        return;
+                    }
+                    if (btn.classList.contains('btn-excluir')) {
+                        deletarFuncionario(id);
+                        return;
+                    }
+                }, { once: false });
+
+            } catch (erro) {
+                console.error(erro);
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#e11d48;">Erro ao carregar funcionários.</td></tr>`;
+            }
+        }
+
+        async function abrirEditar(id) {
+            try {
+                const resp = await fetch(`/funcionarios/${id}`);
+                if (!resp.ok) throw new Error("Não foi possível recuperar dados do funcionário.");
+                const func = await resp.json();
+
+                const cargosResp = await fetch('/funcionarios/cargos');
+                const cargos = cargosResp.ok ? await cargosResp.json() : [];
+                const cargoSelect = document.getElementById('editCargo');
+                cargoSelect.innerHTML = cargos.map(c => `<option value="${c.idCargo}">${c.nome}</option>`).join('');
+
+                document.getElementById('editId').value = id;
+                document.getElementById('editNome').value = func.nome || '';
+                document.getElementById('editEmail').value = func.email || '';
+
+                document.getElementById('editNascimento').value = func.dtnascimento || func.dtnascimento || '';
+                document.getElementById('editCpf').value = func.cpf || '';
+                if (func.fkCargo) document.getElementById('editCargo').value = func.fkCargo;
+                if (typeof func.statusAcesso !== 'undefined') document.getElementById('editStatus').value = func.statusAcesso ? "1" : "0";
+
+                document.getElementById('editCpfError').textContent = '';
+                document.getElementById('editEmailError').textContent = '';
+
+                document.getElementById('modalEditar').style.display = 'flex';
+            } catch (err) {
+                alert('Erro ao abrir edição: ' + err.message);
+                console.error(err);
+            }
+        }
+
+        document.getElementById('btnCancelarEdit').addEventListener('click', () => {
+            document.getElementById('modalEditar').style.display = 'none';
+        });
+
+        document.getElementById('editEmail').addEventListener('input', () => {
+            document.getElementById('editEmailError').textContent = '';
+            document.getElementById('editEmail').style.border = '';
+        });
+        document.getElementById('editCpf').addEventListener('input', () => {
+            document.getElementById('editCpfError').textContent = '';
+            document.getElementById('editCpf').style.border = '';
+        });
+
+        document.getElementById('formEditar').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            const payload = {
+                nome: document.getElementById('editNome').value,
+                email: document.getElementById('editEmail').value,
+                dtnascimento: document.getElementById('editNascimento').value || null,
+                cpf: document.getElementById('editCpf').value,
+                fkCargo: parseInt(document.getElementById('editCargo').value, 10),
+                statusAcesso: parseInt(document.getElementById('editStatus').value, 10)
+            };
+
+            try {
+                const resp = await fetch(`/funcionarios/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (resp.ok) {
+                    alert('✅ Funcionário atualizado com sucesso!');
+                    document.getElementById('modalEditar').style.display = 'none';
+                    carregarFuncionarios();
+                    return;
+                }
+
+                const erro = await resp.json().catch(() => ({}));
+                const msg = erro.mensagem || resp.statusText || 'Erro desconhecido';
+
+                if (resp.status === 409) {
+                    if (/cpf/i.test(msg)) {
+                        document.getElementById('editCpfError').textContent = msg;
+                        document.getElementById('editCpf').style.border = '2px solid #b91c1c';
+                        document.getElementById('editCpf').focus();
+                    } else if (/email/i.test(msg)) {
+                        document.getElementById('editEmailError').textContent = msg;
+                        document.getElementById('editEmail').style.border = '2px solid #b91c1c';
+                        document.getElementById('editEmail').focus();
+                    } else {
+                        alert('Erro: ' + msg);
+                    }
+                } else {
+                    alert('Erro ao atualizar: ' + msg);
+                }
+            } catch (err) {
+                alert('Servidor indisponível: ' + err.message);
+                console.error(err);
+            }
+        });
+
+        function deletarFuncionario(id) {
+            if (!confirm("Tem certeza que deseja excluir este funcionário?")) return;
+
+            fetch(`/funcionarios/${id}`, { method: "DELETE" })
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    alert("✅ Funcionário removido com sucesso!");
+                    carregarFuncionarios();
+                })
+                .catch(() => alert("❌ Erro ao remover funcionário."));
+        }
+
+        function formatarCPF(input) {
+            let valor = input.value.replace(/\D/g, "");
+            valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+            valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+            valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            input.value = valor;
+        }
+
+    </script>
+</body>
+
+</html>
