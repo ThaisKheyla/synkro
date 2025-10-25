@@ -31,6 +31,7 @@ function autenticar(req, res) {
           nome: usuario.nome,
           email: usuario.email,
           cargo: usuario.cargo,
+          idEmpresa: usuario.idEmpresa,
           empresa: usuario.empresa
         });
 

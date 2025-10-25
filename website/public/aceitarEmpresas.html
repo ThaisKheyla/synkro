@@ -16,6 +16,7 @@
             <div class="logo">Synkro</div>
             <div class="perfil-usuario">
                 <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
+                <div class="cargo-usuario">Synkro</div>
                 <div class="nome-usuario" id="nome_login"></div>
                 <div class="email-usuario" id="email_login"></div>
             </div>
@@ -24,8 +25,6 @@
                     <li><a href="aceitarEmpresas.html" class="ativo">Aprovações</a></li>
                     <li><a href="detalhesEmpresa.html">Ver detalhes</a></li>
                 </ul>
-
-
                 <button class="btn-sair" onclick="limparSessao()">Sair</button>
             </nav>
         </aside>
@@ -54,6 +53,7 @@
                         </div>
                         <div class="rotulo">Filtro</div>
                         <select onchange="criarCards()" id="filtro" class="filtro">
+
                             <option value="1,2,3">Todas as empresas</option>
                             <option value="1">Pendentes</option>
                             <option value="2">Reprovadas</option>
@@ -73,6 +73,7 @@
                                 </p>
                             </div>
                             <table id="tabela_empresas"></table>
+
                         </div>
                     </div>
                 </div>
@@ -92,7 +93,6 @@
     </script>
 
 </body>
-
 <script>
     document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
 
