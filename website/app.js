@@ -10,15 +10,11 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
-// Porta e host
 const PORTA_APP = process.env.APP_PORT || 8000;
 const HOST_APP = process.env.APP_HOST || "localhost";
 
 const app = express();
 
-// --------------------
-// Rotas
-// --------------------
 const indexRouter = require("./src/routes/index");
 const usuarioRouter = require("./src/routes/usuarios");
 const empresasRouter = require("./src/routes/empresas");
@@ -28,17 +24,11 @@ const mainframesRouter = require("./src/routes/mainframes");
 const funcionariosRouter = require("./src/routes/funcionarios");
 const empresaDetalhadaRouter = require("./src/routes/empresaDetalhada");
 
-// --------------------
-// Middlewares
-// --------------------
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
-// --------------------
-// Uso das rotas
-// --------------------
 app.use("/", indexRouter);
 app.use("/usuarios", usuarioRouter);
 app.use("/empresas", empresasRouter);
@@ -47,9 +37,7 @@ app.use("/aceitarEmpresas", aceitarEmpresasRouter);
 app.use("/mainframes", mainframesRouter);
 app.use("/funcionarios", funcionariosRouter);
 app.use("/empresa", empresaDetalhadaRouter);
-// --------------------
-// Início do servidor
-// --------------------
+
 app.listen(PORTA_APP, () => {
   console.log(`
   ##########################################################
