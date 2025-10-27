@@ -7,9 +7,10 @@
     <title>Funcionários - Synkro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/dash.css">
+    <script src="./js/sessao.js"></script>
 </head>
 
-<body onload="carregarFuncionarios()">
+<body onload="carregarFuncionarios(), validarSessaoSynkro()">
     <div class="layout-principal">
         <!-- BARRA LATERAL -->
         <aside class="barra-lateral">
@@ -17,14 +18,16 @@
 
             <div class="perfil-usuario">
                 <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
-                <div class="nome-usuario" id="nomeUsuario">Usuário Synkro</div>
-                <div class="email-usuario" id="emailUsuario">usuario@synkro.com</div>
+                <div class="cargo-usuario">Gerente</div>
+                <div class="nome-usuario" id="nome_login"></div>
+                <div class="email-usuario" id="email_login"></div>
             </div>
 
             <nav>
                 <ul>
-                    <li><a href="dashboardGerente.html">Visão Geral</a></li>
-                    <li><a href="#" class="ativo">Funcionários</a></li>
+                    <li><a href="dashboardGerente.html" class="btn-adicionar-componente">Visão Geral</a></li>
+                    <li><a href="historico.html" class="btn-adicionar-componente">Alertas</a></li>
+                    <li><a href="#" class="ativo btn-adicionar-componente">Funcionários</a></li>
                 </ul>
             </nav>
 
@@ -32,47 +35,45 @@
         </aside>
 
         <main class="conteudo-principal">
-            <section class="painel-hardware">
-                <div class="dashboard-grid">
-                    <div class="visao-estrategica">
-                        <div class="visao-header">
-                            <h1>Funcionários Cadastrados</h1>
-                        </div>
+            <div class="dashboard-grid">
+                <div class="visao-estrategica">
+                    <div class="visao-header">
+                        <h1>Funcionários Cadastrados</h1>
+                    </div>
 
-                        <div class="top-widgets">
-                            <div class="widget-mainframes-small" style="width: 100%;">
-                                <h3>Lista de Funcionários</h3>
+                    <div class="top-widgets">
+                        <div class="widget-mainframes-small" style="width: 100%;">
+                            <h3>Lista de Funcionários</h3>
 
-                                <table id="tabelaFuncionarios" style="width: 100%; border-collapse: collapse;">
-                                    <thead>
-                                        <tr style="background: #f5f7fd; color: #071026; text-align: left;">
-                                            <th style="padding: 12px;">Nome</th>
-                                            <th style="padding: 12px;">E-mail</th>
-                                            <th style="padding: 12px;">Cargo</th>
-                                            <th style="padding: 12px;">Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbodyFuncionarios">
-                                        <tr>
-                                            <td colspan="4" style="text-align:center; padding: 20px; color: #777;">
-                                                Carregando...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <table id="tabelaFuncionarios" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background: #f5f7fd; color: #071026; text-align: left;">
+                                        <th style="padding: 12px;">Nome</th>
+                                        <th style="padding: 12px;">E-mail</th>
+                                        <th style="padding: 12px;">Cargo</th>
+                                        <th style="padding: 12px;">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyFuncionarios">
+                                    <tr>
+                                        <td colspan="4" style="text-align:center; padding: 20px; color: #777;">
+                                            Carregando...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                                <div style="display:flex; justify-content:flex-end; align-items:center; gap:12px; margin:12px 0;">
-                                    <a href="CadastroFuncionario.html"
-                                       aria-label="Adicionar Funcionário"
-                                       style="display:inline-flex; align-items:center; gap:10px; padding:8px 14px; background:linear-gradient(90deg,#4f46e5,#2563eb); color:#fff; text-decoration:none; border-radius:10px; font-weight:700; box-shadow:0 8px 20px rgba(37,99,235,0.12); transition:transform .12s ease, box-shadow .12s ease;">
-                                        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:rgba(255,255,255,0.12); font-size:14px; line-height:1;">+</span>
-                                        Adicionar Funcionário
-                                    </a>
-                                </div>
+                            <div style="display:flex; justify-content:flex-end; align-items:center; gap:12px; margin:12px 0;">
+                                <a href="CadastroFuncionario.html"
+                                   aria-label="Adicionar Funcionário"
+                                   style="display:inline-flex; align-items:center; gap:10px; padding:8px 14px; background:linear-gradient(90deg,#4f46e5,#2563eb); color:#fff; text-decoration:none; border-radius:10px; font-weight:700; box-shadow:0 8px 20px rgba(37,99,235,0.12); transition:transform .12s ease, box-shadow .12s ease;">
+                                    <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:rgba(255,255,255,0.12); font-size:14px; line-height:1;">+</span>
+                                    Adicionar Funcionário
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </main>
     </div>
 

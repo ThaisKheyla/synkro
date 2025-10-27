@@ -11,7 +11,7 @@
     <script src="./js/sessao.js"></script>
 </head>
 
-<body>
+<body onload="validarSessaoSynkro()">
     <div class="layout-principal">
         <!-- Barra lateral -->
         <aside class="barra-lateral">
@@ -19,19 +19,19 @@
 
             <div class="perfil-usuario">
                 <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
-                <div class="nome-usuario">Usuário Synkro</div>
-                <div class="email-usuario">usuario@synkro.com</div>
+                <div class="cargo-usuario">Analista</div>
+                <div class="nome-usuario" id="nome_login"></div>
+                <div class="email-usuario" id="email_login"></div>
             </div>
 
             <nav>
                 <ul>
-                    <li><a href="dashboardAnalista.html">Visão Geral</a></li>
-                    <li><a href="#">Alertas</a></li>
-                    <li><a href="Mainframe.html"  class="ativo" >Mainframes</a></li>
-                     <button class="btn-sair" onclick="limparSessao()">Sair</button>
+                    <li><a href="dashboardAnalista.html" class="btn-adicionar-componente">Visão Geral</a></li>
+                    <li><a href="Mainframe.html" class="ativo btn-adicionar-componente" >Mainframes</a></li>
+                    <li><a href="CadastroMainframe.html" class="btn-adicionar-componente">Adicionar mainframe</a></li>
                 </ul>
-
-
+                
+                <button class="btn-sair" onclick="limparSessao()">Sair</button>
             </nav>
         </aside>
 
@@ -65,9 +65,6 @@
                                     </li>
                                     <li>
                                         <a class="mf-pill" href="DashMainframe.html">MF-005 - Núcleo Epsilon</a>
-                                    </li>
-                                    <li>
-                                        <a class="mf-pill" href="DashMainframe.html">MF-006 - Núcleo Zeta</a>
                                     </li>
                                 </ul>
                             </div>
