@@ -145,7 +145,7 @@ CREATE TABLE alerta (
    valor_coletado DECIMAL(5,2),
    fkMainframe INT NOT NULL,
    fkComponente INT NOT NULL,
-   fkGravidade INT NOT NULL,
+   fkGravidade INT NOT NULL default 1,
    fkMetrica INT NOT NULL,
    fkStatus INT NOT NULL DEFAULT 1,
    PRIMARY KEY (id),
@@ -214,29 +214,70 @@ VALUES
 ('IBM', 'Z13', '978436525625487', 3, 3, 1);
 
 -- Tipo
-INSERT INTO tipo (descricao) VALUES ('Uso'),('Temperatura');
+INSERT INTO tipo (id, descricao) VALUES
+(1, 'Uso'),
+(2, 'Taxa Ociosa'),
+(3, 'Espera de I/O'),
+(4, 'Swap Rate'),
+(5, 'Throughput'),
+(6, 'IOPS'),
+(7, 'Leitura'),
+(8, 'Escrita'),
+(9, 'Latência');
 
 -- Componentes
-INSERT INTO componente (nome) VALUES
-('Processador'),
-('Memória RAM'),
-('Disco Rígido');
+INSERT INTO componente (id, nome) VALUES
+(1, 'CPU'),
+(2, 'RAM'),
+(3, 'Disco');
 
 -- Métricas
-INSERT INTO metrica (id,fkComponente, min, max, fkTipo) VALUES
-(1, 1, 5.0, 90.0, 1),
-(2, 2, 5.0, 90.0, 1),
-(3, 1, 0.0, 75.0, 2);
+-- CPU
+INSERT INTO metrica (id, fkComponente, min, max, fkTipo) VALUES
+(1, 1, 0.00, 90.00, 1),   -- usoCpu
+(5, 1, 0.00, 70.00, 2),   -- cpuOciosa
+(6, 1, 0.00, 40.00, 3);   -- cpuIoWait
+
+-- RAM
+INSERT INTO metrica (id, fkComponente, min, max, fkTipo) VALUES
+(2, 2, 0.00, 90.00, 1);   -- usoRam
+
+-- DISCO
+INSERT INTO metrica (id, fkComponente, min, max, fkTipo) VALUES
+(3, 3, 0.00, 85.0, 1),   -- usoDisco
+(4, 3, 0.00, 60.0, 4),   -- swapRate
+(7, 3, 0.00, 500.0, 5),  -- throughput (MB/s)
+(8, 3, 0.00, 100.0, 6),-- discIops
+(9, 3, 0.00, 10.0, 7), -- read
+(10, 3, 0.00, 100.00, 8),-- write
+(11, 3, 0.00, 50.00, 9);  -- latenciaDisc
 
 
--- Componentes por mainframe
+
+-- Mainframe 1
 INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica) VALUES
-(1,1, 1),
-(2,1, 2),
-(1,2, 1),
-(2,2, 2),
-(1,3, 1),
-(2,3, 2);
+(1, 1, 1),
+(1, 1, 5),
+(1, 1, 6),
+(2, 1, 2),
+(3, 1, 3),
+(3, 1, 4),
+(3, 1, 7),
+(3, 1, 8),
+(3, 1, 9),
+(3, 1, 10),
+(3, 1, 11);
+
+-- Mainframe 2
+INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica)
+SELECT fkComponente, 2, fkMetrica FROM componente_mainframe WHERE fkMainframe = 1;
+
+-- Mainframe 3
+INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica)
+SELECT fkComponente, 3, fkMetrica FROM componente_mainframe WHERE fkMainframe = 1;
+
+
+
 
 
 -- Gravidades
