@@ -16,21 +16,18 @@
         <!-- Barra lateral -->
         <aside class="barra-lateral">
             <div class="logo">Synkro</div>
-
             <div class="perfil-usuario">
                 <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
                 <div class="cargo-usuario">Gerente</div>
                 <div class="nome-usuario" id="nome_login"></div>
                 <div class="email-usuario" id="email_login"></div>
             </div>
-
             <nav>
                 <ul>
                     <li><a href="#" class="ativo btn-adicionar-componente">Visão Geral</a></li>
                     <li><a href="historico.html" class="btn-adicionar-componente">Alertas</a></li>
                     <li><a href="Funcionarios.html" class="btn-adicionar-componente">Ver funcionario</a></li>
                 </ul>
-                
                 <button class="btn-sair" onclick="limparSessao()">Sair</button>
             </nav>
         </aside>
@@ -54,6 +51,39 @@
                                 <option value="2">Últimos 15 dias</option>
                                 <option value="3">Últimos 20 dias</option>
                             </select>
+                        </div>
+                        <div class="top-widgets">
+                            <div class="widget widget-alertas">
+                                <h3>Histórico de alertas críticos</h3>
+                                <ul>
+                                    <li class="alert-item"><span class="tag cpu">CPU</span><span
+                                            class="alert-desc"><strong>Alerta: 001</strong> — Mainframe 1</span><span
+                                            class="time">18/10/25 • 12:12</span></li>
+                                    <li class="alert-item"><span class="tag cpu">CPU</span><span
+                                            class="alert-desc"><strong>Alerta: 002</strong> — Mainframe 2</span><span
+                                            class="time">19/10/25 • 18:40</span></li>
+                                    <li class="alert-item"><span class="tag ram">RAM</span><span
+                                            class="alert-desc"><strong>Alerta: 003</strong> — Mainframe 1</span><span
+                                            class="time">20/10/25 • 20:21</span></li>
+                                    <div>
+                                        <!--Opção para direcionar para a página de mais alertas-->
+                                        <li class="ver-mais-alertas"><a href="./historico.html">Ver histórico...</a>
+                                        </li>
+                                    </div>
+                                </ul>
+                            </div>
+                            <!--Função do analista-->
+                            <!--
+                        <div class="widget widget-tempo">
+                            <h3>Tempo para resolução do alerta</h3>
+                            <ul>
+                                <li><span class="alert-id">Alerta: 001</span><span class="tempo badge">1h</span></li>
+                                <li><span class="alert-id">Alerta: 002</span><span class="tempo badge">2h</span></li>
+                                <li><span class="alert-id">Alerta: 003</span><span class="tempo badge">8h</span></li>
+                                <li><span class="alert-id">Alerta: 003</span><span class="tempo badge">8h</span></li>
+                            </ul>
+                        </div>
+                    -->
                         </div>
 
                         <div class="counters">
@@ -90,38 +120,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="top-widgets">
-                        <div class="widget widget-alertas">
-                            <h3>Histórico de alertas críticos</h3>
-                            <ul>
-                                <li class="alert-item"><span class="tag cpu">CPU</span><span
-                                        class="alert-desc"><strong>Alerta: 001</strong> — Mainframe 1</span><span
-                                        class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag cpu">CPU</span><span
-                                        class="alert-desc"><strong>Alerta: 002</strong> — Mainframe 2</span><span
-                                        class="time">19/10/25 • 18:40</span></li>
-                                <li class="alert-item"><span class="tag ram">RAM</span><span
-                                        class="alert-desc"><strong>Alerta: 003</strong> — Mainframe 1</span><span
-                                        class="time">20/10/25 • 20:21</span></li>
-                                <div>
-                                    <!--Opção para direcionar para a página de mais alertas-->
-                                    <li class="ver-mais-alertas"><a href="./historico.html">Ver histórico...</a></li>
-                                </div>
-                            </ul>
-                        </div>
-                        <!--Função do analista-->
-                        <!--
-                        <div class="widget widget-tempo">
-                            <h3>Tempo para resolução do alerta</h3>
-                            <ul>
-                                <li><span class="alert-id">Alerta: 001</span><span class="tempo badge">1h</span></li>
-                                <li><span class="alert-id">Alerta: 002</span><span class="tempo badge">2h</span></li>
-                                <li><span class="alert-id">Alerta: 003</span><span class="tempo badge">8h</span></li>
-                                <li><span class="alert-id">Alerta: 003</span><span class="tempo badge">8h</span></li>
-                            </ul>
-                        </div>
-                    -->
-                    </div>
                 </section>
 
                 <aside class="mainframes-cadastrados">
@@ -129,23 +127,28 @@
                         <h3>Mainframes com mais alertas</h3>
                         <ol class="top-list">
                             <li>
-                                <div class="left"><span class="rank">1</span><span class="mf">Mainframe2</span></div>
+                                <div class="left"><span class="rank">1</span><span class="mf">Mainframe2</span>
+                                </div>
                                 <span class="count">20 alertas</span>
                             </li>
                             <li>
-                                <div class="left"><span class="rank">2</span><span class="mf">Mainframe7</span></div>
+                                <div class="left"><span class="rank">2</span><span class="mf">Mainframe7</span>
+                                </div>
                                 <span class="count">12 alertas</span>
                             </li>
                             <li>
-                                <div class="left"><span class="rank">3</span><span class="mf">Mainframe3</span></div>
+                                <div class="left"><span class="rank">3</span><span class="mf">Mainframe3</span>
+                                </div>
                                 <span class="count">7 alertas</span>
                             </li>
                             <li>
-                                <div class="left"><span class="rank">4</span><span class="mf">Mainframe1</span></div>
+                                <div class="left"><span class="rank">4</span><span class="mf">Mainframe1</span>
+                                </div>
                                 <span class="count">5 alertas</span>
                             </li>
                             <li>
-                                <div class="left"><span class="rank">5</span><span class="mf">Mainframe5</span></div>
+                                <div class="left"><span class="rank">5</span><span class="mf">Mainframe5</span>
+                                </div>
                                 <span class="count">2 alertas</span>
                             </li>
                         </ol>
