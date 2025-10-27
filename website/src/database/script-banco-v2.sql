@@ -92,35 +92,34 @@ CREATE TABLE mainframe (
 -- =====================================================
 -- MÉTRICAS E COMPONENTES
 -- =====================================================
-CREATE TABLE tipo( -- tipo de registro que vamos coletar do componente
-id INT NOT NULL AUTO_INCREMENT,
-descricao VARCHAR(100),
-PRIMARY KEY (id)
-);
 
 CREATE TABLE componente (
+  id INT NOT NULL AUTO_INCREMENT,
+  nome VARCHAR(100),
+  PRIMARY KEY (id));
+  
+  CREATE TABLE nome_metrica(
   id INT NOT NULL AUTO_INCREMENT,
   nome VARCHAR(100),
   PRIMARY KEY (id));
 
 CREATE TABLE metrica (
   id INT NOT NULL,
+  fkNomeMetrica INT NOT NULL,
   fkComponente INT NOT NULL,
   min DECIMAL(6,2),
   max DECIMAL(6,2),
-  fkTipo INT NOT NULL,
   PRIMARY KEY (id, fkComponente),
-  CONSTRAINT fk_metrica_tipo FOREIGN KEY (fkTipo) REFERENCES tipo(id),
+  CONSTRAINT fk_nome_metrica FOREIGN KEY (fkNomeMetrica) REFERENCES nome_metrica(id),
   CONSTRAINT fk_componente FOREIGN KEY (fkComponente) REFERENCES componente(id)
 );
 
 CREATE TABLE componente_mainframe (
     fkComponente INT NOT NULL,
     fkMainframe INT NOT NULL,
-    fkMetrica INT NOT NULL,
-    PRIMARY KEY (fkComponente, fkMainframe, fkMetrica),
+    PRIMARY KEY (fkComponente, fkMainframe),
     CONSTRAINT fk_componente_mainframe_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id),
-    CONSTRAINT fk_componente_mainframe_metrica FOREIGN KEY (fkMetrica, fkComponente) REFERENCES metrica(id, fkComponente)
+    CONSTRAINT fk_componente_mainframe_componente FOREIGN KEY (fkComponente) REFERENCES componente(id)
 );
 
 -- =====================================================
@@ -145,13 +144,11 @@ CREATE TABLE alerta (
    valor_coletado DECIMAL(5,2),
    fkMainframe INT NOT NULL,
    fkComponente INT NOT NULL,
-   fkGravidade INT NOT NULL default 1,
-   fkMetrica INT NOT NULL,
+   fkGravidade INT NOT NULL DEFAULT 1,
    fkStatus INT NOT NULL DEFAULT 1,
    PRIMARY KEY (id),
    CONSTRAINT fk_alerta_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id),
    CONSTRAINT fk_alerta_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
-   CONSTRAINT fk_alerta_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id),
    CONSTRAINT fk_alerta_gravidade FOREIGN KEY (fkGravidade) REFERENCES gravidade(id),
    CONSTRAINT fk_alerta_status FOREIGN KEY (fkStatus) REFERENCES status(id)
 );
@@ -213,17 +210,6 @@ VALUES
 ('IBM', 'Z14', '745683251336348', 2, 2, 2),
 ('IBM', 'Z13', '978436525625487', 3, 3, 1);
 
--- Tipo
-INSERT INTO tipo (id, descricao) VALUES
-(1, 'Uso'),
-(2, 'Taxa Ociosa'),
-(3, 'Espera de I/O'),
-(4, 'Swap Rate'),
-(5, 'Throughput'),
-(6, 'IOPS'),
-(7, 'Leitura'),
-(8, 'Escrita'),
-(9, 'Latência');
 
 -- Componentes
 INSERT INTO componente (id, nome) VALUES
@@ -232,53 +218,52 @@ INSERT INTO componente (id, nome) VALUES
 (3, 'Disco');
 
 -- Métricas
+
+INSERT INTO nome_metrica (id, nome) VALUES
+(1, 'usoCpu'),
+(2, 'cpuOciosa'),
+(3, 'cpuIoWait'),
+(4, 'usoRam'),
+(5, 'usoDisco'),
+(6, 'swapRate'),
+(7, 'throughput (MB/s)'),
+(8, 'discIops'),
+(9, 'read'),
+(10, 'write'),
+(11, 'latenciaDisc');
+
 -- CPU
-INSERT INTO metrica (id, fkComponente, min, max, fkTipo) VALUES
-(1, 1, 0.00, 90.00, 1),   -- usoCpu
-(5, 1, 0.00, 70.00, 2),   -- cpuOciosa
-(6, 1, 0.00, 40.00, 3);   -- cpuIoWait
+INSERT INTO metrica (id, fkNomeMetrica, fkComponente, min, max) VALUES
+(1, 1, 1, 0.00, 90.00),   -- usoCpu
+(2, 2, 1, 0.00, 70.00),   -- cpuOciosa
+(3, 3, 1, 0.00, 40.00);   -- cpuIoWait
 
 -- RAM
-INSERT INTO metrica (id, fkComponente, min, max, fkTipo) VALUES
-(2, 2, 0.00, 90.00, 1);   -- usoRam
+INSERT INTO metrica (id, fkNomeMetrica, fkComponente, min, max) VALUES
+(4, 4, 2, 0.00, 90.00);   -- usoRam
 
 -- DISCO
-INSERT INTO metrica (id, fkComponente, min, max, fkTipo) VALUES
-(3, 3, 0.00, 85.0, 1),   -- usoDisco
-(4, 3, 0.00, 60.0, 4),   -- swapRate
-(7, 3, 0.00, 500.0, 5),  -- throughput (MB/s)
-(8, 3, 0.00, 100.0, 6),-- discIops
-(9, 3, 0.00, 10.0, 7), -- read
-(10, 3, 0.00, 100.00, 8),-- write
-(11, 3, 0.00, 50.00, 9);  -- latenciaDisc
-
+INSERT INTO metrica (id, fkNomeMetrica, fkComponente, min, max) VALUES
+(5, 5, 3, 0.00, 85.0),   -- usoDisco
+(6, 6, 3, 0.00, 60.0),   -- swapRate
+(7, 7, 3, 0.00, 500.0),  -- throughput (MB/s)
+(8, 8, 3, 0.00, 100.0),-- discIops
+(9, 9, 3, 0.00, 10.0), -- read
+(10, 10, 3, 0.00, 100.00),-- write
+(11, 11, 3, 0.00, 50.00);  -- latenciaDisc
 
 
 -- Mainframe 1
-INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica) VALUES
-(1, 1, 1),
-(1, 1, 5),
-(1, 1, 6),
-(2, 1, 2),
-(3, 1, 3),
-(3, 1, 4),
-(3, 1, 7),
-(3, 1, 8),
-(3, 1, 9),
-(3, 1, 10),
-(3, 1, 11);
-
--- Mainframe 2
-INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica)
-SELECT fkComponente, 2, fkMetrica FROM componente_mainframe WHERE fkMainframe = 1;
-
--- Mainframe 3
-INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica)
-SELECT fkComponente, 3, fkMetrica FROM componente_mainframe WHERE fkMainframe = 1;
-
-
-
-
+INSERT INTO componente_mainframe (fkComponente, fkMainframe) VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(1, 2),
+(2, 2),
+(3, 2),
+(1, 3),
+(2, 3),
+(3, 3);
 
 -- Gravidades
 INSERT INTO gravidade (descricao) VALUES ('Urgente'),('Muito Urgente'),('Emergência');
@@ -287,14 +272,14 @@ INSERT INTO gravidade (descricao) VALUES ('Urgente'),('Muito Urgente'),('Emergê
 INSERT INTO status (descricao) VALUES ('Aberto'),('Em andamento'),('Resolvido');
 
 -- Alertas (com fkComponente e fkMetrica)
-INSERT INTO alerta (dt_hora, valor_coletado, fkMainframe, fkComponente, fkGravidade, fkStatus, fkMetrica)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMainframe, fkComponente, fkGravidade, fkStatus)
 VALUES
-(NOW(), 75.5, 1, 1, 2, 1, 1),
-(NOW(), 85.0, 1, 2, 3, 2, 1),
-(NOW(), 20.0, 1, 3, 1, 1, 1),
-(NOW(), 98.0, 2, 1, 3, 1, 1),
-(NOW(), 92.0, 2, 2, 3, 2, 1),
-(NOW(), 95.0, 3, 3, 3, 1, 1);
+(NOW(), 75.5, 1, 1, 2, 1),
+(NOW(), 85.0, 1, 2, 3, 2),
+(NOW(), 20.0, 1, 3, 1, 1),
+(NOW(), 98.0, 2, 1, 3, 1),
+(NOW(), 92.0, 2, 2, 3, 2),
+(NOW(), 95.0, 3, 3, 3, 1);
 
 -- =====================================================
 -- TRIGGER PARA CRIAR GERENTE AUTOMATICAMENTE
