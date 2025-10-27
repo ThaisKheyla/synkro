@@ -7,6 +7,7 @@
     <title>Dashboard - Synkro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/historico.css">
+    <link rel="stylesheet" href="css/dash.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/sessao.js"></script>
 </head>
@@ -26,14 +27,11 @@
 
             <nav>
                 <ul>
-                    <li><a href="#" class="ativo">Visão Geral</a></li>
-                    <li><a href="#">Desempenho</a></li>
-                    <li><a href="#">Alertas</a></li>
-                    <li><a href="CadastroFuncionario.html" class="btn-adicionar-componente">Adicionar funcionario</a>
-                    </li>
+                    <li><a href="dashboardGerente.html" class="btn-adicionar-componente">Visão Geral</a></li>
+                    <li><a href="historico.html" class="ativo btn-adicionar-componente">Alertas</a></li>
+                    <li><a href="Funcionarios.html" class="btn-adicionar-componente">Ver funcionario</a></li>
                 </ul>
-
-                <!-- Botão de sair (redireciona para a página inicial)-->
+                
                 <button class="btn-sair" onclick="limparSessao()">Sair</button>
             </nav>
         </aside>
@@ -52,22 +50,22 @@
                             <h3>Histórico de alertas críticos</h3>
                             <ul>
                                 <li class="alert-item"><span class="tag cpu">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
                                         Operação</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                <li class="alert-item"><span class="tag ram">Mainframe 02</span><span
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag cpu">Mainframe 03</span><span
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag ram">Mainframe 02</span><span
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
                                         Operação</span><span class="time">18/10/25 • 12:12</span></li>
                                 <li class="alert-item"><span class="tag cpu">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
                                         Operação</span><span class="time">18/10/25 • 12:12</span></li>
                                 <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
-                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag cpu">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
-                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergencia</strong> — Setor
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
                                         Operação</span><span class="time">18/10/25 • 12:12</span></li>
                             </ul>
                         </div>
