@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/dashMainframes.css">
-    <link rel="stylesheet" href="./css/components/kpis.css">
-    <link rel="stylesheet" href="./css/components/status-header.css">
+    <link rel="stylesheet" href="./css/componentes/kpis.css">
+    <link rel="stylesheet" href="./css/componentes/status-cabecalho.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/sessao.js"></script>
 </head>
@@ -32,13 +32,13 @@
             <nav>
                 <ul class="menu-links">
                     <li>
-                        <a href="#">
+                        <a href="dashboardAnalista.html">
                             <i class="ri-dashboard-3-line"></i>
                             Visão Geral
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="cadastroMainframe.html">
                             <i class="ri-file-add-line icon-cadastro"></i>
                             Cadastrar Mainframes
                         </a>
@@ -56,20 +56,25 @@
                 </button>
             </nav>
         </aside>
-        <main class="dashboard-content">
+        <main class="conteudo-dashboard">
+
             <!-- Status Geral e Alertas -->
-            <div class="status-header">
-                <div class="status-content">
-                    <div class="status-title">
+            <div class="status-cabecalho">
+                <div class="status-conteudo">
+                    <div class="titulo-conteudo">
                         <i class="ri-pulse-line"></i>
                         <span>STATUS DOS COMPONENTES</span>
                     </div>
                     <div class="alertas-container">
-                        <div class="alerta alerta-warning">
+                        <div class="alerta alerta-emergencia">
                             <i class="ri-alert-line"></i>
                             <span>MF2:</span> CPU 90%
                         </div>
-                        <div class="alerta alerta-error">
+                        <div class="alerta alerta-normal">
+                            <i class="ri-alert-line"></i>
+                            <span>MF5:</span> RAM 90%
+                        </div>
+                        <div class="alerta alerta-urgente">
                             <i class="ri-error-warning-line"></i>
                             <span>MF1:</span> Offline 5min
                         </div>
@@ -78,63 +83,64 @@
             </div>
 
             <!-- KPIs de uso de recursos -->
-            <div class="kpis-row">
-                <div class="kpi-card kpi-uptime">
-                    <div class="kpi-icon">
+            <div class="kpis-linha">
+                <div class="kpi-card kpi-tempo">
+                    <div class="kpi-icone">
                         <i class="ri-time-line"></i>
                     </div>
                     <div class="kpi-info">
-                        <div class="kpi-title">UPTIME</div>
-                        <div class="kpi-value">99.9%</div>
+                        <div class="kpi-titulo">UPTIME</div>
+                        <div class="kpi-valor">99.9%</div>
                         <div class="kpi-desc">15d 6h 32m</div>
                     </div>
                 </div>
                 <div class="kpi-card kpi-cpu">
-                    <div class="kpi-icon">
+                    <div class="kpi-icone">
                         <i class="ri-cpu-line"></i>
                     </div>
                     <div class="kpi-info">
-                        <div class="kpi-title">CPU</div>
-                        <div class="kpi-value">78%</div>
+                        <div class="kpi-titulo">CPU</div>
+                        <div class="kpi-valor">78%</div>
                         <div class="kpi-desc">Uso total</div>
                     </div>
                 </div>
                 <div class="kpi-card kpi-ram">
-                    <div class="kpi-icon">
+                    <div class="kpi-icone">
                         <i class="ri-database-2-line"></i>
                     </div>
                     <div class="kpi-info">
-                        <div class="kpi-title">RAM</div>
-                        <div class="kpi-value">65% <span class="kpi-gb">(13.0/20.0 GB)</span></div>
+                        <div class="kpi-titulo">RAM</div>
+                        <div class="kpi-valor">65% <span class="kpi-gb">(13.0/20.0 GB)</span></div>
                         <div class="kpi-desc">Uso total</div>
                     </div>
                 </div>
                 <div class="kpi-card kpi-disk">
-                    <div class="kpi-icon">
+                    <div class="kpi-icone">
                         <i class="ri-hard-drive-2-line"></i>
                     </div>
                     <div class="kpi-info">
-                        <div class="kpi-title">DISCO</div>
-                        <div class="kpi-value">55% <span class="kpi-gb">(550/1000 GB)</span></div>
+                        <div class="kpi-titulo">DISCO</div>
+                        <div class="kpi-valor">55% <span class="kpi-gb">(550/1000 GB)</span></div>
                         <div class="kpi-desc">Uso total</div>
                     </div>
                 </div>
             </div>
+
             <!-- Gráficos -->
             <h3 class="section-title">Monitoramento em Tempo Real</h3>
             <div class="graficos-row">
                 <div class="grafico-box">
-                    <div class="chart-toggle-group">
-                        <button class="chart-toggle ativo" id="btnCPU" onclick="showChart('cpu')">CPU</button>
-                        <button class="chart-toggle" id="btnRAM" onclick="showChart('ram')">RAM</button>
-                        <button class="chart-toggle" id="btnDISK" onclick="showChart('disk')">DISCO</button>
+                    <div class="grupo-botoes">
+                        <button class="alternar-grafico ativo" id="btnCPU" onclick="showChart('cpu')">CPU</button>
+                        <button class="alternar-grafico" id="btnRAM" onclick="showChart('ram')">RAM</button>
+                        <button class="alternar-grafico" id="btnDISK" onclick="showChart('disk')">DISCO</button>
                     </div>
-                    <h4 id="chartTitle">
+                    <h4 id="titulo-grafico">
                         <i class="ri-cpu-line"></i>
                         CPU - Uso (%)
                     </h4>
-                    <div class="chart-info" id="chartInfo">
-                        <div class="chart-metric">
+                    <div class="informacao-grafico" id="chartInfo">
+                        <div class="metrica-grafico">
                             <span class="value" id="chartValue">78%</span>
                             <span class="label" id="chartLabel">Média atual</span>
                         </div>
@@ -143,7 +149,7 @@
                             +12% desde ontem
                         </div>
                     </div>
-                    <div class="chart-container">
+                    <div class="container-grafico">
                         <canvas id="mainChart"></canvas>
                     </div>
                 </div>
@@ -157,7 +163,7 @@
                     <div class="mainframe-desc">Mainframe 1</div>
                 </div>
             </a>
-            
+
             <a href="detalhesMainframe.html" class="página de mainframe">
                 <div class="mainframe-evento warning">
                     <div class="mainframe-numero">2</div>
@@ -292,7 +298,7 @@
             }
         });
         // Atualiza título, ícone, valor, tendência
-        document.getElementById('chartTitle').innerHTML = `<i class="${data.icon}"></i> ${data.label}`;
+        document.getElementById('titulo-grafico').innerHTML = `<i class="${data.icon}"></i> ${data.label}`;
         document.getElementById('chartValue').textContent = data.value;
         document.getElementById('chartLabel').textContent = data.labelText;
         const trendDiv = document.getElementById('chartTrend');
@@ -312,12 +318,6 @@
         if (type === 'disk') document.getElementById('btnDISK').classList.add('ativo');
     }
 
-    // Inicialização
     renderChart('cpu');
 
-    // Se quiser animação de atualização, pode adaptar para cada tipo
-    // function updateChartsAndValues() { ... }
-
-    // Se houver o gráfico de statusPieChart, inicialize normalmente aqui
-    // ...existing code...
 </script>
