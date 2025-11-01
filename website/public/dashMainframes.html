@@ -65,6 +65,7 @@
                         <i class="ri-pulse-line"></i>
                         <span>STATUS DOS COMPONENTES</span>
                     </div>
+
                     <div class="alertas-container">
                         <div class="alerta alerta-emergencia">
                             <i class="ri-alert-line"></i>
@@ -81,55 +82,54 @@
                     </div>
                 </div>
             </div>
-
+            <p class="descricao-secundaria">
+                Visão rápida de alertas e estado dos principais mainframes.
+            </p>
             <!-- KPIs de uso de recursos -->
             <div class="kpis-linha">
+
                 <div class="kpi-card kpi-tempo">
-                    <div class="kpi-icone">
-                        <i class="ri-time-line"></i>
-                    </div>
+                    <div class="kpi-icone"><i class="ri-time-line"></i></div>
                     <div class="kpi-info">
                         <div class="kpi-titulo">UPTIME</div>
                         <div class="kpi-valor">99.9%</div>
-                        <div class="kpi-desc">15d 6h 32m</div>
+                        <div class="kpi-desc">Tempo ativo total</div>
                     </div>
                 </div>
                 <div class="kpi-card kpi-cpu">
-                    <div class="kpi-icone">
-                        <i class="ri-cpu-line"></i>
-                    </div>
+                    <div class="kpi-icone"><i class="ri-cpu-line"></i></div>
                     <div class="kpi-info">
                         <div class="kpi-titulo">CPU</div>
                         <div class="kpi-valor">78%</div>
-                        <div class="kpi-desc">Uso total</div>
+                        <div class="kpi-desc">Uso atual</div>
                     </div>
                 </div>
                 <div class="kpi-card kpi-ram">
-                    <div class="kpi-icone">
-                        <i class="ri-database-2-line"></i>
-                    </div>
+                    <div class="kpi-icone"><i class="ri-database-2-line"></i></div>
                     <div class="kpi-info">
                         <div class="kpi-titulo">RAM</div>
-                        <div class="kpi-valor">65% <span class="kpi-gb">(13.0/20.0 GB)</span></div>
-                        <div class="kpi-desc">Uso total</div>
+                        <div class="kpi-valor">65% <span class="kpi-gb">(13/20 GB)</span></div>
+                        <div class="kpi-desc">Uso atual</div>
                     </div>
                 </div>
                 <div class="kpi-card kpi-disk">
-                    <div class="kpi-icone">
-                        <i class="ri-hard-drive-2-line"></i>
-                    </div>
+                    <div class="kpi-icone"><i class="ri-hard-drive-2-line"></i></div>
                     <div class="kpi-info">
                         <div class="kpi-titulo">DISCO</div>
                         <div class="kpi-valor">55% <span class="kpi-gb">(550/1000 GB)</span></div>
-                        <div class="kpi-desc">Uso total</div>
+                        <div class="kpi-desc">Uso atual</div>
                     </div>
                 </div>
             </div>
 
+
             <!-- Gráficos -->
-            <h3 class="section-title">Monitoramento em Tempo Real</h3>
+
             <div class="graficos-row">
                 <div class="grafico-box">
+                    <p class="descricao-secundaria">
+                        Visualize o desempenho dos recursos em gráficos interativos.
+                    </p>
                     <div class="grupo-botoes">
                         <button class="alternar-grafico ativo" id="btnCPU" onclick="showChart('cpu')">CPU</button>
                         <button class="alternar-grafico" id="btnRAM" onclick="showChart('ram')">RAM</button>
