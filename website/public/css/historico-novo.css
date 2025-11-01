@@ -63,190 +63,155 @@ html, body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ======== LAYOUT PRINCIPAL ======== */
+/* Layout Principal */
 .layout-principal {
     display: flex;
     width: 98%;
     max-width: 1500px;
-    /* Limite para telas muito largas */
     height: 96%;
-    /* Para não preencher 100% da viewport e dar um "respiro" */
-    border-radius: 16px;
+    border-radius: 24px;
     overflow: hidden;
-    /* Oculta barras de rolagem internas caso o conteúdo passe o limite do 96% de altura */
     background-color: var(--azul-medio);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--sombra-xl);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    position: relative;
 }
 
-/* -------- Barra Lateral -------- */
+/* Barra Lateral */
 .barra-lateral {
-    width: 190px;
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-    padding: 24px 16px;
+    width: 260px;
+    background: linear-gradient(180deg, var(--azul-medio) 0%, var(--azul-escuro) 100%);
+    padding: 32px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
+    position: relative;
+    box-shadow: var(--sombra-lg);
 }
 
 .logo {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--branco);
-    letter-spacing: 1px;
-    margin-bottom: 24px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--texto-primario);
+    margin-bottom: 40px;
+    letter-spacing: -0.5px;
+    position: relative;
+}
+
+.logo::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 3px;
+    background: var(--gradient-primario);
+    border-radius: 2px;
 }
 
 .perfil-usuario {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
     margin-bottom: 32px;
-    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    transition: var(--transicao-suave);
+}
+
+.perfil-usuario:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-md);
 }
 
 .perfil-usuario img {
-    width: 72px;
-    height: 72px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-    border: 3px solid #071026;
-    transition: transform 0.3s ease;
+    margin-bottom: 16px;
+    border: 3px solid var(--azul-primario);
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
 }
 
+.cargo-usuario {
+    color: var(--azul-primario);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
 
 .nome-usuario {
+    font-size: 1.1rem;
     font-weight: 600;
-    font-size: 1rem;
+    margin-bottom: 4px;
 }
 
 .email-usuario {
-    font-size: 0.85rem;
-    color: var(--cinza);
-    margin-top: 4px;
+    color: var(--texto-secundario);
+    font-size: 0.875rem;
 }
 
-/* ======== BOTÃO LINKS ======== */
+/* Menu de Navegação */
+.barra-lateral nav {
+    width: 100%;
+}
 
 .barra-lateral nav ul {
     list-style: none;
     padding: 0;
-    width: 100%;
-}
-
-.barra-lateral nav ul li {
-    margin: 12px 0;
+    margin: 0 0 32px 0;
 }
 
 .barra-lateral nav ul li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: var(--texto-secundario);
     text-decoration: none;
-    color: var(--cinza);
     font-weight: 500;
-    padding: 12px 18px;
-    display: block;
-    border-radius: 0px 10px 10px 0px;
-    transition: all 0.3s;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    transition: var(--transicao-suave);
 }
 
 .barra-lateral nav ul li a:hover,
 .barra-lateral nav ul li a.ativo {
-    background-color: var(--azul-escuro);
-    color: var(--branco);
-}
-
-.menu-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.menu-links li a {
-    display: block;
-    text-decoration: none;
-    font-weight: 600;
-    color: var(--cinza);
-    background-color: rgba(255, 255, 255, 0.04);
-    padding: 12px 18px;
-    transition: all 0.3s ease;
-    font-size: 0.95rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    position: relative;
-}
-
-.menu-links li a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
-    background-color: transparent;
-    border-radius: 0px 4px 4px 0px;
-    transition: background-color 0.3s ease;
-}
-
-.menu-links li a:hover {
-    background-color: var(--azul-escuro);
-    color: var(--branco);
+    background: var(--glass-bg);
+    color: var(--texto-primario);
     transform: translateX(4px);
 }
 
-.menu-links li a:hover::after {
-    background-color: var(--azul-escuro);
+.barra-lateral nav ul li a.ativo {
+    background: var(--gradient-primario);
+    font-weight: 600;
 }
 
-.menu-links li a.ativo {
-    background-color: var(--azul-escuro);
-    color: var(--branco);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-.menu-links li a.ativo::after {
-    background-color: var(--azul-medio);
-}
-
-/* ======== BOTÃO SAIR ======== */
-
+/* Botão Sair */
 .btn-sair {
-    margin-top: 12px;
-    background: transparent;
-    color: #dbdbdb;
-    border: 2px solid rgba(108, 99, 255, 0.16);
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-weight: 700;
+    width: 100%;
+    padding: 12px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--texto-secundario);
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.22s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-
+    transition: var(--transicao-suave);
+    margin-top: auto;
 }
 
 .btn-sair:hover {
-    background: linear-gradient(90deg, rgba(108, 99, 255, 0.12), rgba(0, 194, 199, 0.08));
-    transform: translateY(-3px);
-    color: var(--branco);
-    border-color: rgba(108, 99, 255, 0.28);
+    background: var(--perigo);
+    color: var(--texto-primario);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-md);
 }
 
-.btn-sair::before {
-    content: '\21A4';
-    font-size: 0.95em;
-    opacity: 0.9;
-}
-
-@media (max-width: 900px) {
-    .btn-sair {
-        padding: 8px 14px;
-        font-size: 0.95em;
-    }
-}
 /* Conteúdo Principal */
 .conteudo-principal {
     flex: 1;
@@ -254,7 +219,6 @@ html, body {
     overflow-y: auto;
     background: var(--azul-escuro);
 }
-
 
 /* Grid do Dashboard */
 .dashboard-grid {

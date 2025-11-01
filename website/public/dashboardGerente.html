@@ -4,234 +4,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Synkro</title>
+    <title>Dashboard Gerencial - Synkro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/dash.css">
+    <link rel="stylesheet" href="./css/dashGerente.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/sessao.js"></script>
 </head>
 
 <body onload="validarSessaoSynkro()">
     <div class="layout-principal">
-        <!-- Barra lateral -->
+        <!--Barra lateral-->
         <aside class="barra-lateral">
             <div class="logo">Synkro</div>
             <div class="perfil-usuario">
-                <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
-                <div class="cargo-usuario">Gerente</div>
-                <div class="nome-usuario" id="nome_login"></div>
-                <div class="email-usuario" id="email_login"></div>
+                <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil padrão">
+                <div class="cargo-usuario">Gerente de Infra</div>
+                <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
             </div>
             <nav>
-                <ul>
-                    <li><a href="#" class="ativo btn-adicionar-componente">Visão Geral</a></li>
-                    <li><a href="historico.html" class="btn-adicionar-componente">Alertas</a></li>
-                    <li><a href="Funcionarios.html" class="btn-adicionar-componente">Ver funcionario</a></li>
+                <ul class="menu-links">
+                    <li><a href="dashboardGerente.html" class="ativo">Visão Geral</a></li>
+                    <li><a href="historico.html">Logs e Histórico</a></li>
+                    <li><a href="Funcionarios.html">Funcionários cadastrados</a></li>
                 </ul>
-                <button class="btn-sair" onclick="limparSessao()">Sair</button>
+                <button class="btn-sair" onclick="limparSessao()">Sair do Sistema</button>
             </nav>
+            
         </aside>
 
+        <!--conteudo principal-->
+        <div class="conteudo-principal dashboard">
+            <header class="visao-header">
+                <h1>Painel de Controle: Monitoramento de Mainframes Bancários</h1>
+                <p>Monitoramento em tempo real do status operacional da sua infraestrutura crítica (CPU, RAM, DASD).</p>
+            </header>
 
-        <!-- Conteúdo principal -->
-        <main class="conteudo-principal">
-            <div class="dashboard-grid">
-                <section class="visao-estrategica">
-                    <header class="visao-header">
-                        <h1>Visão Estratégica de Infraestrutura</h1>
-                        <p>Acompanhe os principais indicadores, histórico de alertas e tempo de resolução.</p>
-                    </header>
+            <section class="painel-kpis">
+                <div class="kpi">
+                    <span class="kpi-label">Mainframes Ativos</span>
+                    <span class="kpi-value azul">8/8</span>
+                    <p class="kpi-descricao">Total de equipamentos online.</p>
+                </div>
+                <div class="kpi">
+                    <span class="kpi-label">Uso Médio de CPU</span>
+                    <span class="kpi-value alerta">72%</span>
+                    <p class="kpi-descricao">Média da carga de processamento. Requer atenção!</p>
+                </div>
+                <div class="kpi">
+                    <span class="kpi-label">Uso Médio de RAM</span>
+                    <span class="kpi-value verde">55%</span>
+                    <p class="kpi-descricao">Média da utilização de memória.</p>
+                </div>
+                <div class="kpi">
+                    <span class="kpi-label">Utilização de DASD</span>
+                    <span class="kpi-value roxo">85%</span>
+                    <p class="kpi-descricao">Espaço médio de armazenamento ocupado.</p>
+                </div>
+            </section>
 
-
-
-                    <div class="resumo-periodo">
-                        <div class="period-select">
-                            <select>
-                                <option value="1">Últimos 7 dias</option>
-                                <option value="2">Últimos 15 dias</option>
-                                <option value="3">Últimos 20 dias</option>
-                            </select>
+            <section class="painel-graficos">
+                <div class="grafico grande" id="grafico-tendencia">
+                    <div class="grafico-header-nav">
+                        <button class="btn-nav" onclick="navegarGraficoTendencia('anterior')">&lt;</button>
+                        <div class="titulo-metricas">
+                            <h3>Tendência de Uso de <span id="metricaAtual">CPU e RAM</span> (Últimas 24h)</h3>
+                            <p class="grafico-descricao" id="descricaoGraficoTendencia">Acompanhe a variação da carga
+                                média de CPU e RAM para identificar picos e horários críticos.</p>
                         </div>
-                        <div class="top-widgets">
-                            <div class="widget widget-alertas">
-                                <h3>Histórico de alertas críticos</h3>
-                                <ul>
-                                    <li class="alert-item"><span class="tag cpu">CPU</span><span
-                                            class="alert-desc"><strong>Alerta: 001</strong> — Mainframe 1</span><span
-                                            class="time">18/10/25 • 12:12</span></li>
-                                    <li class="alert-item"><span class="tag cpu">CPU</span><span
-                                            class="alert-desc"><strong>Alerta: 002</strong> — Mainframe 2</span><span
-                                            class="time">19/10/25 • 18:40</span></li>
-                                    <li class="alert-item"><span class="tag ram">RAM</span><span
-                                            class="alert-desc"><strong>Alerta: 003</strong> — Mainframe 1</span><span
-                                            class="time">20/10/25 • 20:21</span></li>
-                                    <div>
-                                        <!--Opção para direcionar para a página de mais alertas-->
-                                        <li class="ver-mais-alertas"><a href="./historico.html">Ver histórico...</a>
-                                        </li>
-                                    </div>
-                                </ul>
-                            </div>
-                            <!--Função do analista-->
-                            <!--
-                        <div class="widget widget-tempo">
-                            <h3>Tempo para resolução do alerta</h3>
-                            <ul>
-                                <li><span class="alert-id">Alerta: 001</span><span class="tempo badge">1h</span></li>
-                                <li><span class="alert-id">Alerta: 002</span><span class="tempo badge">2h</span></li>
-                                <li><span class="alert-id">Alerta: 003</span><span class="tempo badge">8h</span></li>
-                                <li><span class="alert-id">Alerta: 003</span><span class="tempo badge">8h</span></li>
-                            </ul>
-                        </div>
-                    -->
-                        </div>
+                        <button class="btn-nav" onclick="navegarGraficoTendencia('proximo')">&gt;</button>
+                    </div>
+                    <canvas id="graficoCpuRam"></canvas>
+                </div>
 
-                        <div class="counters">
-                            <div class="counter">
-                                <div class="label">Total de alertas<br>(7 dias)</div>
-                                <div class="value">100</div>
-                            </div>
-                            <div class="counter">
-                                <div class="label">Alertas de CPU<br>(7 dias)</div>
-                                <div class="value">50</div>
-                            </div>
-                            <div class="counter">
-                                <div class="label">Alertas de RAM<br>(7 dias)</div>
-                                <div class="value">40</div>
-                            </div>
-                            <div class="counter">
-                                <div class="label">Alertas de Disco<br>(7 dias)</div>
-                                <div class="value">10</div>
-                            </div>
-                        </div>
-                        <div class="big-chart">
-                            <h4>Histórico de alertas críticos nos últimos 7 dias</h4>
-                            <canvas id="historicoChart" width="900" height="220"></canvas>
-                        </div>
+                <div class="grafico pequeno" id="grafico-carga">
+                    <h3>Distribuição de Carga de CPU por Mainframe</h3>
+                    <p class="grafico-descricao">Distribuição percentual da carga total de CPU entre os equipamentos.
+                    </p>
+                    <canvas id="graficoCarga"></canvas>
+                </div>
 
-                        <div class="small-charts-row">
-                            <div class="small-chart">
-                                <h5>Alertas por componente (%)</h5>
-                                <canvas id="pieChart" width="150" height="150"></canvas>
-                            </div>
-                            <div class="small-chart">
-                                <h5>Histórico de alertas críticos por componentes nos últimos 7 dias</h5>
-                                <canvas id="lineComponentsChart" width="150" height="150"></canvas>
-                            </div>
+                <div class="grafico pequeno" id="painel-alertas">
+                    <h3>Alertas Críticos Recentes</h3>
+                    <p class="grafico-descricao">Notificações urgentes para ação imediata.</p>
+                    <div class="area-alertas">
+                        <div class="alerta-card vermelho">
+                            <p><strong>MF-03</strong> – Pico de CPU detectado (92%)</p>
+                            <span>Há 15 min</span>
+                        </div>
+                        <div class="alerta-card amarelo">
+                            <p><strong>MF-07</strong> – Uso de RAM elevado (88%)</p>
+                            <span>Há 42 min</span>
+                        </div>
+                        <div class="alerta-card amarelo">
+                            <p><strong>MF-07</strong> – Uso de RAM elevado (88%)</p>
+                            <span>Há 42 min</span>
+                        </div>
+                        <div class="alerta-card amarelo">
+                            <p><strong>MF-07</strong> – Uso de RAM elevado (88%)</p>
+                            <span>Há 42 min</span>
                         </div>
                     </div>
-                </section>
-
-                <aside class="mainframes-cadastrados">
-                    <div class="widget widget-mainframes-small">
-                        <h3>Mainframes com mais alertas</h3>
-                        <ol class="top-list">
-                            <li>
-                                <div class="left"><span class="rank">1</span><span class="mf">Mainframe2</span>
-                                </div>
-                                <span class="count">20 alertas</span>
-                            </li>
-                            <li>
-                                <div class="left"><span class="rank">2</span><span class="mf">Mainframe7</span>
-                                </div>
-                                <span class="count">12 alertas</span>
-                            </li>
-                            <li>
-                                <div class="left"><span class="rank">3</span><span class="mf">Mainframe3</span>
-                                </div>
-                                <span class="count">7 alertas</span>
-                            </li>
-                            <li>
-                                <div class="left"><span class="rank">4</span><span class="mf">Mainframe1</span>
-                                </div>
-                                <span class="count">5 alertas</span>
-                            </li>
-                            <li>
-                                <div class="left"><span class="rank">5</span><span class="mf">Mainframe5</span>
-                                </div>
-                                <span class="count">2 alertas</span>
-                            </li>
-                        </ol>
-                    </div>
-                </aside>
-            </div>
-        </main>
+                </div>
+            </section>
+        </div>
     </div>
+
+    <script>
+        // Variável para armazenar a instância do gráfico
+        window.chartCpuRam = null;
+        window.chartCarga = null;
+
+        // Lista de métricas para o gráfico de tendência (usado pelos botões < >)
+        const metricasTendencia = [
+            {
+                id: 'geral',
+                titulo: 'CPU e RAM',
+                descricao: 'Acompanhe a variação da carga média de CPU e RAM para identificar picos e horários críticos.',
+                datasets: ['cpu', 'ram']
+            },
+            {
+                id: 'cpu',
+                titulo: 'CPU',
+                descricao: 'Foco na tendência de utilização do processamento central (CPU) nas últimas 24 horas.',
+                datasets: ['cpu']
+            },
+            {
+                id: 'ram',
+                titulo: 'RAM',
+                descricao: 'Foco na tendência de utilização da memória (RAM) nas últimas 24 horas. Verifique picos de consumo.',
+                datasets: ['ram']
+            }
+        ];
+        let metricaAtualIndex = 0; // Começa em 'CPU e RAM'
+
+        // Dados completos dos datasets para fácil acesso
+        const datasetFull = {
+            cpu: {
+                label: 'Uso de CPU (%)',
+                data: [45, 52, 68, 80, 76, 64],
+                borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.15)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 4, pointBackgroundColor: '#38bdf8'
+            },
+            ram: {
+                label: 'Uso de RAM (%)',
+                data: [35, 40, 55, 65, 60, 50],
+                borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.15)', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 4, pointBackgroundColor: '#22c55e'
+            }
+        };
+
+        // Função para ATUALIZAR o gráfico de Tendência (navegação < >)
+        function atualizarGraficoTendencia() {
+            if (!window.chartCpuRam) return;
+
+            const metrica = metricasTendencia[metricaAtualIndex];
+
+            // 1. Atualiza Título e Descrição
+            document.getElementById('metricaAtual').innerText = metrica.titulo;
+            document.getElementById('descricaoGraficoTendencia').innerText = metrica.descricao;
+
+            // 2. Atualiza Datasets
+            window.chartCpuRam.data.datasets = metrica.datasets.map(id => datasetFull[id]);
+
+            // Se for apenas CPU ou RAM, oculta a legenda, senão exibe
+            window.chartCpuRam.options.plugins.legend.display = metrica.datasets.length > 1;
+
+            window.chartCpuRam.update();
+        }
+
+        // Função de NAVEGAÇÃO (< >)
+        function navegarGraficoTendencia(direcao) {
+            if (direcao === 'proximo') {
+                metricaAtualIndex = (metricaAtualIndex + 1) % metricasTendencia.length;
+            } else if (direcao === 'anterior') {
+                metricaAtualIndex = (metricaAtualIndex - 1 + metricasTendencia.length) % metricasTendencia.length;
+            }
+
+            atualizarGraficoTendencia();
+        }
+
+
+        // --- FUNÇÃO DE INICIALIZAÇÃO DE GRÁFICOS ---
+        function initCharts() {
+            // Gráfico 1 - Uso de CPU e RAM dos Mainframes (Linha)
+            const canvasCpuRam = document.getElementById('graficoCpuRam');
+            if (canvasCpuRam) {
+                if (window.chartCpuRam) window.chartCpuRam.destroy();
+
+                const ctxCpuRam = canvasCpuRam.getContext('2d');
+                window.chartCpuRam = new Chart(ctxCpuRam, {
+                    type: 'line',
+                    data: {
+                        labels: ['00h', '04h', '08h', '12h', '16h', '20h'],
+                        datasets: metricasTendencia[metricaAtualIndex].datasets.map(id => datasetFull[id])
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: metricasTendencia[metricaAtualIndex].datasets.length > 1,
+                                labels: { color: '#cbd5e1' }
+                            }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#cbd5e1' } },
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#cbd5e1' } }
+                        }
+                    }
+                });
+                // Garante que o estado inicial do título e descrição esteja correto
+                atualizarGraficoTendencia();
+            }
+
+            // Gráfico 2 - Distribuição de Carga (Doughnut)
+            const canvasCarga = document.getElementById('graficoCarga');
+            if (canvasCarga) {
+                if (window.chartCarga) window.chartCarga.destroy();
+                const ctxCarga = canvasCarga.getContext('2d');
+                window.chartCarga = new Chart(ctxCarga, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['MF-01', 'MF-02', 'MF-03', 'MF-04', 'MF-05', 'MF-06', 'MF-07', 'MF-08'],
+                        datasets: [{
+                            data: [14, 12, 17, 11, 10, 9, 14, 13],
+                            backgroundColor: ['#38bdf8', '#22c55e', '#eab308', '#ef4444', '#6366f1', '#14b8a6', '#f97316', '#8b5cf6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } } },
+                        cutout: '70%'
+                    }
+                });
+            }
+        }
+
+        // Chamada inicial simplificada
+        window.onload = function () {
+            // Verifica se a função de sessão existe antes de chamar
+            if (typeof validarSessaoSynkro === 'function') {
+                validarSessaoSynkro();
+            }
+            initCharts();
+        };
+    </script>
 </body>
 
 </html>
-
-<script>
-    /* ==== GRÁFICOS DO PAINEL ESTRATÉGICO ==== */
-    function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
-    const historicoCtx = document.getElementById('historicoChart')?.getContext('2d');
-    const pieCtx = document.getElementById('pieChart')?.getContext('2d');
-    const lineCompCtx = document.getElementById('lineComponentsChart')?.getContext('2d');
-
-    let historicoChart, pieChart, lineComponentsChart;
-
-    if (historicoCtx) {
-        historicoChart = new Chart(historicoCtx, {
-            type: 'bar',
-            data: {
-                labels: ['20/10', '21/10', '22/10', '23/10', '24/10', '25/10', '26/10'],
-                datasets: [{ label: 'Quantidade de Alertas', data: [2, 6, 15, 5, 3, 8, 4], backgroundColor: '#071026' }]
-            },
-            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-        });
-    }
-
-    if (pieCtx) {
-        pieChart = new Chart(pieCtx, {
-            type: 'pie',
-            data: {
-                labels: ['CPU', 'RAM', 'Disco'],
-                datasets: [{ data: [50, 40, 10], backgroundColor: ['#071026', '#dc2626', '#fbbf24'] }]
-            },
-            options: { plugins: { legend: { position: 'bottom' } } }
-        });
-    }
-
-    if (lineCompCtx) {
-        lineComponentsChart = new Chart(lineCompCtx, {
-            type: 'line',
-            data: {
-                labels: ['20/10', '21/10', '22/10', '23/10', '24/10', '25/10', '26/10'],
-                datasets: [
-                    { label: 'CPU', data: [10, 20, 25, 18, 30, 35, 28], borderColor: '#071026', tension: 0.3, fill: false },
-                    { label: 'Disco', data: [5, 8, 10, 12, 18, 20, 19], borderColor: '#fbbf24', tension: 0.3, fill: false },
-                    { label: 'RAM', data: [8, 6, 10, 14, 22, 18, 15], borderColor: '#dc2626', tension: 0.3, fill: false }
-                ]
-            },
-            options: { plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
-        });
-    }
-
-    // pequena animação de atualização dos dados do painel (demo)
-    function updateDemoData() {
-        if (historicoChart) {
-            const newVal = rnd(0, 20);
-            const data = historicoChart.data.datasets[0].data.slice();
-            data.shift(); data.push(newVal);
-            historicoChart.data.datasets[0].data = data;
-            historicoChart.update();
-        }
-
-        if (pieChart) {
-            const a = rnd(20, 60), b = rnd(10, 50), c = Math.max(0, 100 - (a + b));
-            pieChart.data.datasets[0].data = [a, b, c];
-            pieChart.update();
-        }
-
-        if (lineComponentsChart) {
-            // shift each dataset
-            lineComponentsChart.data.datasets.forEach(ds => {
-                const copy = ds.data.slice(); copy.shift(); copy.push(rnd(0, 40)); ds.data = copy;
-            });
-            lineComponentsChart.update();
-        }
-    }
-
-    setInterval(updateDemoData, 4000);
-</script>

@@ -1,0 +1,95 @@
+/* KPIs de uso de recursos */
+.kpis-row {
+    display: flex;
+    gap: 52px;
+    margin-bottom: 8px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.kpi-card {
+    flex: 1;
+    min-width: 110px;
+    max-width: 160px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--azul-medio);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 48px;
+}
+
+.kpi-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.kpi-cpu .kpi-icon {
+    background: rgba(37,99,235,0.15);
+    color: #2563eb;
+}
+
+.kpi-ram .kpi-icon {
+    background: rgba(56,189,248,0.15);
+    color: #38bdf8;
+}
+
+.kpi-disk .kpi-icon {
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+}
+
+.kpi-uptime .kpi-icon {
+    background: rgba(99,102,241,0.15);
+    color: #6366f1;
+}
+
+.kpi-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.kpi-title {
+    color: var(--gray-400);
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-value {
+    color: var(--branco);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.kpi-gb {
+    font-size: 0.7em;
+    color: var(--gray-400);
+}
+
+.kpi-desc {
+    color: var(--gray-400);
+    font-size: 0.75em;
+    margin-top: 2px;
+}
+
+.kpi-uptime .kpi-desc {
+    font-family: monospace;
+    font-size: 0.8em;
+    color: var(--accent-light);
+}

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Synkro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/detalhesMainframe.css">
+    <link rel="stylesheet" href="./css/components/kpis.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/sessao.js"></script>
+</head>
+
+<body onload="validarSessaoSynkro()">
+    <div class="layout-principal">
+        <aside class="barra-lateral">
+            <div class="logo">
+                Synkro
+            </div>
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+                <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+                <div class="cargo-usuario">
+                    <i class="ri-shield-user-line"></i>
+                    Analista de Infra
+                </div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+            </div>
+            <nav>
+                <ul class="menu-links">
+                    <li>
+                        <a href="#">
+                            <i class="ri-dashboard-3-line"></i>
+                            Visão Geral
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="ri-file-add-line icon-cadastro"></i>
+                            Cadastrar Mainframes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="dashMainframes.html" class="ativo">
+                            <i class="ri-database-2-line"></i>
+                            Mainframes
+                        </a>
+                    </li>
+                </ul>
+                <button class="btn-sair" onclick="limparSessao()">
+                    <i class="ri-logout-box-r-line"></i>
+                    Encerrar Sessão
+                </button>
+            </nav>
+        </aside>
+        <main class="dashboard-content">
+
+
+            <div class="kpis-row">
+                <div class="kpi-card kpi-cpu">
+                    <div class="kpi-icon"><i class="ri-cpu-line"></i></div>
+                    <div class="kpi-info">
+                        <div class="kpi-title">CPU</div>
+                        <div class="kpi-value">78%</div>
+                        <div class="kpi-desc">Uso total</div>
+                    </div>
+                </div>
+                <div class="kpi-card kpi-ram">
+                    <div class="kpi-icon"><i class="ri-database-2-line"></i></div>
+                    <div class="kpi-info">
+                        <div class="kpi-title">RAM</div>
+                        <div class="kpi-value">65% <span class="kpi-gb">(13/20 GB)</span></div>
+                        <div class="kpi-desc">Uso total</div>
+                    </div>
+                </div>
+                <div class="kpi-card kpi-disk">
+                    <div class="kpi-icon"><i class="ri-hard-drive-2-line"></i></div>
+                    <div class="kpi-info">
+                        <div class="kpi-title">DASD</div>
+                        <div class="kpi-value">55% <span class="kpi-gb">(550/1000 GB)</span></div>
+                        <div class="kpi-desc">Uso total</div>
+                    </div>
+                </div>
+                <div class="kpi-card kpi-uptime">
+                    <div class="kpi-icon"><i class="ri-time-line"></i></div>
+                    <div class="kpi-info">
+                        <div class="kpi-title">Uptime</div>
+                        <div class="kpi-value">99.9%</div>
+                        <div class="kpi-desc">15d 6h</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-extra">
+                <div class="kpi-card">
+                    <div class="kpi-title">Temperatura</div>
+                    <div class="kpi-value" id="kpiTempValor">65°C</div>
+                    <div class="kpi-desc" id="kpiTempDesc">Atual</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">I/O Rede</div>
+                    <div class="kpi-value" id="kpiRedeValor">1.2 Gb/s</div>
+                    <div class="kpi-desc" id="kpiRedeDesc">Última hora</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Eventos</div>
+                    <div class="kpi-value" id="kpiEventosValor">2</div>
+                    <div class="kpi-desc" id="kpiEventosDesc">Últimas 24h</div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Monitoramento em Tempo Real</h3>
+            <div class="graficos-row">
+                <div class="grafico-box">
+                    <div class="chart-toggle-group">
+                        <button class="chart-toggle ativo" id="btnCPU" onclick="showChart('cpu')">CPU</button>
+                        <button class="chart-toggle" id="btnRAM" onclick="showChart('ram')">RAM</button>
+                        <button class="chart-toggle" id="btnDISK" onclick="showChart('disk')">DASD</button>
+                        <button class="chart-toggle" id="btnTEMP" onclick="showChart('temp')">TEMP</button>
+                    </div>
+                    <h4 id="chartTitle"><i class="ri-cpu-line"></i> CPU - Uso (%)</h4>
+                    <div class="chart-info" id="chartInfo">
+                        <div class="chart-metric">
+                            <span class="value" id="chartValue">78%</span>
+                            <span class="label" id="chartLabel">Média atual</span>
+                        </div>
+                        <div class="chart-trend up" id="chartTrend">
+                            <i class="ri-arrow-up-line"></i>
+                            +12% desde ontem
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grafico-box uptime-box">
+                    <h4><i class="ri-time-line"></i> Uptime / Downtime</h4>
+                    <div class="uptime-info">
+                        <div class="uptime-value">99.9%</div>
+                        <div class="uptime-desc">Disponibilidade Total</div>
+                    </div>
+                    <div class="chart-container-small">
+                        <canvas id="uptimeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Alertas Recentes</h3>
+            <div class="alertas-recentes">
+                <div class="alerta alerta-warning">
+                    <i class="ri-alert-line"></i> CPU 90% em MF2
+                </div>
+                <div class="alerta alerta-error">
+                    <i class="ri-error-warning-line"></i> MF1 offline 5min
+                </div>
+                <div class="alerta alerta-info">
+                    <i class="ri-information-line"></i> Temperatura elevada MF3
+                </div>
+            </div>
+
+        </main>
+
+        <aside class="mainframes-cadastrados">
+            <h4>Mainframes Cadastrados</h4>
+
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(1); return false;">
+                <div class="mainframe-evento offline" data-id="1">
+                    <div class="mainframe-numero">1</div>
+                    <div class="mainframe-desc">Mainframe 1</div>
+                </div>
+            </a>
+
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(2); return false;">
+                <div class="mainframe-evento warning" data-id="2">
+                    <div class="mainframe-numero">2</div>
+                    <div class="mainframe-desc">Mainframe 2</div>
+                </div>
+            </a>
+
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(3); return false;">
+                <div class="mainframe-evento normal" data-id="3">
+                    <div class="mainframe-numero">3</div>
+                    <div class="mainframe-desc">Mainframe 3</div>
+                </div>
+            </a>
+
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(4); return false;">
+                <div class="mainframe-evento normal" data-id="4">
+                    <div class="mainframe-numero">4</div>
+                    <div class="mainframe-desc">Mainframe 4</div>
+                </div>
+            </a>
+
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(5); return false;">
+                <div class="mainframe-evento warning" data-id="5">
+                    <div class="mainframe-numero">5</div>
+                    <div class="mainframe-desc">Mainframe 5</div>
+                </div>
+            </a>
+
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(6); return false;">
+                <div class="mainframe-evento normal" data-id="6">
+                    <div class="mainframe-numero">6</div>
+                    <div class="mainframe-desc">Mainframe 6</div>
+                </div>
+            </a>
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(7); return false;">
+                <div class="mainframe-evento normal" data-id="7">
+                    <div class="mainframe-numero">7</div>
+                    <div class="mainframe-desc">Mainframe 7</div>
+                </div>
+            </a>
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(8); return false;">
+                <div class="mainframe-evento normal" data-id="8">
+                    <div class="mainframe-numero">8</div>
+                    <div class="mainframe-desc">Mainframe 8</div>
+                </div>
+            </a>
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(9); return false;">
+                <div class="mainframe-evento normal" data-id="9">
+                    <div class="mainframe-numero">9</div>
+                    <div class="mainframe-desc">Mainframe 9</div>
+                </div>
+            </a>
+            <a href="#" class="página de mainframe" onclick="loadMainframeDetails(10); return false;">
+                <div class="mainframe-evento normal" data-id="10">
+                    <div class="mainframe-numero">10</div>
+                    <div class="mainframe-desc">Mainframe 10</div>
+                </div>
+            </a>
+        </aside>
+    </div>
+    <script>
+        // --- Variáveis Globais ---
+        const MAX_DATA_POINTS = 10;
+        let currentChartType = 'cpu';
+        let currentMainframeId = 1; // Mainframe ativo por padrão
+        let mainChart;
+        let uptimeChart;
+
+        // Função auxiliar para gerar dados simulados dentro de um range
+        function generateSimulatedData(low, high, dataLength = 6) {
+            return Array.from({ length: dataLength }, () => Math.floor(Math.random() * (high - low + 1)) + low);
+        }
+
+        // Função auxiliar para criar a estrutura padrão de um recurso
+        function createResource(data, color, trendText, trendClass) {
+            return {
+                data: data,
+                color: color,
+                trendText: trendText,
+                trendClass: trendClass
+            };
+        }
+
+        // --- Estrutura de Dados Mockada para Múltiplos Mainframes (1 a 10) ---
+        const mainframesData = {
+            1: { // CRÍTICO: Offline, CPU/Temp Altas
+                nome: "Mainframe 1",
+                statusClass: "offline",
+                cpu: createResource(generateSimulatedData(90, 99), '#ef4444', '+15% desde ontem', 'up'),
+                ram: createResource(generateSimulatedData(70, 85), '#10b981', '+2% desde ontem', 'up'),
+                disk: createResource(generateSimulatedData(80, 95), '#f59e0b', '+10% desde ontem', 'up'),
+                temp: createResource(generateSimulatedData(80, 90), '#ef4444', '+8°C desde ontem', 'up'),
+                uptime: { value: 95.2, desc: '95.2% (Alto Risco)' },
+                extras: {
+                    temperatura: { value: '88°C', desc: 'Crítico' },
+                    rede: { value: '2.5 Gb/s', desc: 'Alto Tráfego' },
+                    eventos: { value: '15', desc: 'Últimas 24h' }
+                }
+            },
+            2: { // WARNING: Atenção, RAM Média/Alta
+                nome: "Mainframe 2",
+                statusClass: "warning",
+                cpu: createResource(generateSimulatedData(75, 88), '#2563eb', '+5% desde ontem', 'up'),
+                ram: createResource(generateSimulatedData(65, 78), '#10b981', '-5% desde ontem', 'down'),
+                disk: createResource(generateSimulatedData(55, 68), '#f59e0b', '+3% desde ontem', 'up'),
+                temp: createResource(generateSimulatedData(60, 70), '#6366f1', 'Estável', 'neutral'),
+                uptime: { value: 99.7, desc: '99.7% (Estável)' },
+                extras: {
+                    temperatura: { value: '63°C', desc: 'Atual' },
+                    rede: { value: '1.2 Gb/s', desc: 'Última hora' },
+                    eventos: { value: '2', desc: 'Últimas 24h' }
+                }
+            },
+            3: { // NORMAL: Ideal, Baixa Utilização
+                nome: "Mainframe 3",
+                statusClass: "normal",
+                cpu: createResource(generateSimulatedData(40, 55), '#2563eb', '-1% desde ontem', 'down'),
+                ram: createResource(generateSimulatedData(30, 45), '#10b981', '-10% desde ontem', 'down'),
+                disk: createResource(generateSimulatedData(25, 40), '#f59e0b', '0% desde ontem', 'neutral'),
+                temp: createResource(generateSimulatedData(45, 55), '#2563eb', '-5°C desde ontem', 'down'),
+                uptime: { value: 99.99, desc: '99.99% (Ideal)' },
+                extras: {
+                    temperatura: { value: '50°C', desc: 'Frio' },
+                    rede: { value: '0.5 Gb/s', desc: 'Baixo Tráfego' },
+                    eventos: { value: '0', desc: 'Últimas 24h' }
+                }
+            },
+            4: { // NORMAL: Uso Mediano, Estável
+                nome: "Mainframe 4",
+                statusClass: "normal",
+                cpu: createResource(generateSimulatedData(55, 65), '#2563eb', 'Estável', 'neutral'),
+                ram: createResource(generateSimulatedData(50, 60), '#10b981', 'Estável', 'neutral'),
+                disk: createResource(generateSimulatedData(60, 70), '#f59e0b', 'Estável', 'neutral'),
+                temp: createResource(generateSimulatedData(55, 65), '#6366f1', 'Estável', 'neutral'),
+                uptime: { value: 99.8, desc: '99.8% (Estável)' },
+                extras: {
+                    temperatura: { value: '55°C', desc: 'Normal' },
+                    rede: { value: '0.8 Gb/s', desc: 'Normal' },
+                    eventos: { value: '1', desc: 'Últimas 24h' }
+                }
+            },
+            5: { // WARNING: Atenção, Disk/Temp Subindo
+                nome: "Mainframe 5",
+                statusClass: "warning",
+                cpu: createResource(generateSimulatedData(70, 85), '#2563eb', 'Atenção (+)', 'up'),
+                ram: createResource(generateSimulatedData(60, 75), '#10b981', 'Estável', 'neutral'),
+                disk: createResource(generateSimulatedData(70, 85), '#f59e0b', 'Atenção (+)', 'up'),
+                temp: createResource(generateSimulatedData(65, 75), '#f59e0b', 'Atenção (+)', 'up'),
+                uptime: { value: 98.5, desc: '98.5% (Atenção)' },
+                extras: {
+                    temperatura: { value: '70°C', desc: 'Atenção' },
+                    rede: { value: '1.5 Gb/s', desc: 'Alto' },
+                    eventos: { value: '5', desc: 'Últimas 24h' }
+                }
+            },
+            6: { // NORMAL: Baixa Utilização, Ideal
+                nome: "Mainframe 6",
+                statusClass: "normal",
+                cpu: createResource(generateSimulatedData(30, 45), '#2563eb', '-5% desde ontem', 'down'),
+                ram: createResource(generateSimulatedData(20, 35), '#10b981', '-8% desde ontem', 'down'),
+                disk: createResource(generateSimulatedData(15, 30), '#f59e0b', 'Estável', 'neutral'),
+                temp: createResource(generateSimulatedData(40, 50), '#2563eb', 'Frio', 'down'),
+                uptime: { value: 99.9, desc: '99.9% (Ideal)' },
+                extras: {
+                    temperatura: { value: '48°C', desc: 'Muito Frio' },
+                    rede: { value: '0.4 Gb/s', desc: 'Mínimo' },
+                    eventos: { value: '0', desc: 'Últimas 24h' }
+                }
+            },
+            7: { // WARNING: Disco Quase Cheio, mas CPU/RAM Normais
+                nome: "Mainframe 7",
+                statusClass: "warning",
+                cpu: createResource(generateSimulatedData(50, 65), '#2563eb', 'Estável', 'neutral'),
+                ram: createResource(generateSimulatedData(45, 60), '#10b981', 'Estável', 'neutral'),
+                disk: createResource(generateSimulatedData(85, 95), '#f59e0b', '+7% desde ontem', 'up'),
+                temp: createResource(generateSimulatedData(55, 65), '#6366f1', 'Estável', 'neutral'),
+                uptime: { value: 99.5, desc: '99.5% (Disk Warning)' },
+                extras: {
+                    temperatura: { value: '60°C', desc: 'Normal' },
+                    rede: { value: '0.9 Gb/s', desc: 'Normal' },
+                    eventos: { value: '3', desc: 'Últimas 24h' }
+                }
+            },
+            8: { // NORMAL: Uso Alto, mas Estável
+                nome: "Mainframe 8",
+                statusClass: "normal",
+                cpu: createResource(generateSimulatedData(80, 90), '#2563eb', 'Estável (Alto)', 'neutral'),
+                ram: createResource(generateSimulatedData(75, 85), '#10b981', 'Estável (Alto)', 'neutral'),
+                disk: createResource(generateSimulatedData(60, 75), '#f59e0b', 'Estável', 'neutral'),
+                temp: createResource(generateSimulatedData(65, 75), '#6366f1', 'Estável', 'neutral'),
+                uptime: { value: 99.9, desc: '99.9% (Estável)' },
+                extras: {
+                    temperatura: { value: '72°C', desc: 'Quente' },
+                    rede: { value: '1.8 Gb/s', desc: 'Muito Alto' },
+                    eventos: { value: '1', desc: 'Últimas 24h' }
+                }
+            },
+            9: { // OFFLINE: Simulação de dados parados/baixos (apenas visual, 'offline' na barra lateral)
+                nome: "Mainframe 9",
+                statusClass: "offline",
+                cpu: createResource(generateSimulatedData(0, 5), '#ef4444', 'OFFLINE', 'down'),
+                ram: createResource(generateSimulatedData(0, 5), '#10b981', 'OFFLINE', 'down'),
+                disk: createResource(generateSimulatedData(0, 5), '#f59e0b', 'OFFLINE', 'down'),
+                temp: createResource(generateSimulatedData(30, 40), '#ef4444', 'DESLIGADO', 'down'),
+                uptime: { value: 0.0, desc: '0.0% (DESLIGADO)' },
+                extras: {
+                    temperatura: { value: '35°C', desc: 'Desligado' },
+                    rede: { value: '0.0 Gb/s', desc: 'Desligado' },
+                    eventos: { value: '0', desc: 'Últimas 24h' }
+                }
+            },
+            10: { // NORMAL: Uso Mediano/Alto, RAM subindo
+                nome: "Mainframe 10",
+                statusClass: "normal",
+                cpu: createResource(generateSimulatedData(65, 75), '#2563eb', 'Estável', 'neutral'),
+                ram: createResource(generateSimulatedData(70, 80), '#ef4444', '+12% desde ontem', 'up'),
+                disk: createResource(generateSimulatedData(50, 60), '#f59e0b', 'Estável', 'neutral'),
+                temp: createResource(generateSimulatedData(60, 70), '#6366f1', 'Estável', 'neutral'),
+                uptime: { value: 99.85, desc: '99.85% (Estável)' },
+                extras: {
+                    temperatura: { value: '65°C', desc: 'Normal' },
+                    rede: { value: '1.0 Gb/s', desc: 'Normal' },
+                    eventos: { value: '4', desc: 'Últimas 24h' }
+                }
+            }
+        };
+
+        // --- Funções de Renderização ---
+
+        // 1. Atualiza o gráfico principal (CPU/RAM/DASD/TEMP)
+        function initMainChart(chartType, mainframeId) {
+            const mfData = mainframesData[mainframeId];
+            const config = mfData[chartType];
+            currentChartType = chartType;
+
+            const iconClass = chartType === 'temp' ? 'ri-temp-hot-line' : chartType === 'cpu' ? 'ri-cpu-line' : chartType === 'ram' ? 'ri-database-2-line' : 'ri-hard-drive-2-line';
+            const titleText = chartType === 'temp' ? 'TEMPERATURA (°C)' : chartType.toUpperCase() + ' - Uso (%)';
+            const unit = chartType === 'temp' ? '°C' : '%';
+
+            if (mainChart) {
+                mainChart.destroy();
+            }
+
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            mainChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: new Array(config.data.length).fill('').map((_, i) => `${(config.data.length - 1 - i) * 3}s atrás`),
+                    datasets: [{
+                        label: titleText,
+                        data: config.data.slice().reverse(), // Reverte para exibir do mais antigo para o mais novo no eixo X
+                        borderColor: config.color,
+                        backgroundColor: config.color.replace(')', ', 0.1)').replace('#', 'rgba(' + hexToRgb(config.color.slice(1)).join(',') + ', 0.1)'), // Ajuste para Chart.js
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { reverse: true },
+                        y: {
+                            beginAtZero: true,
+                            max: chartType === 'temp' ? 100 : 100 // Ajusta o máximo para temperatura se necessário
+                        }
+                    }
+                }
+            });
+            updateChartKpis(mainframeId); // Atualiza os KPIs do gráfico ao trocar
+        }
+
+        // Helper para converter HEX para RGB (para o preenchimento do gráfico)
+        function hexToRgb(hex) {
+            const bigint = parseInt(hex, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return [r, g, b];
+        }
+
+        // 2. Atualiza o gráfico de Uptime
+        function initUptimeChart(mainframeId) {
+            const uptime = mainframesData[mainframeId].uptime.value;
+            const downtime = 100 - uptime;
+
+            if (uptimeChart) {
+                uptimeChart.destroy();
+            }
+
+            const ctx = document.getElementById('uptimeChart').getContext('2d');
+            uptimeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Uptime', 'Downtime'],
+                    datasets: [{
+                        data: [uptime, downtime],
+                        backgroundColor: ['#22c55e', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            document.querySelector('.uptime-value').textContent = `${uptime}%`;
+            document.querySelector('.uptime-desc').textContent = mainframesData[mainframeId].uptime.desc;
+        }
+
+        // 3. Atualiza os KPIs principais (topo)
+        function updateMainKpis(mainframeId) {
+            const mfData = mainframesData[mainframeId];
+            const units = {
+                cpu: '%',
+                ram: `% <span class="kpi-gb">(13/20 GB)</span>`, // Mocked data
+                disk: `% <span class="kpi-gb">(550/1000 GB)</span>` // Mocked data
+            }
+
+            document.querySelector('.kpi-cpu .kpi-value').innerHTML = `${mfData.cpu.data[mfData.cpu.data.length - 1]}${units.cpu}`;
+            document.querySelector('.kpi-ram .kpi-value').innerHTML = `${mfData.ram.data[mfData.ram.data.length - 1]}${units.ram}`;
+            document.querySelector('.kpi-disk .kpi-value').innerHTML = `${mfData.disk.data[mfData.disk.data.length - 1]}${units.disk}`;
+
+            document.querySelector('.kpi-uptime .kpi-value').textContent = `${mfData.uptime.value}%`;
+        }
+
+        // 4. Atualiza os KPIs Extras (Temperatura, Rede, Eventos) - NOVO
+        function updateExtraKpis(mainframeId) {
+            const extras = mainframesData[mainframeId].extras;
+
+            document.getElementById('kpiTempValor').textContent = extras.temperatura.value;
+            document.getElementById('kpiTempDesc').textContent = extras.temperatura.desc;
+
+            document.getElementById('kpiRedeValor').textContent = extras.rede.value;
+            document.getElementById('kpiRedeDesc').textContent = extras.rede.desc;
+
+            document.getElementById('kpiEventosValor').textContent = extras.eventos.value;
+            document.getElementById('kpiEventosDesc').textContent = extras.eventos.desc;
+        }
+
+        // 5. Atualiza as métricas e título do gráfico selecionado (barra lateral do gráfico)
+        function updateChartKpis(mainframeId) {
+            const mfData = mainframesData[mainframeId];
+            const config = mfData[currentChartType];
+
+            const latestValue = config.data[config.data.length - 1]; // Último valor
+            let unit = currentChartType === 'temp' ? '°C' : '%';
+
+            const iconClass = currentChartType === 'temp' ? 'ri-temp-hot-line' : currentChartType === 'cpu' ? 'ri-cpu-line' : currentChartType === 'ram' ? 'ri-database-2-line' : 'ri-hard-drive-2-line';
+            const titleText = currentChartType === 'temp' ? 'TEMPERATURA (°C)' : currentChartType.toUpperCase() + ' - Uso (%)';
+
+            document.getElementById('chartTitle').innerHTML = `<i class="${iconClass}"></i> ${titleText}`;
+            document.getElementById('chartValue').textContent = `${latestValue}${unit}`;
+            document.getElementById('chartLabel').textContent = 'Valor Atual';
+
+            const trendElement = document.getElementById('chartTrend');
+            trendElement.innerHTML = `<i class="ri-arrow-${config.trendClass === 'up' ? 'up' : 'down'}-line"></i> ${config.trendText}`;
+            trendElement.className = 'chart-trend ' + config.trendClass;
+        }
+
+        // 6. Simulação em tempo real para o Mainframe ATUAL
+        function updateChartData() {
+            const mfData = mainframesData[currentMainframeId];
+
+            for (const type of ['cpu', 'ram', 'disk', 'temp']) {
+                const config = mfData[type];
+                let newValue;
+                let lowRange, highRange;
+
+                // Define os ranges de simulação com base no status do Mainframe
+                if (currentMainframeId == 1) { // Crítico (90-99 / 80-90)
+                    highRange = { cpu: [90, 99], ram: [70, 85], disk: [80, 95], temp: [80, 90] };
+                    lowRange = { cpu: [90, 99], ram: [70, 85], disk: [80, 95], temp: [80, 90] };
+                } else if (currentMainframeId == 3 || currentMainframeId == 6) { // Baixa Utilização (40-55 / 45-55)
+                    highRange = { cpu: [40, 55], ram: [30, 45], disk: [25, 40], temp: [45, 55] };
+                    lowRange = { cpu: [40, 55], ram: [30, 45], disk: [25, 40], temp: [45, 55] };
+                } else if (currentMainframeId == 9) { // Desligado/Offline (0-5 / 30-40)
+                    highRange = { cpu: [0, 5], ram: [0, 5], disk: [0, 5], temp: [30, 40] };
+                    lowRange = { cpu: [0, 5], ram: [0, 5], disk: [0, 5], temp: [30, 40] };
+                } else { // Padrão/Normal/Warning (Ex: 60-85 / 60-75)
+                    highRange = { cpu: [60, 85], ram: [50, 75], disk: [50, 80], temp: [55, 75] };
+                    lowRange = { cpu: [60, 85], ram: [50, 75], disk: [50, 80], temp: [55, 75] };
+                }
+
+                const range = highRange[type];
+                newValue = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
+
+                // Adiciona o novo valor e remove o mais antigo
+                config.data.push(newValue);
+                if (config.data.length > MAX_DATA_POINTS) {
+                    config.data.shift();
+                }
+            }
+
+            // Atualiza o gráfico e KPIs
+            if (mainChart) {
+                // Atualiza o dataset e labels (sem reverter pois o Chart.js faz o reverse)
+                mainChart.data.datasets[0].data = mfData[currentChartType].data.slice().reverse();
+                mainChart.data.labels = new Array(mfData[currentChartType].data.length).fill('').map((_, i) => `${(mfData[currentChartType].data.length - 1 - i) * 3}s atrás`);
+                mainChart.update();
+                updateChartKpis(currentMainframeId);
+            }
+            updateMainKpis(currentMainframeId);
+            // NOTA: Os KPIs Extras (temp/rede/eventos) não são simulados em tempo real aqui.
+        }
+
+        // 7. Função Principal de Troca de Mainframe
+        function loadMainframeDetails(mainframeId) {
+            // Garante que o ID exista e converte para número
+            const id = parseInt(mainframeId);
+            if (!mainframesData[id]) {
+                console.error(`Mainframe com ID ${id} não encontrado.`);
+                return;
+            }
+            currentMainframeId = id;
+
+            // 1. Atualiza o título da página/dashboard
+            document.title = `Dashboard - Synkro: ${mainframesData[id].nome}`;
+
+            // 2. Atualiza o card de Mainframes (aside) para destacar o ativo
+            document.querySelectorAll('.mainframe-evento').forEach(div => {
+                div.classList.remove('ativo');
+                div.classList.remove('offline', 'warning', 'normal');
+            });
+            const activeMFElement = document.querySelector(`.mainframe-evento[data-id="${id}"]`);
+            activeMFElement.classList.add('ativo');
+            activeMFElement.classList.add(mainframesData[id].statusClass);
+
+
+            // 3. Renderiza todos os KPIs e Gráficos com os novos dados
+            updateMainKpis(id);      // Cards principais (CPU/RAM/DASD/Uptime)
+            updateExtraKpis(id);     // Cards Extras (Temp/Rede/Eventos)
+            initUptimeChart(id);     // Gráfico de uptime
+            initMainChart(currentChartType, id); // Recarrega o gráfico principal (mantendo CPU/RAM/DASD/TEMP atual)
+        }
+
+        // 8. Função pública para alternar os gráficos (chamada pelos botões CPU/RAM/DASD/TEMP)
+        function showChart(chartType) {
+            initMainChart(chartType, currentMainframeId);
+
+            document.querySelectorAll('.chart-toggle').forEach(btn => btn.classList.remove('ativo'));
+            document.getElementById('btn' + chartType.toUpperCase()).classList.add('ativo');
+        }
+
+        // --- Inicialização na Carga da Página ---
+        window.onload = function () {
+            if (typeof validarSessaoSynkro === 'function') {
+                validarSessaoSynkro();
+            }
+
+            // Inicia o dashboard carregando o Mainframe 1 por padrão
+            loadMainframeDetails(1);
+
+            // Inicia a simulação de monitoramento em tempo real a cada 3 segundos
+            setInterval(updateChartData, 3000);
+        };
+    </script>
+</body>
+
+</html>

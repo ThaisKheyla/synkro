@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Synkro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashMainframes.css">
+    <link rel="stylesheet" href="./css/components/kpis.css">
+    <link rel="stylesheet" href="./css/components/status-header.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/sessao.js"></script>
+</head>
+
+<body onload="validarSessaoSynkro()">
+    <div class="layout-principal">
+        <aside class="barra-lateral">
+            <div class="logo">
+                Synkro
+            </div>
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+                <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+                <div class="cargo-usuario">
+                    <i class="ri-shield-user-line"></i>
+                    Analista de Infra
+                </div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+            </div>
+            <nav>
+                <ul class="menu-links">
+                    <li>
+                        <a href="#">
+                            <i class="ri-dashboard-3-line"></i>
+                            Visão Geral
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="ri-file-add-line icon-cadastro"></i>
+                            Cadastrar Mainframes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="dashMainframes.html" class="ativo">
+                            <i class="ri-database-2-line"></i>
+                            Mainframes
+                        </a>
+                    </li>
+                </ul>
+                <button class="btn-sair" onclick="limparSessao()">
+                    <i class="ri-logout-box-r-line"></i>
+                    Encerrar Sessão
+                </button>
+            </nav>
+        </aside>
+        <main class="dashboard-content">
+            <!-- Status Geral e Alertas -->
+            <div class="status-header">
+                <div class="status-content">
+                    <div class="status-title">
+                        <i class="ri-pulse-line"></i>
+                        <span>STATUS DOS COMPONENTES</span>
+                    </div>
+                    <div class="alertas-container">
+                        <div class="alerta alerta-warning">
+                            <i class="ri-alert-line"></i>
+                            <span>MF2:</span> CPU 90%
+                        </div>
+                        <div class="alerta alerta-error">
+                            <i class="ri-error-warning-line"></i>
+                            <span>MF1:</span> Offline 5min
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPIs de uso de recursos -->
+            <div class="kpis-row">
+                <div class="kpi-card kpi-uptime">
+                    <div class="kpi-icon">
+                        <i class="ri-time-line"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <div class="kpi-title">UPTIME</div>
+                        <div class="kpi-value">99.9%</div>
+                        <div class="kpi-desc">15d 6h 32m</div>
+                    </div>
+                </div>
+                <div class="kpi-card kpi-cpu">
+                    <div class="kpi-icon">
+                        <i class="ri-cpu-line"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <div class="kpi-title">CPU</div>
+                        <div class="kpi-value">78%</div>
+                        <div class="kpi-desc">Uso total</div>
+                    </div>
+                </div>
+                <div class="kpi-card kpi-ram">
+                    <div class="kpi-icon">
+                        <i class="ri-database-2-line"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <div class="kpi-title">RAM</div>
+                        <div class="kpi-value">65% <span class="kpi-gb">(13.0/20.0 GB)</span></div>
+                        <div class="kpi-desc">Uso total</div>
+                    </div>
+                </div>
+                <div class="kpi-card kpi-disk">
+                    <div class="kpi-icon">
+                        <i class="ri-hard-drive-2-line"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <div class="kpi-title">DISCO</div>
+                        <div class="kpi-value">55% <span class="kpi-gb">(550/1000 GB)</span></div>
+                        <div class="kpi-desc">Uso total</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Gráficos -->
+            <h3 class="section-title">Monitoramento em Tempo Real</h3>
+            <div class="graficos-row">
+                <div class="grafico-box">
+                    <div class="chart-toggle-group">
+                        <button class="chart-toggle ativo" id="btnCPU" onclick="showChart('cpu')">CPU</button>
+                        <button class="chart-toggle" id="btnRAM" onclick="showChart('ram')">RAM</button>
+                        <button class="chart-toggle" id="btnDISK" onclick="showChart('disk')">DISCO</button>
+                    </div>
+                    <h4 id="chartTitle">
+                        <i class="ri-cpu-line"></i>
+                        CPU - Uso (%)
+                    </h4>
+                    <div class="chart-info" id="chartInfo">
+                        <div class="chart-metric">
+                            <span class="value" id="chartValue">78%</span>
+                            <span class="label" id="chartLabel">Média atual</span>
+                        </div>
+                        <div class="chart-trend up" id="chartTrend">
+                            <i class="ri-arrow-up-line"></i>
+                            +12% desde ontem
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <aside class="mainframes-cadastrados">
+            <h4>Mainframes Cadastrados</h4>
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento offline">
+                    <div class="mainframe-numero">1</div>
+                    <div class="mainframe-desc">Mainframe 1</div>
+                </div>
+            </a>
+            
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento warning">
+                    <div class="mainframe-numero">2</div>
+                    <div class="mainframe-desc">Mainframe 2</div>
+                </div>
+            </a>
+
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento warning">
+                    <div class="mainframe-numero">3</div>
+                    <div class="mainframe-desc">Mainframe 3</div>
+                </div>
+            </a>
+
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento warning">
+                    <div class="mainframe-numero">4</div>
+                    <div class="mainframe-desc">Mainframe 4</div>
+                </div>
+            </a>
+
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento">
+                    <div class="mainframe-numero">5</div>
+                    <div class="mainframe-desc">Mainframe 5</div>
+                </div>
+            </a>
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento">
+                    <div class="mainframe-numero">6</div>
+                    <div class="mainframe-desc">Mainframe 6</div>
+                </div>
+            </a>
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento">
+                    <div class="mainframe-numero">7</div>
+                    <div class="mainframe-desc">Mainframe 7</div>
+                </div>
+            </a>
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento">
+                    <div class="mainframe-numero">8</div>
+                    <div class="mainframe-desc">Mainframe 8</div>
+                </div>
+            </a>
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento">
+                    <div class="mainframe-numero">9</div>
+                    <div class="mainframe-desc">Mainframe 9</div>
+                </div>
+            </a>
+            <a href="detalhesMainframe.html" class="página de mainframe">
+                <div class="mainframe-evento">
+                    <div class="mainframe-numero">10</div>
+                    <div class="mainframe-desc">Mainframe 10</div>
+                </div>
+            </a>
+        </aside>
+    </div>
+</body>
+
+</html>
+
+<script>
+
+    // Dados simulados para cada componente
+    const chartData = {
+        cpu: {
+            label: 'CPU (%)',
+            icon: 'ri-cpu-line',
+            data: [20, 35, 30, 40, 38, 45, 35, 50, 48, 60, 55, 65, 70, 68, 75, 80, 78, 85, 90, 88, 92, 95, 93, 90, 85, 80, 78, 75, 70, 65, 60, 58, 55, 50, 48, 45, 40, 38, 35, 30, 28, 25, 22, 20, 18, 15, 10, 10],
+            color: '#2563eb',
+            bg: 'rgba(37,99,235,0.08)',
+            value: '78%',
+            trend: '+12% desde ontem',
+            trendClass: 'up',
+            trendIcon: 'ri-arrow-up-line',
+            labelText: 'Média atual'
+        },
+        ram: {
+            label: 'RAM (%)',
+            icon: 'ri-database-2-line',
+            data: [60, 62, 65, 70, 68, 75, 80, 78, 85, 90, 88, 92, 95, 93, 90, 85, 80, 78, 75, 70, 65, 60, 58, 55, 50, 48, 45, 40, 38, 35, 30, 28, 25, 22, 20, 18, 15, 10, 10, 20, 35, 30, 40, 38, 45, 35, 50, 48],
+            color: '#38bdf8',
+            bg: 'rgba(56,189,248,0.08)',
+            value: '65%',
+            trend: '+5% desde ontem',
+            trendClass: 'up',
+            trendIcon: 'ri-arrow-up-line',
+            labelText: 'Média atual'
+        },
+        disk: {
+            label: 'DISCO (%)',
+            icon: 'ri-hard-drive-2-line',
+            data: [40, 38, 35, 30, 28, 25, 22, 20, 18, 15, 10, 10, 20, 35, 30, 40, 38, 45, 35, 50, 48, 60, 55, 65, 70, 68, 75, 80, 78, 85, 90, 88, 92, 95, 93, 90, 85, 80, 78, 75, 70, 65, 60, 58, 55, 50, 48, 45],
+            color: '#f59e0b',
+            bg: 'rgba(245,158,11,0.08)',
+            value: '55%',
+            trend: '-3% desde ontem',
+            trendClass: 'down',
+            trendIcon: 'ri-arrow-down-line',
+            labelText: 'Média atual'
+        }
+    };
+
+    const chartLabels = ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'];
+
+    const mainChartCtx = document.getElementById('mainChart').getContext('2d');
+    let currentChart = 'cpu';
+    let chartInstance = null;
+
+    function renderChart(type) {
+        const data = chartData[type];
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(mainChartCtx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: data.label,
+                    data: data.data,
+                    borderColor: data.color,
+                    backgroundColor: data.bg,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 3
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, max: 100 } }
+            }
+        });
+        // Atualiza título, ícone, valor, tendência
+        document.getElementById('chartTitle').innerHTML = `<i class="${data.icon}"></i> ${data.label}`;
+        document.getElementById('chartValue').textContent = data.value;
+        document.getElementById('chartLabel').textContent = data.labelText;
+        const trendDiv = document.getElementById('chartTrend');
+        trendDiv.className = `chart-trend ${data.trendClass}`;
+        trendDiv.innerHTML = `<i class="${data.trendIcon}"></i> ${data.trend}`;
+    }
+
+    function showChart(type) {
+        currentChart = type;
+        renderChart(type);
+        // Atualiza botões
+        document.getElementById('btnCPU').classList.remove('ativo');
+        document.getElementById('btnRAM').classList.remove('ativo');
+        document.getElementById('btnDISK').classList.remove('ativo');
+        if (type === 'cpu') document.getElementById('btnCPU').classList.add('ativo');
+        if (type === 'ram') document.getElementById('btnRAM').classList.add('ativo');
+        if (type === 'disk') document.getElementById('btnDISK').classList.add('ativo');
+    }
+
+    // Inicialização
+    renderChart('cpu');
+
+    // Se quiser animação de atualização, pode adaptar para cada tipo
+    // function updateChartsAndValues() { ... }
+
+    // Se houver o gráfico de statusPieChart, inicialize normalmente aqui
+    // ...existing code...
+</script>

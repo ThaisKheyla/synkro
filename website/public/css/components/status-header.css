@@ -1,0 +1,68 @@
+/* Status Header */
+.status-header {
+    background: linear-gradient(90deg, var(--azul-escuro), var(--azul-medio));
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+}
+
+.status-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.status-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--branco);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.status-title i {
+    color: var(--accent-light);
+    font-size: 1rem;
+}
+
+.alertas-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.alerta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    white-space: nowrap;
+}
+
+.alerta i {
+    font-size: 0.9rem;
+}
+
+.alerta span {
+    font-weight: 600;
+}
+
+.alerta-warning {
+    color: var(--warning);
+    border-left: 2px solid var(--warning);
+}
+
+.alerta-error {
+    color: var(--danger);
+    border-left: 2px solid var(--danger);
+}
