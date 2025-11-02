@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Synkro | Cadastrar Mainframe</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="./css/dash.css">
   <script src="./js/sessao.js"></script>
 </head>
@@ -12,116 +13,114 @@
 <body onload="validarSessaoSynkro(); carregarSelects();">
   <div class="layout-principal">
     <!-- ====== BARRA LATERAL ====== -->
-    <div class="layout-principal">
-      <aside class="barra-lateral">
-        <div class="logo">
-          Synkro
+    <aside class="barra-lateral">
+      <div class="logo">
+        Synkro
+      </div>
+      <div class="perfil-usuario">
+        <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+        <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+        <div class="cargo-usuario">
+          <i class="ri-shield-user-line"></i>
+          Analista de Infra
         </div>
-        <div class="perfil-usuario">
-          <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
-          <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
-          <div class="cargo-usuario">
-            <i class="ri-shield-user-line"></i>
-            Analista de Infra
-          </div>
-          <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+        <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+      </div>
+      <nav>
+        <ul class="menu-links">
+          <li>
+            <a href="dashboardAnalista.html">
+              <i class="ri-dashboard-3-line"></i>
+              Visão Geral
+            </a>
+          </li>
+          <li>
+            <a href="CadastroMainframe.html" class="ativo">
+              <i class="ri-file-add-line icon-cadastro"></i>
+              Cadastrar Mainframes
+            </a>
+          </li>
+          <li>
+            <a href="dashMainframes.html">
+              <i class="ri-database-2-line"></i>
+              Mainframes
+            </a>
+          </li>
+        </ul>
+        <button class="btn-sair" onclick="limparSessao()">
+          <i class="ri-logout-box-r-line"></i>
+          Encerrar Sessão
+        </button>
+      </nav>
+    </aside>
+
+    <!-- ====== CONTEÚDO PRINCIPAL ====== -->
+    <main class="conteudo-principal">
+      <section class="painel-hardware">
+        <div class="cabecalho-painel">
+          <h2>CADASTRAR MAINFRAME</h2>
         </div>
-        <nav>
-          <ul class="menu-links">
-            <li>
-              <a href="dashboardAnalista.html">
-                <i class="ri-dashboard-3-line"></i>
-                Visão Geral
-              </a>
-            </li>
-            <li>
-              <a href="cadastroMainframe.html">
-                <i class="ri-file-add-line icon-cadastro"></i>
-                Cadastrar Mainframes
-              </a>
-            </li>
-            <li>
-              <a href="dashMainframes.html" class="ativo">
-                <i class="ri-database-2-line"></i>
-                Mainframes
-              </a>
-            </li>
-          </ul>
-          <button class="btn-sair" onclick="limparSessao()">
-            <i class="ri-logout-box-r-line"></i>
-            Encerrar Sessão
-          </button>
-        </nav>
-      </aside>
 
-      <!-- ====== CONTEÚDO PRINCIPAL ====== -->
-      <main class="conteudo-principal">
-        <section class="painel-hardware">
-          <div class="cabecalho-painel">
-            <h2>CADASTRAR MAINFRAME</h2>
+        <form id="formMainframe" class="form-cadastro">
+          <label for="fabricante">Fabricante:</label>
+          <input type="text" id="fabricante" placeholder="Digite o fabricante" required>
+
+          <label for="modelo">Modelo:</label>
+          <input type="text" id="modelo" placeholder="Digite o modelo" required>
+
+          <label for="mac">MAC Address:</label>
+          <input type="text" id="mac" placeholder="Ex: 00:1B:44:11:3A:B7" required>
+
+          <label for="setor">Setor:</label>
+          <div class="inline-field">
+            <select id="setor" required>
+              <option value="">Selecione o setor</option>
+            </select>
+            <button type="button" class="btn-pequeno" id="toggleAddSetor">+</button>
+          </div>
+          <div class="inline-add oculto" id="addSetorBox">
+            <input type="text" id="novoSetor" placeholder="Novo setor">
+            <button type="button" class="btn-pequeno" id="salvarSetor">Salvar</button>
+            <button type="button" class="btn-pequeno" id="cancelSetor">Cancelar</button>
           </div>
 
-          <form id="formMainframe" class="form-cadastro">
-            <label for="fabricante">Fabricante:</label>
-            <input type="text" id="fabricante" placeholder="Digite o fabricante" required>
+          <label for="sistema">Sistema Operacional:</label>
+          <div class="inline-field">
+            <select id="sistema" required>
+              <option value="">Selecione o sistema</option>
+            </select>
+            <button type="button" class="btn-pequeno" id="toggleAddSistema">+</button>
+          </div>
+          <div class="inline-add oculto" id="addSistemaBox">
+            <input type="text" id="novoSistema" placeholder="Novo sistema operacional">
+            <button type="button" class="btn-pequeno" id="salvarSistema">Salvar</button>
+            <button type="button" class="btn-pequeno" id="cancelSistema">Cancelar</button>
+          </div>
 
-            <label for="modelo">Modelo:</label>
-            <input type="text" id="modelo" placeholder="Digite o modelo" required>
+          <div class="config-container">
+            <button type="button" id="btnConfig" class="btn-config">+ Configurações de Métricas</button>
+          </div>
 
-            <label for="mac">MAC Address:</label>
-            <input type="text" id="mac" placeholder="Ex: 00:1B:44:11:3A:B7" required>
+          <!-- Área dinâmica de métricas -->
+          <div id="configuracoes" class="configuracoes oculto">
+            <h3>Configurações de Métricas</h3>
+            <div id="metricasContainer"></div>
 
-            <label for="setor">Setor:</label>
-            <div class="inline-field">
-              <select id="setor" required>
-                <option value="">Selecione o setor</option>
-              </select>
-              <button type="button" class="btn-pequeno" id="toggleAddSetor">+</button>
-            </div>
-            <div class="inline-add oculto" id="addSetorBox">
-              <input type="text" id="novoSetor" placeholder="Novo setor">
-              <button type="button" class="btn-pequeno" id="salvarSetor">Salvar</button>
-              <button type="button" class="btn-pequeno" id="cancelSetor">Cancelar</button>
-            </div>
+            <button type="button" id="btnAddMetrica" class="btn-cadastrar" style="background:#4f46e5;">
+              + Adicionar Métrica
+            </button>
+          </div>
 
-            <label for="sistema">Sistema Operacional:</label>
-            <div class="inline-field">
-              <select id="sistema" required>
-                <option value="">Selecione o sistema</option>
-              </select>
-              <button type="button" class="btn-pequeno" id="toggleAddSistema">+</button>
-            </div>
-            <div class="inline-add oculto" id="addSistemaBox">
-              <input type="text" id="novoSistema" placeholder="Novo sistema operacional">
-              <button type="button" class="btn-pequeno" id="salvarSistema">Salvar</button>
-              <button type="button" class="btn-pequeno" id="cancelSistema">Cancelar</button>
-            </div>
-
-            <div class="config-container">
-              <button type="button" id="btnConfig" class="btn-config">+ Configurações de Métricas</button>
-            </div>
-
-            <!-- Área dinâmica de métricas -->
-            <div id="configuracoes" class="configuracoes oculto">
-              <h3>Configurações de Métricas</h3>
-              <div id="metricasContainer"></div>
-
-              <button type="button" id="btnAddMetrica" class="btn-cadastrar" style="background:#4f46e5;">
-                + Adicionar Métrica
-              </button>
-            </div>
-
-            <button type="submit" class="btn-cadastrar">CADASTRAR MAINFRAME</button>
-          </form>
-        </section>
+          <button type="submit" class="btn-cadastrar">CADASTRAR MAINFRAME</button>
+        </form>
+      </section>
 
 
-      </main>
-      <aside class="mainframes-cadastrados">
-        <h4>Mainframes Cadastrados</h4>
-        <div id="listaMainframes"></div>
-      </aside>
-    </div>
+    </main>
+    <aside class="mainframes-cadastrados">
+      <h4>Mainframes Cadastrados</h4>
+      <div id="listaMainframes"></div>
+    </aside>
 
     <script>
       const btnConfig = document.getElementById("btnConfig");
