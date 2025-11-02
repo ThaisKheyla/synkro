@@ -210,9 +210,6 @@ INSERT INTO sistema_operacional (nome) VALUES ('Linux'),('Windows');
 INSERT INTO mainframe (fabricante, modelo, macAdress, fkEmpresa, fkSetor, fkSistemaOperacional)
 VALUES
 ('IBM', 'Z15', '269058769682378', 1, 1, 1),
-('IBM', 'Z16', '269058781282378', 1, 2, 1),
-('IBM', 'Z12', '269058769895078', 1, 1, 2),
-('IBM', 'Z15', '269709569682378', 1, 3, 1),
 ('IBM', 'Z14', '745683251336348', 2, 2, 2),
 ('IBM', 'Z13', '978436525625487', 3, 3, 1);
 
@@ -359,11 +356,11 @@ ORDER BY m.id, a.dt_hora DESC;
 
 SELECT * FROM empresa;
 SELECT * FROM funcionario;
-SELECT * FROM mainframe
-WHERE fkEmpresa = 1;
 
 SELECT cp.* , m.min, m.max, m.fkTipo, t.descricao
 from componente_mainframe as cp
 JOIN metrica m on m.id = cp.fkMetrica and m.fkComponente = cp.fkComponente 
 join tipo t on m.fkTipo = t.id
 where cp.fkMainframe = 1;
+  
+select * from metrica;
