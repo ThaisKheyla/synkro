@@ -1,46 +1,4 @@
-.chart-toggle-group {
-    /* Mantém o flex e retira o border e overflow: hidden para o visual de abas */
-    display: flex;
-    gap: 10px; /* Adiciona o gap novamente para melhor espaçamento entre botões */
-    margin-bottom: 16px;
-    justify-content: flex-start;
-    align-self: flex-start;
-    border: none;
-    overflow: visible;
-}
-
-.chart-toggle {
-    /* Estilo original de abas escuras */
-    padding: 8px 22px;
-    border: none;
-    border-radius: 7px 7px 0 0;
-    background: var(--azul-medio);
-    color: var(--gray-300);
-    font-weight: 500;
-    font-size: 1rem;
-    letter-spacing: 0.2px;
-    cursor: pointer;
-    box-shadow: none;
-    transition: background 0.18s, color 0.18s;
-    outline: none;
-    border-bottom: 2px solid transparent;
-}
-
-.chart-toggle.ativo {
-    background: var(--azul-escuro); /* Mudo para azul-escuro para contraste no painel */
-    color: var(--accent-light);
-    border-bottom: 2px solid var(--accent-light);
-    box-shadow: none;
-    transform: none;
-    z-index: 1;
-}
-
-.chart-toggle:not(.ativo):hover {
-    background: var(--azul-primario);
-    color: var(--branco);
-    border-bottom: 2px solid var(--accent-light);
-}
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
     /* Cores Principais - Esquema Profissional */
@@ -72,31 +30,20 @@
 
     /* Sombras */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 12px 20px -3px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 30px -5px rgba(0, 0, 0, 0.4);
 
     /* Espaçamentos */
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
     --spacing-md: 1.5rem;
-    --spacing-lg: 1rem;
-    --spacing-xl: 3rem;
-}
-.chart-container {
-    width: 100%;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255,255,255,0.85);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
-    margin-bottom: 8px;
-    padding: 8px 0;
+    --spacing-lg: 2rem;
 }
 
-/* --- controle de overflow --- */
-html, body {
+/* --- CONTROLE DE OVERFLOW E LAYOUT BASE --- */
+html,
+body {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -115,16 +62,11 @@ html, body {
     border-radius: 16px;
     overflow: hidden;
     background-color: var(--azul-medio);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-}
-.filtro{
-     margin-top:8px; 
-     padding:6px 12px; 
-     border-radius:8px; 
-     border:1px solid #ccc;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    margin: 2vh auto;
 }
 
-/* -------- Barra Lateral -------- */
+/* ======== BARRA LATERAL ======== */
 .barra-lateral {
     width: 205px;
     background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
@@ -214,7 +156,6 @@ html, body {
     margin-top: 4px;
 }
 
-/* ======== BOTÃO LINKS ======== */
 
 .barra-lateral nav ul {
     list-style: none;
@@ -236,91 +177,92 @@ html, body {
     transition: all 0.3s;
 }
 
-.barra-lateral nav ul li a:hover, 
+.barra-lateral nav ul li a:hover,
 .barra-lateral nav ul li a.ativo {
     background-color: var(--azul-escuro);
     color: var(--branco);
 }
 
+/* ------- MENU LINKS ======== */
 .menu-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .menu-links li a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  font-weight: 500;
-  color: var(--gray-400);
-  background-color: rgba(255, 255, 255, 0.03);
-  padding: 12px 18px;
-  transition: all 0.3s ease;
-  font-size: 0.95rem;
-  border-radius: 8px;
-  position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    color: var(--gray-400);
+    background-color: rgba(255, 255, 255, 0.03);
+    padding: 12px 18px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .menu-links li a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 4px;
-  background-color: transparent;
-  border-radius: 0px 4px 4px 0px;
-  transition: background-color 0.3s ease;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background-color: transparent;
+    border-radius: 0px 4px 4px 0px;
+    transition: background-color 0.3s ease;
 }
 
 .menu-links li a:hover {
-  background-color: rgba(99, 102, 241, 0.1);
-  color: var(--accent-light);
-  transform: translateX(4px);
-  border-color: rgba(99, 102, 241, 0.2);
+    background-color: rgba(99, 102, 241, 0.1);
+    color: var(--accent-light);
+    transform: translateX(4px);
+    border-color: rgba(99, 102, 241, 0.2);
 }
 
 .menu-links li a:hover i {
-  color: var(--accent-light);
-  transform: scale(1.1);
+    color: var(--accent-light);
+    transform: scale(1.1);
 }
 
 .menu-links li a i {
-  font-size: 1.25rem;
-  color: var(--gray-500);
-  transition: all 0.3s ease;
+    font-size: 1.25rem;
+    color: var(--gray-500);
+    transition: all 0.3s ease;
 }
 
 .menu-links li a.ativo {
-  background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(56, 189, 248, 0.1));
-  color: var(--accent-light);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
-  border-color: rgba(99, 102, 241, 0.3);
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(56, 189, 248, 0.1));
+    color: var(--accent-light);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
 }
 
 .menu-links li a.ativo i {
-  color: var(--accent-light);
+    color: var(--accent-light);
 }
 
 .menu-links li a.ativo::before {
-  content: '';
-  position: absolute;
-  left: -1px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 20px;
-  background: linear-gradient(to bottom, var(--accent-light), var(--accent-dark));
-  border-radius: 3px;
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(to bottom, var(--accent-light), var(--accent-dark));
+    border-radius: 3px;
 }
 
-/* ======== BOTÃO SAIR ======== */
+/* ------- BOTÃO SAIR ======== */
 
 .btn-sair {
     margin-top: auto;
@@ -358,23 +300,29 @@ html, body {
     transform: translateX(4px);
 }
 
-@media (max-width: 900px) {
-    .btn-sair {
-        padding: 8px 14px;
-        font-size: 0.95em;
-    }
-}
+/* -------- CONTEÚDO PRINCIPAL DA DASHBOARD -------- */
 
-.dashboard-content {
+.conteudo-dashboard {
     flex: 1;
     max-width: 1400px;
     margin: 10px;
     height: calc(100vh - var(--spacing-md) * 2);
     background: var(--azul-escuro);
     border-radius: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
     min-height: 0;
     flex-shrink: 1;
     padding: 0 var(--spacing-md);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--azul-medio) transparent;
+    scroll-behavior: smooth;
+    /* rolagem suave */
+    max-height: 100vh;
+    /* garante que o scroll fique dentro da tela */
+    padding-right: 4px;
+    /* evita que o conteúdo fique colado */
 }
 
 .main-container {
@@ -385,26 +333,183 @@ html, body {
     min-height: min-content;
 }
 
+/* Título de Seção Mais Sólido - REFINADO */
+.section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--gray-100);
+    margin-bottom: 1rem;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--azul-medio);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* --- 1. KPIS PRINCIPAIS (Kpis Row) - REFINADO (VIDRO FLUTUANTE) --- */
+.kpis-row {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.kpi-card {
+    flex: 1;
+    min-width: 220px;
+    /* NOVO: Efeito Glassmorphism Sutil */
+    background: rgba(30, 41, 59, 0.7);
+    /* Fundo semi-transparente */
+    backdrop-filter: blur(5px);
+    /* Efeito de vidro */
+    -webkit-backdrop-filter: blur(5px);
+
+    padding: 1.5rem;
+    border-radius: 16px;
+    /* Mais arredondado */
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow-lg);
+    /* Sombra mais forte */
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* Borda semi-transparente */
+}
+
+.kpi-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--accent-light);
+}
+
+/* Ícone KPI: Gradientes Vibrantes */
+.kpi-icon {
+    font-size: 2.2rem;
+    padding: 0.85rem;
+    border-radius: 10px;
+    margin-right: 1.2rem;
+    color: var(--branco);
+    /* Removido background-color: var(--azul-primario); */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+/* Cores específicas para cada KPI - AGORA COM GRADIENTES */
+.kpi-cpu .kpi-icon {
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-dark));
+}
+
+.kpi-ram .kpi-icon {
+    background: linear-gradient(135deg, var(--warning), var(--very-urgent));
+}
+
+.kpi-disk .kpi-icon {
+    background: linear-gradient(135deg, var(--success), #047857);
+    /* Verde mais escuro */
+}
+
+.kpi-uptime .kpi-icon {
+    background: linear-gradient(135deg, var(--azul-primario), #1d4ed8);
+    /* Azul mais escuro */
+}
+
+/* Tipografia KPI - Mantida em destaque */
+.kpi-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gray-300);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.kpi-value {
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--branco);
+}
+
+.kpi-gb {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-400);
+    margin-left: 8px;
+}
+
+.kpi-desc {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    margin-top: 6px;
+    font-style: italic;
+}
+
+/* --- 2. KPIS EXTRAS (Temperatura, Rede, Eventos) - REFINADO (Mantido o estilo discreto) --- */
+.kpi-extra {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.kpi-extra .kpi-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-md);
+    min-width: 150px;
+    justify-content: space-between;
+    /* Ajuste para não ter glassmorphism aqui */
+    background: var(--azul-medio);
+    backdrop-filter: none;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transform: none;
+}
+
+.kpi-extra .kpi-card:hover {
+    transform: none;
+    border: 1px solid var(--gray-500);
+    box-shadow: var(--shadow-md);
+}
+
+.kpi-extra .kpi-title {
+    color: var(--gray-400);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
+}
+
+.kpi-extra .kpi-value {
+    font-size: 2.1rem;
+    margin: 10px 0;
+    color: var(--accent-light);
+    font-weight: 900;
+}
+
+/* --- MAINFRAMES CADASTRADOS (Mantido) --- */
+
 .mainframes-cadastrados {
-  flex: 1;
-  margin: 10px;
-  min-width: 210px;
-  max-width: 240px;
-  width: 240px;
-  height: 98%;
-  background: var(--azul-escuro);
-  border-left: 1.5px solid var(--azul-medio);
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  right: 0;
-  top: 0;
-  overflow-y: auto;
-  z-index: 1;
-  flex-shrink: 1;
-  padding: 0 var(--spacing-md);
+    flex: 1;
+    margin: 10px;
+    min-width: 210px;
+    max-width: 240px;
+    width: 240px;
+    height: 98%;
+    background: var(--azul-escuro);
+    border-left: 1.5px solid var(--azul-medio);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    right: 0;
+    top: 0;
+    overflow-y: auto;
+    z-index: 1;
+    flex-shrink: 1;
+    padding: 0 var(--spacing-md);
 }
 
 
@@ -419,7 +524,8 @@ html, body {
 }
 
 
-.página.mainframe, .página-de-mainframe {
+.página.mainframe,
+.página-de-mainframe {
     width: 100%;
     text-decoration: none;
 }
@@ -440,13 +546,23 @@ html, body {
     overflow: hidden;
 }
 
-.mainframe-evento.offline { border-left-color: var(--danger); }
-.mainframe-evento.warning { border-left-color: var(--warning); }
-.mainframe-evento.online { border-left-color: var(--success); }
+.mainframe-evento.offline {
+    border-left-color: var(--danger);
+}
+
+.mainframe-evento.warning {
+    border-left-color: var(--warning);
+}
+
+.mainframe-evento.online {
+    border-left-color: var(--success);
+}
+
 .mainframe-evento:hover {
     background: var(--azul-primario);
     border-left-color: var(--accent-light);
 }
+
 .mainframe-numero {
     font-size: 1rem;
     font-weight: 700;
@@ -461,6 +577,7 @@ html, body {
     margin-right: 6px;
     box-shadow: none;
 }
+
 .mainframe-desc {
     font-size: 0.98rem;
     color: var(--gray-200);
@@ -472,341 +589,261 @@ html, body {
     gap: 4px;
 }
 
-#cpuChart,
-#statusPieChart {
-    width: 100% !important;
-    height: 80% !important;
-}
-/* --- 3. CONTEÚDO PRINCIPAL --- */
-
-.dashboard-content {
-    padding: 20px 30px;
-    overflow-y: auto;
-    /* Permite rolar o conteúdo principal */
-}
-
-.status-header {
-    background-color: var(--cor-card);
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-}
-
-.section-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--cor-texto-principal);
-    margin: 25px 0 15px 0;
-}
-
-/* --- 4. KPIS PRINCIPAIS (4 cards no topo) --- */
-
-.kpis-row {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.kpi-card {
-    flex: 1;
-    background-color: var(--cor-card);
-    padding: 15px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-}
-
-.kpi-icon {
-    font-size: 30px;
-    padding: 10px;
-    border-radius: 50%;
-    margin-right: 15px;
-    color: var(--cor-card);
-}
-
-.kpi-cpu .kpi-icon {
-    background-color: #2563eb;
-}
-
-/* Azul */
-.kpi-ram .kpi-icon {
-    background-color: #10b981;
-}
-
-/* Verde Esmeralda */
-.kpi-disk .kpi-icon {
-    background-color: #f59e0b;
-}
-
-/* Laranja */
-.kpi-uptime .kpi-icon {
-    background-color: #6366f1;
-}
-
-/* Indigo/Roxo Suave */
-
-.kpi-title {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--cor-texto-secundario);
-}
-
-.kpi-value {
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.kpi-desc {
-    font-size: 12px;
-    color: var(--cor-texto-secundario);
-}
-
-.kpi-gb {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--cor-texto-secundario);
-}
-
-/* --- 5. KPIS EXTRAS (Temperatura, Rede, Eventos) --- */
-
-.kpi-extra {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-/* Reutiliza o estilo base do kpi-card, mas com layout ligeiramente diferente */
-.kpi-extra .kpi-card {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 15px;
-}
-
-.kpi-extra .kpi-value {
-    font-size: 20px;
-    margin: 5px 0;
-    color: var(--cor-principal);
-}
-
-.kpi-extra .kpi-title {
-    font-weight: 600;
-    color: var(--cor-texto-principal);
-}
-
-
-/* --- 6. GRÁFICOS E TOGGLES --- */
-
-.graficos-row {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
+/* --- GRÁFICOS E TOGGLES - REFINADO --- */
+.graficos {
+    gap: var(--spacing-md);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .grafico-box {
-    background-color: var(--cor-card);
+    background-color: var(--azul-medio);
+    /* <-- O FUNDO AZUL DEVE ESTAR AQUI */
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    flex: 2;
-    /* O gráfico principal ocupa mais espaço */
-    min-height: 400px;
-    display: flex;
-    flex-direction: column;
+    box-shadow: var(--shadow-lg);
 }
 
 .grafico-box h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--cor-texto-principal);
+    color: var(--gray-100);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.2rem;
+    font-weight: 800;
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    gap: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .grafico-box h4 i {
-    margin-right: 8px;
-    font-size: 20px;
-    color: var(--cor-principal);
+    color: var(--accent-light);
+    font-size: 1.5rem;
 }
 
-.chart-toggle-group {
+/* --- Chart Toggles --- */
+.grupo-botoes {
     display: flex;
-    margin-bottom: 15px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    gap: 4px;
+    margin-bottom: 1rem;
+    border-radius: 12px;
     overflow: hidden;
-    align-self: flex-start;
-    /* Fica alinhado à esquerda */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--azul-medio);
 }
 
-.chart-toggle {
-    background-color: var(--cor-card);
-    color: var(--cor-texto-secundario);
+.botao-nav {
+    flex: 1;
+    padding: 10px 0;
     border: none;
-    padding: 8px 15px;
-    font-weight: 600;
+    background: transparent;
+    color: var(--gray-300);
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
+    text-align: center;
+    transition: all 0.25s ease;
+    position: relative;
 }
 
-.chart-toggle:not(:last-child) {
-    border-right: 1px solid #e5e7eb;
+.botao-nav.ativo {
+    color: var(--accent-light);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(37, 99, 235, 0.2));
+    box-shadow: inset 0 -4px 0 var(--accent-light);
+    font-size: 1rem;
 }
 
-.chart-toggle.ativo {
-    background-color: var(--cor-principal);
-    color: var(--cor-card);
+.botao-nav:not(.ativo):hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--gray-100);
 }
 
-.chart-toggle:hover:not(.ativo) {
-    background-color: #f3f4f6;
-    color: var(--cor-texto-principal);
+/* --- Chart Container --- */
+.grafico-container {
+    flex-grow: 1;
+    height: 350px;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    background: transparent !important;
+    position: relative;
+    width: 100%;
 }
 
-.chart-info {
+/* --- Chart Info e Métricas --- */
+.grafico-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding: 0 5px;
+    padding: 0 10px;
+    margin-bottom: 10px;
 }
 
-.chart-metric {
-    display: flex;
-    align-items: flex-end;
+.grafico-metrica .value {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--accent-light);
+    text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.chart-metric .value {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--cor-principal);
-    line-height: 1;
-}
-
-.chart-metric .label {
-    font-size: 14px;
-    color: var(--cor-texto-secundario);
-    margin-left: 8px;
-    margin-bottom: 4px;
-}
-
-.chart-trend {
-    font-size: 14px;
+.grafico-metrica .label {
+    font-size: 1rem;
+    color: var(--gray-300);
     font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 4px;
+}
+
+.grafico-tendencia {
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.chart-trend i {
-    margin-right: 5px;
-    font-size: 16px;
+.grafico-tendencia.up {
+    color: var(--danger);
+    background-color: rgba(239, 68, 68, 0.2);
 }
 
-.chart-trend.up {
-    color: var(--cor-vermelho);
-    background-color: #fee2e2;
-    /* Red-100 */
+.grafico-tendencia.down {
+    color: var(--success);
+    background-color: rgba(16, 185, 129, 0.2);
 }
 
-.chart-trend.down {
-    color: var(--cor-verde);
-    background-color: #d1fae5;
-    /* Green-100 */
+/* ====== MAINFRAME DETALHES TECHNO DARK ====== */
+.mainframe-detalhes {
+    background-color: var(--azul-escuro);
+    padding: 30px;
+    border-radius: 6px;
+    /* bem sutil */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid var(--azul-medio);
+    /* linha fina tecnológica */
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 
-.chart-trend.neutral {
-    color: var(--cor-texto-secundario);
-    background-color: #e5e7eb;
-    /* Gray-200 */
-}
-
-.chart-container {
-    flex-grow: 1;
-    min-height: 250px;
-    position: relative;
-}
-
-
-/* --- 7. GRÁFICO UPTIME (Doughnut) --- */
-
-.uptime-box {
-    flex: 1;
-    /* Ocupa 1/3 do espaço */
+/* Título */
+.mf-titulo {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 400px;
+    gap: 10px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--status-normal);
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--azul-medio);
+    /* separador minimalista */
+    padding-bottom: 10px;
 }
 
-.uptime-info {
-    margin: 20px 0;
+.mf-titulo-icone {
+    font-size: 2rem;
+    color: var(--status-normal);
 }
 
-.uptime-value {
-    font-size: 48px;
-    font-weight: 800;
-    color: var(--cor-verde);
-    line-height: 1;
+.mf-nome {
+    color: #ffffff;
+    font-weight: 600;
+    background-color: rgba(37, 99, 235, 0.1);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 1rem;
 }
 
-.uptime-desc {
-    font-size: 14px;
-    color: var(--cor-texto-secundario);
-    margin-top: 5px;
+/* Row de cards */
+.mf-cards {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 20px;
 }
 
-.chart-container-small {
-    width: 80%;
-    /* Tamanho do donut chart */
-    height: 150px;
-    position: relative;
-}
-
-/* --- 8. ALERTAS RECENTES --- */
-
-.alertas-recentes {
+/* Card básico */
+.mf-card {
+    background-color: var(--azul-medio);
+    flex: 1 1 180px;
+    padding: 18px 15px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 30px;
+    gap: 6px;
+    border-left: 4px solid var(--azul-escuro);
+    transition: all 0.2s ease;
 }
 
-.alerta {
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 14px;
+.mf-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mf-card-titulo {
+    font-size: 0.85rem;
     font-weight: 500;
+    color: #a0a0a0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mf-card-valor {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* Subtítulo */
+.mf-subtitulo {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #a0a0a0;
+    margin: 25px 0 15px 0;
+    border-bottom: 1px solid var(--azul-medio);
+    padding-bottom: 5px;
+}
+
+/* Cartões extras */
+.mf-card-extras {
     display: flex;
-    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.alerta i {
-    margin-right: 10px;
-    font-size: 18px;
+.mf-extra-card {
+    background-color: var(--azul-medio);
+    flex: 1 1 150px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-left: 4px solid var(--azul-escuro);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.alerta-warning {
-    background-color: #fef3c7;
-    /* Amarelo claro */
-    color: var(--cor-amarelo);
-    border-left: 5px solid var(--cor-amarelo);
+.mf-extra-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
 }
 
-.alerta-error {
-    background-color: #fee2e2;
-    /* Vermelho claro */
-    color: var(--cor-vermelho);
-    border-left: 5px solid var(--cor-vermelho);
+.extra-titulo {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #b0b0b0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.alerta-info {
-    background-color: #dbeafe;
-    /* Azul claro */
-    color: #2563eb;
-    border-left: 5px solid #2563eb;
+.extra-valor {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.extra-desc {
+    font-size: 0.7rem;
+    color: #888888;
 }

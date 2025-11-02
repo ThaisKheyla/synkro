@@ -13,23 +13,43 @@
   <div class="layout-principal">
     <!-- ====== BARRA LATERAL ====== -->
     <aside class="barra-lateral">
-      <div class="logo">Synkro</div>
-
-      <div class="perfil-usuario">
-        <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
-        <div class="cargo-usuario">Analista</div>
-        <div class="nome-usuario" id="nome_login"></div>
-        <div class="email-usuario" id="email_login"></div>
+      <div class="logo">
+        Synkro
       </div>
-
+      <div class="perfil-usuario">
+        <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+        <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+        <div class="cargo-usuario">
+          <i class="ri-shield-user-line"></i>
+          Analista de Infra
+        </div>
+        <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+      </div>
       <nav>
-        <ul>
-          <li><a href="dashboardAnalista.html" class="btn-adicionar-componente">Visão geral</a></li>
-          <li><a href="Mainframe.html" class="btn-adicionar-componente" >Mainframes</a></li>
-          <li><a href="cadastroMainframe.html" class="ativo btn-adicionar-componente">Adicionar mainframe</a></li>
+        <ul class="menu-links">
+          <li>
+            <a href="dashboardAnalista.html">
+              <i class="ri-dashboard-3-line"></i>
+              Visão Geral
+            </a>
+          </li>
+          <li>
+            <a href="cadastroMainframe.html">
+              <i class="ri-file-add-line icon-cadastro"></i>
+              Cadastrar Mainframes
+            </a>
+          </li>
+          <li>
+            <a href="dashMainframes.html" class="ativo">
+              <i class="ri-database-2-line"></i>
+              Mainframes
+            </a>
+          </li>
         </ul>
-
-        <button class="btn-sair" onclick="limparSessao()">Sair</button>
+        <button class="btn-sair" onclick="limparSessao()">
+          <i class="ri-logout-box-r-line"></i>
+          Encerrar Sessão
+        </button>
       </nav>
     </aside>
 
@@ -284,54 +304,54 @@
     }
 
     document.getElementById("formMainframe").addEventListener("submit", async (e) => {
-  e.preventDefault();
+      e.preventDefault();
 
-  const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+      const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
 
-  if (!fkEmpresa) {
-    alert("Erro: Empresa não encontrada na sessão. Faça login novamente.");
-    return;
-  }
+      if (!fkEmpresa) {
+        alert("Erro: Empresa não encontrada na sessão. Faça login novamente.");
+        return;
+      }
 
-  const mainframe = {
-    fabricante: document.getElementById("fabricante").value,
-    modelo: document.getElementById("modelo").value,
-    mac: document.getElementById("mac").value, 
-    setor: document.getElementById("setor").value, 
-    sistema: document.getElementById("sistema").value, 
-    fkEmpresa: parseInt(fkEmpresa),
-    metricas: []
-  };
+      const mainframe = {
+        fabricante: document.getElementById("fabricante").value,
+        modelo: document.getElementById("modelo").value,
+        mac: document.getElementById("mac").value,
+        setor: document.getElementById("setor").value,
+        sistema: document.getElementById("sistema").value,
+        fkEmpresa: parseInt(fkEmpresa),
+        metricas: []
+      };
 
-  document.querySelectorAll(".bloco-metrica").forEach((b) => {
-    mainframe.metricas.push({
-      fkComponente: parseInt(b.querySelector(".componente").value),
-      fkTipo: parseInt(b.querySelector(".tipo").value),
-      min: parseFloat(b.querySelector(".min").value || 0),
-      max: parseFloat(b.querySelector(".max").value || 100)
+      document.querySelectorAll(".bloco-metrica").forEach((b) => {
+        mainframe.metricas.push({
+          fkComponente: parseInt(b.querySelector(".componente").value),
+          fkTipo: parseInt(b.querySelector(".tipo").value),
+          min: parseFloat(b.querySelector(".min").value || 0),
+          max: parseFloat(b.querySelector(".max").value || 100)
+        });
+      });
+
+      try {
+        const resp = await fetch("/mainframes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(mainframe)
+        });
+
+        if (resp.ok) {
+          alert("✅ Mainframe cadastrado com sucesso!");
+          document.getElementById("formMainframe").reset();
+          metricasContainer.innerHTML = "";
+          carregarMainframes();
+        } else {
+          const erro = await resp.json().catch(() => ({}));
+          alert("❌ Erro: " + (erro.mensagem || resp.statusText));
+        }
+      } catch (err) {
+        alert("⚠️ Servidor indisponível: " + err.message);
+      }
     });
-  });
-
-  try {
-    const resp = await fetch("/mainframes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(mainframe)
-    });
-
-    if (resp.ok) {
-      alert("✅ Mainframe cadastrado com sucesso!");
-      document.getElementById("formMainframe").reset();
-      metricasContainer.innerHTML = "";
-      carregarMainframes();
-    } else {
-      const erro = await resp.json().catch(() => ({}));
-      alert("❌ Erro: " + (erro.mensagem || resp.statusText));
-    }
-  } catch (err) {
-    alert("⚠️ Servidor indisponível: " + err.message);
-  }
-});
 
     // Listar mainframes da empresa logada
     async function carregarMainframes() {
@@ -351,4 +371,5 @@
     }
   </script>
 </body>
+
 </html>

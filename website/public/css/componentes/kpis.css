@@ -92,3 +92,51 @@
     font-size: 0.8em;
     color: var(--accent-light);
 }
+/* --- Estilos para KPIs Extras (2ª Linha) --- */
+
+.kpis-row.kpi-extra-row {
+    margin-bottom: 16px; /* Mais espaço para separar o gráfico */
+    /* Você pode ajustar o 'gap' ou 'justify-content' se quiser que eles fiquem mais centralizados ou separados */
+    gap: 20px; /* Reduz o gap entre eles para caberem 3 no espaço de 4 grandes */
+}
+
+.kpi-extra-row .kpi-card {
+    /* Ajusta o tamanho dos cards extras (ex: 3 cards por linha) */
+    max-width: 250px; /* Mais largura para o texto de descrição extra */
+    min-width: 150px;
+    height: 60px; /* Mais altura para acomodar a descrição e valor maior */
+    align-items: flex-start; /* Alinha o conteúdo ao topo para melhor leitura */
+    padding: 8px 12px;
+}
+
+.kpi-extra-row .kpi-icone {
+    margin-top: 2px; /* Pequeno ajuste visual */
+}
+
+.kpi-extra-row .kpi-titulo {
+    margin-bottom: 0px;
+}
+
+.kpi-extra-row .kpi-valor {
+    font-size: 1.1rem; /* Aumenta o valor para destaque */
+}
+
+/* --- Estilos de Cores e Ícones para KPIs Extras --- */
+
+/* TEMPERATURA */
+.kpi-temp-extra .kpi-icone {
+    background: rgba(239, 68, 68, 0.15); /* Vermelho */
+    color: #ef4444;
+}
+
+/* REDE (Tráfego) */
+.kpi-rede .kpi-icone {
+    background: rgba(168, 85, 247, 0.15); /* Roxo/Violeta */
+    color: #a855f7;
+}
+
+/* EVENTOS/ALERTAS */
+.kpi-eventos .kpi-icone {
+    background: rgba(249, 115, 22, 0.15); /* Laranja escuro */
+    color: #f97316;
+}
