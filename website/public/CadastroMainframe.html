@@ -106,7 +106,7 @@
             <h3>Configurações de Métricas</h3>
             <div id="metricasContainer"></div>
 
-            <button type="button" id="btnAddMetrica" class="btn-cadastrar" style="background:#4f46e5;">
+            <button type="button" id="btnAddMetrica" class="btn-cadastrar" style="background: var(--azul-medio); box-shadow: 0 1px 2px var(--branco);">
               + Adicionar Métrica
             </button>
           </div>
@@ -362,7 +362,7 @@
           const container = document.getElementById("listaMainframes");
           container.innerHTML = lista.map(m => `
           <div class="mainframe-evento">
-            <div class="mainframe-numero">#${m.id}</div>
+            <div class="mainframe-numero">${m.id}</div>
             <span class="mainframe-desc">${m.fabricante} ${m.modelo}</span>
           </div>
         `).join('');
