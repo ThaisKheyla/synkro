@@ -243,39 +243,9 @@
             </a>
 
             <a href="#" onclick="loadMainframeDetails(5); return false;" class="página de mainframe">
-                <div class="mainframe-evento normal" data-id="5">
+                <div class="mainframe-evento" data-id="5">
                     <div class="mainframe-numero">5</div>
                     <div class="mainframe-desc">Mainframe 5</div>
-                </div>
-            </a>
-            <a href="#" onclick="loadMainframeDetails(6); return false;" class="página de mainframe">
-                <div class="mainframe-evento normal" data-id="6">
-                    <div class="mainframe-numero">6</div>
-                    <div class="mainframe-desc">Mainframe 6</div>
-                </div>
-            </a>
-            <a href="#" onclick="loadMainframeDetails(7); return false;" class="página de mainframe">
-                <div class="mainframe-evento normal" data-id="7">
-                    <div class="mainframe-numero">7</div>
-                    <div class="mainframe-desc">Mainframe 7</div>
-                </div>
-            </a>
-            <a href="#" onclick="loadMainframeDetails(8); return false;" class="página de mainframe">
-                <div class="mainframe-evento normal" data-id="8">
-                    <div class="mainframe-numero">8</div>
-                    <div class="mainframe-desc">Mainframe 8</div>
-                </div>
-            </a>
-            <a href="#" onclick="loadMainframeDetails(9); return false;" class="página de mainframe">
-                <div class="mainframe-evento normal" data-id="9">
-                    <div class="mainframe-numero">9</div>
-                    <div class="mainframe-desc">Mainframe 9</div>
-                </div>
-            </a>
-            <a href="#" onclick="loadMainframeDetails(10); return false;" class="página de mainframe">
-                <div class="mainframe-evento normal" data-id="10">
-                    <div class="mainframe-numero">10</div>
-                    <div class="mainframe-desc">Mainframe 10</div>
                 </div>
             </a>
         </aside>
@@ -334,7 +304,7 @@
             },
             3: { // NORMAL: Ideal, Baixa Utilização
                 nome: "Mainframe 3",
-                statusClass: "normal",
+                statusClass: "warning",
                 cpu: createResource(generateSimulatedData(40, 55), '#2563eb', '-1% desde ontem', 'down'),
                 ram: createResource(generateSimulatedData(30, 45), '#10b981', '-10% desde ontem', 'down'),
                 disk: createResource(generateSimulatedData(25, 40), '#f59e0b', '0% desde ontem', 'neutral'),
@@ -348,7 +318,7 @@
             },
             4: { // NORMAL: Uso Mediano, Estável
                 nome: "Mainframe 4",
-                statusClass: "normal",
+                statusClass: "warning",
                 cpu: createResource(generateSimulatedData(55, 65), '#2563eb', 'Estável', 'neutral'),
                 ram: createResource(generateSimulatedData(50, 60), '#10b981', 'Estável', 'neutral'),
                 disk: createResource(generateSimulatedData(60, 70), '#f59e0b', 'Estável', 'neutral'),
@@ -362,7 +332,7 @@
             },
             5: { // WARNING: Atenção, Disk/Temp Subindo
                 nome: "Mainframe 5",
-                statusClass: "warning",
+                statusClass: "normal",
                 cpu: createResource(generateSimulatedData(70, 85), '#2563eb', 'Atenção (+)', 'up'),
                 ram: createResource(generateSimulatedData(60, 75), '#10b981', 'Estável', 'neutral'),
                 disk: createResource(generateSimulatedData(70, 85), '#f59e0b', 'Atenção (+)', 'up'),
@@ -372,76 +342,6 @@
                     temperatura: { value: '70°C', desc: 'Atenção' },
                     rede: { value: '1.5 Gb/s', desc: 'Alto' },
                     eventos: { value: '5', desc: 'Últimas 24h' }
-                }
-            },
-            6: { // NORMAL: Baixa Utilização, Ideal
-                nome: "Mainframe 6",
-                statusClass: "normal",
-                cpu: createResource(generateSimulatedData(30, 45), '#2563eb', '-5% desde ontem', 'down'),
-                ram: createResource(generateSimulatedData(20, 35), '#10b981', '-8% desde ontem', 'down'),
-                disk: createResource(generateSimulatedData(15, 30), '#f59e0b', 'Estável', 'neutral'),
-                temp: createResource(generateSimulatedData(40, 50), '#2563eb', 'Frio', 'down'),
-                uptime: { value: 99.9, desc: '99.9% (Ideal)' },
-                extras: {
-                    temperatura: { value: '48°C', desc: 'Muito Frio' },
-                    rede: { value: '0.4 Gb/s', desc: 'Mínimo' },
-                    eventos: { value: '0', desc: 'Últimas 24h' }
-                }
-            },
-            7: { // WARNING: Disco Quase Cheio, mas CPU/RAM Normais
-                nome: "Mainframe 7",
-                statusClass: "warning",
-                cpu: createResource(generateSimulatedData(50, 65), '#2563eb', 'Estável', 'neutral'),
-                ram: createResource(generateSimulatedData(45, 60), '#10b981', 'Estável', 'neutral'),
-                disk: createResource(generateSimulatedData(85, 95), '#f59e0b', '+7% desde ontem', 'up'),
-                temp: createResource(generateSimulatedData(55, 65), '#6366f1', 'Estável', 'neutral'),
-                uptime: { value: 99.5, desc: '99.5% (Disk Warning)' },
-                extras: {
-                    temperatura: { value: '60°C', desc: 'Normal' },
-                    rede: { value: '0.9 Gb/s', desc: 'Normal' },
-                    eventos: { value: '3', desc: 'Últimas 24h' }
-                }
-            },
-            8: { // NORMAL: Uso Alto, mas Estável
-                nome: "Mainframe 8",
-                statusClass: "normal",
-                cpu: createResource(generateSimulatedData(80, 90), '#2563eb', 'Estável (Alto)', 'neutral'),
-                ram: createResource(generateSimulatedData(75, 85), '#10b981', 'Estável (Alto)', 'neutral'),
-                disk: createResource(generateSimulatedData(60, 75), '#f59e0b', 'Estável', 'neutral'),
-                temp: createResource(generateSimulatedData(65, 75), '#6366f1', 'Estável', 'neutral'),
-                uptime: { value: 99.9, desc: '99.9% (Estável)' },
-                extras: {
-                    temperatura: { value: '72°C', desc: 'Quente' },
-                    rede: { value: '1.8 Gb/s', desc: 'Muito Alto' },
-                    eventos: { value: '1', desc: 'Últimas 24h' }
-                }
-            },
-            9: { // OFFLINE: Simulação de dados parados/baixos (apenas visual, 'offline' na barra lateral)
-                nome: "Mainframe 9",
-                statusClass: "offline",
-                cpu: createResource(generateSimulatedData(0, 5), '#ef4444', 'OFFLINE', 'down'),
-                ram: createResource(generateSimulatedData(0, 5), '#10b981', 'OFFLINE', 'down'),
-                disk: createResource(generateSimulatedData(0, 5), '#f59e0b', 'OFFLINE', 'down'),
-                temp: createResource(generateSimulatedData(30, 40), '#ef4444', 'DESLIGADO', 'down'),
-                uptime: { value: 0.0, desc: '0.0% (DESLIGADO)' },
-                extras: {
-                    temperatura: { value: '35°C', desc: 'Desligado' },
-                    rede: { value: '0.0 Gb/s', desc: 'Desligado' },
-                    eventos: { value: '0', desc: 'Últimas 24h' }
-                }
-            },
-            10: { // NORMAL: Uso Mediano/Alto, RAM subindo
-                nome: "Mainframe 10",
-                statusClass: "normal",
-                cpu: createResource(generateSimulatedData(65, 75), '#2563eb', 'Estável', 'neutral'),
-                ram: createResource(generateSimulatedData(70, 80), '#ef4444', '+12% desde ontem', 'up'),
-                disk: createResource(generateSimulatedData(50, 60), '#f59e0b', 'Estável', 'neutral'),
-                temp: createResource(generateSimulatedData(60, 70), '#6366f1', 'Estável', 'neutral'),
-                uptime: { value: 99.85, desc: '99.85% (Estável)' },
-                extras: {
-                    temperatura: { value: '65°C', desc: 'Normal' },
-                    rede: { value: '1.0 Gb/s', desc: 'Normal' },
-                    eventos: { value: '4', desc: 'Últimas 24h' }
                 }
             }
         };

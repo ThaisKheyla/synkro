@@ -337,7 +337,6 @@ body {
 /* Painel Hardware */
 .painel-hardware {
     flex: 1;
-    background: white;
     border-radius: 16px;
     padding: var(--spacing-xl);
 }
@@ -458,6 +457,7 @@ body {
     background: white;
     border-radius: 16px;
     padding: var(--spacing-md);
+    margin: 10px;
 }
 
 .mainframes-cadastrados h4 {
