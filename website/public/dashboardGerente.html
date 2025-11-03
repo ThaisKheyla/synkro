@@ -61,7 +61,7 @@
         <div class="conteudo-principal dashboard">
             <header class="visao-header">
                 <h1>VISÃO ESTRATÉGICA DOS ALERTAS</h1>
-                <p>Monitoramento em tempo real do status operacional da sua infraestrutura crítica (CPU, RAM, DASD).</p>
+                <p>Monitoramento em tempo real do status operacional da sua infraestrutura crítica (CPU, RAM, DISCO).</p>
             </header>
 
             <div class="btn-periodo-container">
@@ -287,10 +287,10 @@
 
         // Simulação de dados para diferentes períodos
         const dadosKPIs = {
-            hoje: { total: 3, cpu: 2, ram: 1, disco: 2 },
-            semana: { total: 8, cpu: 7, ram: 5, disco: 8 },
-            mes: { total: 30, cpu: 22, ram: 18, disco: 25 },
-            ano: { total: 320, cpu: 270, ram: 200, disco: 280 }
+            hoje: { total: 6, cpu: 3, ram: 1, disco: 2 },
+            semana: { total: 46, cpu: 25, ram: 10, disco: 11 },
+            mes: { total: 177, cpu: 96, ram: 36, disco: 45 },
+            ano: { total: 1900, cpu: 1026, ram: 324, disco: 550 }
         };
 
         const dadosMainframes = {
@@ -307,14 +307,18 @@
                 { nome: 'Mainframe 5', alertas: 2 }
             ],
             mes: [
-                { nome: 'Mainframe 2', alertas: 80 },
+                { nome: 'Mainframe 2', alertas: 60 },
                 { nome: 'Mainframe 7', alertas: 50 },
-                { nome: 'Mainframe 3', alertas: 40 }
+                { nome: 'Mainframe 3', alertas: 40 },
+                { nome: 'Mainframe 1', alertas: 15 },
+                { nome: 'Mainframe 5', alertas: 12 }
             ],
             ano: [
-                { nome: 'Mainframe 2', alertas: 900 },
-                { nome: 'Mainframe 7', alertas: 850 },
-                { nome: 'Mainframe 3', alertas: 700 }
+                { nome: 'Mainframe 2', alertas: 600 },
+                { nome: 'Mainframe 7', alertas: 550 },
+                { nome: 'Mainframe 3', alertas: 450 },
+                { nome: 'Mainframe 1', alertas: 180 },
+                { nome: 'Mainframe 5', alertas: 120 }
             ]
         };
 

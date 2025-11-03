@@ -195,8 +195,8 @@ VALUES
 -- Funcionários
 INSERT INTO funcionario (nome, email, cpf, dtnascimento, senha, fkPerfilAtivo, fkCargo, fkEmpresa)
 VALUES
-('João Silva', 'joao.silva@empresa1.com', '111.111.111-11', '1980-01-01', SHA2('senha123',256), 1, 1, 1),
-('Ana Pereira', 'ana.pereira@empresa1.com', '111.111.111-12', '1990-03-15', SHA2('senha123',256), 1, 2, 1),
+('Marcos Silva', 'marcos.silva@empresa1.com', '111.111.111-11', '1980-01-01', SHA2('senha123',256), 1, 1, 1),
+('Fernando Pereira', 'fernando.pereira@empresa1.com', '111.111.111-12', '1990-03-15', SHA2('senha123',256), 1, 2, 1),
 ('Maria Oliveira', 'maria.oliveira@empresa2.com', '222.222.222-21', '1985-05-10', SHA2('senha123',256), 1, 1, 2),
 ('Carlos Santos', 'carlos.santos@empresa2.com', '222.222.222-22', '1992-08-20', SHA2('senha123',256), 1, 2, 2),
 ('Ricardo Almeida', 'ricardo.almeida@empresa3.com', '333.333.333-31', '1978-02-25', SHA2('senha123',256), 1, 1, 3),
@@ -232,14 +232,13 @@ INSERT INTO metrica (id,fkComponente, min, max, fkTipo) VALUES
 
 
 -- Componentes por mainframe
-INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica) VALUES
-(1,1, 1),
-(2,1, 2),
-(1,2, 1),
-(2,2, 2),
-(1,3, 1),
-(2,3, 2);
-
+INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica, fkTipo) VALUES
+(1,1, 1, 1),
+(2,1, 2, 1),
+(1,2, 1, 1),
+(2,2, 2, 1),
+(1,3, 1, 1),
+(2,3, 2, 1);
 
 -- Gravidades
 INSERT INTO gravidade (descricao) VALUES ('Urgente'),('Muito Urgente'),('Emergência');
@@ -277,12 +276,12 @@ BEGIN
        CONCAT(REPLACE(LOWER(NEW.nomeRepresentante), ' ', '_'), '@gmail.com'),
        '000.000.000-00',
        CURDATE(),
-       SHA2(CONCAT(SUBSTRING(NEW.nomeEmpresarial,1,1), FLOOR(RAND() * 999999), '@'), 256),
+       SHA2('senha123', 256),
        1,
        idCargoGerente,
        NEW.id
      );
-
+     
   ELSEIF NEW.statusAcesso = 2 AND OLD.statusAcesso <> 2 THEN
      UPDATE funcionario SET fkPerfilAtivo = 2 WHERE fkEmpresa = NEW.id;
   ELSE
