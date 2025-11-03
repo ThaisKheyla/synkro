@@ -66,7 +66,7 @@
 
             <div class="btn-periodo-container">
                 <button class="btn-periodo" id="btnPeriodo">
-                    Últimos 7 dias <i class="ri-arrow-down-s-line"></i>
+                    Última Semana <i class="ri-arrow-down-s-line"></i>
                 </button>
                 <ul class="dropdown-periodo" id="dropdownPeriodo">
                     <li data-periodo="hoje">Hoje</li>
@@ -79,23 +79,23 @@
             <section class="painel-kpis">
                 <div class="kpi">
                     <span class="kpi-label">Total Alertas (7 dias)</span>
-                    <span class="kpi-value azul">08</span>
+                    <span class="kpi-value azul">46</span>
                     <p class="kpi-descricao">Número total de alertas detectados nos últimos 7 dias.</p>
                 </div>
                 <div class="kpi">
                     <span class="kpi-label">Alertas de CPU (7 dias)</span>
-                    <span class="kpi-value alerta">07</span>
+                    <span class="kpi-value alerta">25</span>
                     <p class="kpi-descricao">Carga média de processamento dos mainframes.</p>
                 </div>
                 <div class="kpi">
                     <span class="kpi-label">Alertas de RAM (7 dias)</span>
-                    <span class="kpi-value verde">05</span>
+                    <span class="kpi-value verde">10</span>
                     <p class="kpi-descricao">Percentual médio de memória utilizada.
                     </p>
                 </div>
                 <div class="kpi">
                     <span class="kpi-label">Alertas de Disco (7 dias)</span>
-                    <span class="kpi-value roxo">08</span>
+                    <span class="kpi-value roxo">11</span>
                     <p class="kpi-descricao">Espaço de armazenamento médio ocupado.</p>
                 </div>
             </section>
@@ -260,6 +260,8 @@
             initCharts();
         };
 
+        // btn periodo
+        
         const btnPeriodo = document.getElementById('btnPeriodo');
         const dropdownPeriodo = document.getElementById('dropdownPeriodo');
 
