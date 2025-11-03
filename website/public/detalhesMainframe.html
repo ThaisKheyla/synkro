@@ -37,7 +37,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="cadastroMainframe.html">
+                        <a href="CadastroMainframe.html">
                             <i class="ri-file-add-line icon-cadastro"></i>
                             Cadastrar Mainframes
                         </a>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
 
-                <div class="kpi-card kpi-disk" role="status" title="Uso do espaço de armazenamento no disco/DASD.">
+                <div class="kpi-card kpi-disk" role="status" title="Uso do espaço de armazenamento no disco.">
                     <div class="kpi-icone"><i class="ri-hard-drive-2-line"></i></div>
                     <div class="kpi-info">
                         <div class="kpi-titulo">DISCO</div>
@@ -125,8 +125,8 @@
                             title="Visualizar o gráfico de consumo de memória RAM ao longo do tempo" role="tab"
                             aria-selected="false">RAM</button>
                         <button class="botao-nav" id="btnDISK" onclick="showChart('disk')"
-                            title="Visualizar o gráfico de utilização do armazenamento DASD/Disco" role="tab"
-                            aria-selected="false">DASD</button>
+                            title="Visualizar o gráfico de utilização do armazenamento Disco" role="tab"
+                            aria-selected="false">DISCO</button>
                         <button class="botao-nav" id="btnTEMP" onclick="showChart('temp')"
                             title="Visualizar o gráfico de variação da temperatura interna do mainframe" role="tab"
                             aria-selected="false">TEMPERATURA</button>
@@ -346,7 +346,7 @@
             }
         };
 
-        // 1. Atualiza o gráfico principal (CPU/RAM/DASD/TEMP)
+        // 1. Atualiza o gráfico principal (CPU/RAM/DISCO/TEMP)
         function initMainChart(chartType, mainframeId) {
             const mfData = mainframesData[mainframeId];
             const config = mfData[chartType];
@@ -627,7 +627,7 @@
 
             document.querySelectorAll('.botao-nav').forEach(btn => btn.classList.remove('ativo'));
 
-            // Seleciona o botão correto, usando 'DASD' como ID para 'disk'
+            // Seleciona o botão correto, usando 'DISCO' como ID para 'disk'
             const btnId = 'btn' + (chartType === 'disk' ? 'DISK' : chartType.toUpperCase());
             const activeBtn = document.getElementById(btnId);
 
@@ -645,7 +645,7 @@
                 loadMainframeDetails(currentMainframeId);
             }, 100);
 
-            setInterval(updateChartData, 3000);
+            // setInterval(updateChartData, 3000);
         };
 
 
