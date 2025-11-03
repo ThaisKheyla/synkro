@@ -475,11 +475,11 @@ body {
     box-shadow: none;
     padding: 10px 12px;
     margin-bottom: 10px;
+    border-left: 3px solid var(--gray-500);
     transition: border-color 0.18s, background 0.18s;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-
 }
 
 .mainframe-numero {
@@ -508,7 +508,10 @@ body {
     gap: 4px;
 }
 
-
+.página.mainframe, .página-de-mainframe {
+    width: 100%;
+    text-decoration: none;
+}
 /* Widget de Tempo */
 .widget-tempo {
     background: white;

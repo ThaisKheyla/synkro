@@ -106,7 +106,8 @@
             <h3>Configurações de Métricas</h3>
             <div id="metricasContainer"></div>
 
-            <button type="button" id="btnAddMetrica" class="btn-cadastrar" style="background: var(--azul-medio); box-shadow: 0 1px 2px var(--branco);">
+            <button type="button" id="btnAddMetrica" class="btn-cadastrar"
+              style="background: var(--azul-medio); box-shadow: 0 1px 2px var(--branco);">
               + Adicionar Métrica
             </button>
           </div>
@@ -361,10 +362,13 @@
           const lista = await fetch(`/mainframes/empresa/${fkEmpresa}`).then(r => r.json());
           const container = document.getElementById("listaMainframes");
           container.innerHTML = lista.map(m => `
-          <div class="mainframe-evento">
-            <div class="mainframe-numero">${m.id}</div>
-            <span class="mainframe-desc">${m.fabricante} ${m.modelo}</span>
+
+          <a href="detalhesMainframe.html" class="página de mainframe">
+          <div class="mainframe-evento offline">
+              <div class="mainframe-numero">${m.id}</div>
+              <div class="mainframe-desc">${m.fabricante} ${m.modelo}</div>
           </div>
+          </a>
         `).join('');
         } catch (err) {
           console.warn("Erro ao listar mainframes:", err);
