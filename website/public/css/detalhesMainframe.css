@@ -1,0 +1,849 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    /* Cores Principais - Esquema Profissional */
+    --azul-escuro: #0f172a;
+    --azul-medio: #1e293b;
+    --azul-primario: #2563eb;
+    --accent-light: #38bdf8;
+    --accent-dark: #0284c7;
+
+    /* Tons neutros */
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+
+    /* Cores de estado */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --very-urgent: #ff6b00;
+    --branco: #fff;
+
+    /* Variáveis de Status*/
+    --status-emergency: var(--danger);
+    --status-very-urgent: var(--very-urgent);
+    --status-urgent: var(--warning);
+    --status-normal: var(--success);
+
+    /* Sombras */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 12px 20px -3px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 30px -5px rgba(0, 0, 0, 0.4);
+
+    /* Espaçamentos */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+}
+
+/* --- CONTROLE DE OVERFLOW E LAYOUT BASE --- */
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--azul-escuro);
+    color: var(--branco);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.layout-principal {
+    display: flex;
+    width: 98%;
+    height: 96vh;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: var(--azul-medio);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    margin: 2vh auto;
+}
+
+/* ======== BARRA LATERAL ======== */
+.barra-lateral {
+    width: 205px;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--branco);
+    letter-spacing: 1px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-dark));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.logo i {
+    font-size: 2rem;
+    color: var(--accent-light);
+}
+
+.perfil-usuario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.perfil-usuario img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 16px;
+    border: 3px solid rgba(56, 189, 248, 0.2);
+    padding: 3px;
+    background-color: var(--azul-escuro);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.perfil-usuario img:hover {
+    transform: scale(1.05);
+    border-color: var(--accent-light);
+    box-shadow: 0 8px 24px rgba(56, 189, 248, 0.2);
+}
+
+.cargo-usuario {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: var(--accent-light);
+    margin: 4px 0;
+    padding: 4px 12px;
+    background: rgba(56, 189, 248, 0.1);
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.cargo-usuario i {
+    font-size: 1rem;
+    color: var(--accent-light);
+}
+
+.nome-usuario {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--branco);
+    margin: 8px 0;
+}
+
+.email-usuario {
+    font-size: 0.85rem;
+    color: var(--gray-400);
+    margin-top: 4px;
+}
+
+
+.barra-lateral nav ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.barra-lateral nav ul li {
+    margin: 12px 0;
+}
+
+.barra-lateral nav ul li a {
+    text-decoration: none;
+    color: var(--cinza);
+    font-weight: 500;
+    padding: 12px 18px;
+    display: block;
+    border-radius: 0px 10px 10px 0px;
+    transition: all 0.3s;
+}
+
+.barra-lateral nav ul li a:hover,
+.barra-lateral nav ul li a.ativo {
+    background-color: var(--azul-escuro);
+    color: var(--branco);
+}
+
+/* ------- MENU LINKS ======== */
+.menu-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu-links li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    color: var(--gray-400);
+    background-color: rgba(255, 255, 255, 0.03);
+    padding: 12px 18px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.menu-links li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background-color: transparent;
+    border-radius: 0px 4px 4px 0px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-links li a:hover {
+    background-color: rgba(99, 102, 241, 0.1);
+    color: var(--accent-light);
+    transform: translateX(4px);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+.menu-links li a:hover i {
+    color: var(--accent-light);
+    transform: scale(1.1);
+}
+
+.menu-links li a i {
+    font-size: 1.25rem;
+    color: var(--gray-500);
+    transition: all 0.3s ease;
+}
+
+.menu-links li a.ativo {
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(56, 189, 248, 0.1));
+    color: var(--accent-light);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.menu-links li a.ativo i {
+    color: var(--accent-light);
+}
+
+.menu-links li a.ativo::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(to bottom, var(--accent-light), var(--accent-dark));
+    border-radius: 3px;
+}
+
+/* ------- BOTÃO SAIR ======== */
+
+.btn-sair {
+    margin-top: auto;
+    background: transparent;
+    color: var(--gray-300);
+    border: 2px solid rgba(99, 102, 241, 0.16);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+    font-size: 0.95rem;
+}
+
+.btn-sair:hover {
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.12), rgba(56, 189, 248, 0.08));
+    transform: translateY(-2px);
+    color: var(--branco);
+    border-color: rgba(99, 102, 241, 0.28);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.12);
+}
+
+.btn-sair i {
+    font-size: 1.1em;
+    opacity: 0.9;
+    transition: transform 0.3s ease;
+}
+
+.btn-sair:hover i {
+    transform: translateX(4px);
+}
+
+/* -------- CONTEÚDO PRINCIPAL DA DASHBOARD -------- */
+
+.conteudo-dashboard {
+    flex: 1;
+    max-width: 1400px;
+    margin: 10px;
+    height: calc(100vh - var(--spacing-md) * 2);
+    background: var(--azul-escuro);
+    border-radius: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    flex-shrink: 1;
+    padding: 0 var(--spacing-md);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--azul-medio) transparent;
+    scroll-behavior: smooth;
+    /* rolagem suave */
+    max-height: 100vh;
+    /* garante que o scroll fique dentro da tela */
+    padding-right: 4px;
+    /* evita que o conteúdo fique colado */
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: min-content;
+}
+
+/* Título de Seção Mais Sólido - REFINADO */
+.section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--gray-100);
+    margin-bottom: 1rem;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--azul-medio);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* --- 1. KPIS PRINCIPAIS (Kpis Row) - REFINADO (VIDRO FLUTUANTE) --- */
+.kpis-row {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.kpi-card {
+    flex: 1;
+    min-width: 220px;
+    /* NOVO: Efeito Glassmorphism Sutil */
+    background: rgba(30, 41, 59, 0.7);
+    /* Fundo semi-transparente */
+    backdrop-filter: blur(5px);
+    /* Efeito de vidro */
+    -webkit-backdrop-filter: blur(5px);
+
+    padding: 1.5rem;
+    border-radius: 16px;
+    /* Mais arredondado */
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow-lg);
+    /* Sombra mais forte */
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* Borda semi-transparente */
+}
+
+.kpi-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--accent-light);
+}
+
+/* Ícone KPI: Gradientes Vibrantes */
+.kpi-icon {
+    font-size: 2.2rem;
+    padding: 0.85rem;
+    border-radius: 10px;
+    margin-right: 1.2rem;
+    color: var(--branco);
+    /* Removido background-color: var(--azul-primario); */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+/* Cores específicas para cada KPI - AGORA COM GRADIENTES */
+.kpi-cpu .kpi-icon {
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-dark));
+}
+
+.kpi-ram .kpi-icon {
+    background: linear-gradient(135deg, var(--warning), var(--very-urgent));
+}
+
+.kpi-disk .kpi-icon {
+    background: linear-gradient(135deg, var(--success), #047857);
+    /* Verde mais escuro */
+}
+
+.kpi-uptime .kpi-icon {
+    background: linear-gradient(135deg, var(--azul-primario), #1d4ed8);
+    /* Azul mais escuro */
+}
+
+/* Tipografia KPI - Mantida em destaque */
+.kpi-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gray-300);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.kpi-value {
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--branco);
+}
+
+.kpi-gb {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-400);
+    margin-left: 8px;
+}
+
+.kpi-desc {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    margin-top: 6px;
+    font-style: italic;
+}
+
+/* --- 2. KPIS EXTRAS (Temperatura, Rede, Eventos) - REFINADO (Mantido o estilo discreto) --- */
+.kpi-extra {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.kpi-extra .kpi-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-md);
+    min-width: 150px;
+    justify-content: space-between;
+    /* Ajuste para não ter glassmorphism aqui */
+    background: var(--azul-medio);
+    backdrop-filter: none;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transform: none;
+}
+
+.kpi-extra .kpi-card:hover {
+    transform: none;
+    border: 1px solid var(--gray-500);
+    box-shadow: var(--shadow-md);
+}
+
+.kpi-extra .kpi-title {
+    color: var(--gray-400);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
+}
+
+.kpi-extra .kpi-value {
+    font-size: 2.1rem;
+    margin: 10px 0;
+    color: var(--accent-light);
+    font-weight: 900;
+}
+
+/* --- MAINFRAMES CADASTRADOS (Mantido) --- */
+
+.mainframes-cadastrados {
+    flex: 1;
+    margin: 10px;
+    min-width: 210px;
+    max-width: 240px;
+    width: 240px;
+    height: 98%;
+    background: var(--azul-escuro);
+    border-left: 1.5px solid var(--azul-medio);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    right: 0;
+    top: 0;
+    overflow-y: auto;
+    z-index: 1;
+    flex-shrink: 1;
+    padding: 0 var(--spacing-md);
+}
+
+
+.mainframes-cadastrados h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--gray-100);
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+    text-shadow: none;
+    display: block;
+}
+
+
+.página.mainframe,
+.página-de-mainframe {
+    width: 100%;
+    text-decoration: none;
+}
+
+.mainframe-evento {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--azul-medio);
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--gray-500);
+    transition: border-color 0.18s, background 0.18s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.mainframe-evento.offline {
+    border-left-color: var(--danger);
+}
+
+.mainframe-evento.warning {
+    border-left-color: var(--warning);
+}
+
+.mainframe-evento.online {
+    border-left-color: var(--success);
+}
+
+.mainframe-evento:hover {
+    background: var(--azul-primario);
+    border-left-color: var(--accent-light);
+}
+
+.mainframe-numero {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-100);
+    background: var(--azul-escuro);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 6px;
+    box-shadow: none;
+}
+
+.mainframe-desc {
+    font-size: 0.98rem;
+    color: var(--gray-200);
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    text-shadow: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* --- GRÁFICOS E TOGGLES - REFINADO --- */
+.graficos {
+    gap: var(--spacing-md);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.grafico-box {
+    background-color: var(--azul-medio);
+    /* <-- O FUNDO AZUL DEVE ESTAR AQUI */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+}
+
+.grafico-box h4 {
+    color: var(--gray-100);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.2rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.grafico-box h4 i {
+    color: var(--accent-light);
+    font-size: 1.5rem;
+}
+
+/* --- Chart Toggles --- */
+.grupo-botoes {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--azul-medio);
+}
+
+.botao-nav {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    background: transparent;
+    color: var(--gray-300);
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.botao-nav.ativo {
+    color: var(--accent-light);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(37, 99, 235, 0.2));
+    box-shadow: inset 0 -4px 0 var(--accent-light);
+    font-size: 1rem;
+}
+
+.botao-nav:not(.ativo):hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--gray-100);
+}
+
+/* --- Chart Container --- */
+.grafico-container {
+    flex-grow: 1;
+    height: 350px;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    background: transparent !important;
+    position: relative;
+    width: 100%;
+}
+
+/* --- Chart Info e Métricas --- */
+.grafico-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+
+.grafico-metrica .value {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--accent-light);
+    text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.grafico-metrica .label {
+    font-size: 1rem;
+    color: var(--gray-300);
+    font-weight: 600;
+}
+
+.grafico-tendencia {
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.grafico-tendencia.up {
+    color: var(--danger);
+    background-color: rgba(239, 68, 68, 0.2);
+}
+
+.grafico-tendencia.down {
+    color: var(--success);
+    background-color: rgba(16, 185, 129, 0.2);
+}
+
+/* ====== MAINFRAME DETALHES TECHNO DARK ====== */
+.mainframe-detalhes {
+    background-color: var(--azul-escuro);
+    padding: 30px;
+    border-radius: 6px;
+    /* bem sutil */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid var(--azul-medio);
+    /* linha fina tecnológica */
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+/* Título */
+.mf-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--status-normal);
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--azul-medio);
+    /* separador minimalista */
+    padding-bottom: 10px;
+}
+
+.mf-titulo-icone {
+    font-size: 2rem;
+    color: var(--status-normal);
+}
+
+.mf-nome {
+    color: #ffffff;
+    font-weight: 600;
+    background-color: rgba(37, 99, 235, 0.1);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 1rem;
+}
+
+/* Row de cards */
+.mf-cards {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* Card básico */
+.mf-card {
+    background-color: var(--azul-medio);
+    flex: 1 1 180px;
+    padding: 18px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-left: 4px solid var(--azul-escuro);
+    transition: all 0.2s ease;
+}
+
+.mf-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mf-card-titulo {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #a0a0a0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mf-card-valor {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* Subtítulo */
+.mf-subtitulo {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #a0a0a0;
+    margin: 25px 0 15px 0;
+    border-bottom: 1px solid var(--azul-medio);
+    padding-bottom: 5px;
+}
+
+/* Cartões extras */
+.mf-card-extras {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.mf-extra-card {
+    background-color: var(--azul-medio);
+    flex: 1 1 150px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-left: 4px solid var(--azul-escuro);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mf-extra-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.extra-titulo {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #b0b0b0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.extra-valor {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.extra-desc {
+    font-size: 0.7rem;
+    color: #888888;
+}

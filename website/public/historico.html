@@ -6,39 +6,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Synkro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/historico.css">
-    <link rel="stylesheet" href="css/dash.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/sessao.js"></script>
 </head>
 
 <body onload="validarSessaoSynkro()">
     <div class="layout-principal">
+
         <!-- Barra lateral -->
         <aside class="barra-lateral">
-            <div class="logo">Synkro</div>
-
-            <div class="perfil-usuario">
-                <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
-                <div class="cargo-usuario">Gerente</div>
-                <div class="nome-usuario" id="nome_login"></div>
-                <div class="email-usuario" id="email_login"></div>
+            <div class="logo">
+                Synkro
             </div>
-
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+                <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+                <div class="cargo-usuario">
+                    <i class="ri-shield-user-line"></i>
+                    Gerente de Infra
+                </div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+            </div>
             <nav>
-                <ul>
-                    <li><a href="dashboardGerente.html" class="btn-adicionar-componente">Visão Geral</a></li>
-                    <li><a href="historico.html" class="ativo btn-adicionar-componente">Alertas</a></li>
-                    <li><a href="Funcionarios.html" class="btn-adicionar-componente">Ver funcionario</a></li>
+                <ul class="menu-links">
+                    <li>
+                        <a href="dashboardGerente.html">
+                            <i class="ri-dashboard-3-line"></i>
+                            Visão Geral
+                        </a>
+                    </li>
+                    <li>
+                        <a href="historico.html" class="ativo">
+                            <i class="ri-file-add-line icon-cadastro"></i>
+                            Logs e Histórico
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Funcionarios.html">
+                            <i class="ri-database-2-line"></i>
+                            Funcionários cadastrados
+                        </a>
+                    </li>
                 </ul>
-                
-                <button class="btn-sair" onclick="limparSessao()">Sair</button>
+                <button class="btn-sair" onclick="limparSessao()">
+                    <i class="ri-logout-box-r-line"></i>
+                    Encerrar Sessão
+                </button>
             </nav>
         </aside>
 
+
         <!-- Conteúdo principal -->
         <main class="conteudo-principal">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Uptime Médio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">142</div>
+                    <div class="stat-label">Alertas Hoje</div>
+                </div>
+                <!-- Mais cards conforme necessário -->
+            </div>
             <div class="dashboard-grid">
+
                 <section class="visao-estrategica">
                     <header class="visao-header">
                         <h1>Visão Geral dos Mainframes em tempo real</h1>
@@ -47,7 +81,7 @@
 
                     <div class="top-widgets">
                         <div class="widget widget-alertas">
-                            <h3>Histórico de alertas críticos</h3>
+                            <h3>Histórico de alertas</h3>
                             <ul>
                                 <li class="alert-item"><span class="tag cpu">Mainframe 01</span><span
                                         class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
@@ -55,6 +89,7 @@
                                 <li class="alert-item"><span class="tag ram">Mainframe 02</span><span
                                         class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
                                         Operação</span><span class="time">18/10/25 • 12:12</span></li>
+
                                 <li class="alert-item"><span class="tag cpu">Mainframe 03</span><span
                                         class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
                                         Operação</span><span class="time">18/10/25 • 12:12</span></li>
@@ -67,9 +102,23 @@
                                 <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
                                         class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
                                         Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
+                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
+                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
+                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
                             </ul>
                         </div>
-
                     </div>
 
                 </section>
@@ -77,7 +126,7 @@
                 <!-- Mainframes (right column) -->
                 <aside class="mainframes-cadastrados">
                     <div class="widget widget-pie-chart">
-                        <h3>Distribuição de alertas por componente</h3>
+                        <h3>Alerta geral de todos os mainframes</h3>
                         <canvas id="pieChart" width="300" height="200"></canvas>
                     </div>
                     <div class="widget resumo-periodo">
@@ -88,6 +137,42 @@
                         </ol>
                     </div>
                 </aside>
+            </div>
+
+
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">10:45</div>
+                        <div class="timeline-title">Alerta de CPU</div>
+                        <div class="timeline-description">Uso de CPU acima de 90%</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">10:45</div>
+                        <div class="timeline-title">Alerta de CPU</div>
+                        <div class="timeline-description">Uso de CPU acima de 90%</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">10:45</div>
+                        <div class="timeline-title">Alerta de CPU</div>
+                        <div class="timeline-description">Uso de CPU acima de 90%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span class="progress-text">Uso de Memória</span>
+                    <span class="progress-percentage">75%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%;"></div>
+                </div>
             </div>
         </main>
 </body>

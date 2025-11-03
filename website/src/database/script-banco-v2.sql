@@ -97,6 +97,11 @@ id INT NOT NULL AUTO_INCREMENT,
 descricao VARCHAR(100),
 PRIMARY KEY (id)
 );
+CREATE TABLE tipo( -- tipo de registro que vamos coletar do componente
+id INT NOT NULL AUTO_INCREMENT,
+descricao VARCHAR(100),
+PRIMARY KEY (id)
+);
 
 CREATE TABLE componente (
   id INT NOT NULL AUTO_INCREMENT,
@@ -149,10 +154,13 @@ CREATE TABLE alerta (
    fkComponente INT NOT NULL,
    fkGravidade INT NOT NULL,
    fkMetrica INT NOT NULL,
+   fkGravidade INT NOT NULL,
+   fkMetrica INT NOT NULL,
    fkStatus INT NOT NULL DEFAULT 1,
    PRIMARY KEY (id),
    CONSTRAINT fk_alerta_mainframe FOREIGN KEY (fkMainframe) REFERENCES mainframe(id),
    CONSTRAINT fk_alerta_componente FOREIGN KEY (fkComponente) REFERENCES componente(id),
+   CONSTRAINT fk_alerta_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id),
    CONSTRAINT fk_alerta_metrica FOREIGN KEY (fkMetrica) REFERENCES metrica(id),
    CONSTRAINT fk_alerta_gravidade FOREIGN KEY (fkGravidade) REFERENCES gravidade(id),
    CONSTRAINT fk_alerta_status FOREIGN KEY (fkStatus) REFERENCES status(id)
@@ -217,8 +225,14 @@ VALUES
 
 -- Tipo
 INSERT INTO tipo (descricao) VALUES ('Uso'),('Temperatura');
+-- Tipo
+INSERT INTO tipo (descricao) VALUES ('Uso'),('Temperatura');
 
 -- Componentes
+INSERT INTO componente (nome) VALUES
+('Processador'),
+('Memória RAM'),
+('Disco Rígido');
 INSERT INTO componente (nome) VALUES
 ('Processador'),
 ('Memória RAM'),
@@ -230,6 +244,20 @@ INSERT INTO metrica (id,fkComponente, min, max, fkTipo) VALUES
 (2, 2, 5.0, 90.0, 1),
 (3, 1, 0.0, 75.0, 2);
 
+INSERT INTO metrica (id,fkComponente, min, max, fkTipo) VALUES
+(1, 1, 5.0, 90.0, 1),
+(2, 2, 5.0, 90.0, 1),
+(3, 1, 0.0, 75.0, 2);
+
+
+-- Componentes por mainframe
+INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica) VALUES
+(1,1, 1),
+(2,1, 2),
+(1,2, 1),
+(2,2, 2),
+(1,3, 1),
+(2,3, 2);
 
 -- Componentes por mainframe
 INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica) VALUES
@@ -249,7 +277,14 @@ INSERT INTO status (descricao) VALUES ('Aberto'),('Em andamento'),('Resolvido');
 
 -- Alertas (com fkComponente e fkMetrica)
 INSERT INTO alerta (dt_hora, valor_coletado, fkMainframe, fkComponente, fkGravidade, fkStatus, fkMetrica)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMainframe, fkComponente, fkGravidade, fkStatus, fkMetrica)
 VALUES
+(NOW(), 75.5, 1, 1, 2, 1, 1),
+(NOW(), 85.0, 1, 2, 3, 2, 1),
+(NOW(), 20.0, 1, 3, 1, 1, 1),
+(NOW(), 98.0, 2, 1, 3, 1, 1),
+(NOW(), 92.0, 2, 2, 3, 2, 1),
+(NOW(), 95.0, 3, 3, 3, 1, 1);
 (NOW(), 75.5, 1, 1, 2, 1, 1),
 (NOW(), 85.0, 1, 2, 3, 2, 1),
 (NOW(), 20.0, 1, 3, 1, 1, 1),

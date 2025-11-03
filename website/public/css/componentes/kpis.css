@@ -1,0 +1,142 @@
+.kpis-linha {
+    display: flex;
+    gap: 52px;
+    margin-bottom: 8px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.kpi-card {
+    flex: 1;
+    min-width: 110px;
+    max-width: 160px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--azul-medio);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 48px;
+}
+
+.kpi-icone {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.kpi-cpu .kpi-icone {
+    background: rgba(37,99,235,0.15);
+    color: #2563eb;
+}
+
+.kpi-ram .kpi-icone {
+    background: rgba(56,189,248,0.15);
+    color: #38bdf8;
+}
+
+.kpi-disk .kpi-icone {
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+}
+
+.kpi-tempo .kpi-icone {
+    background: rgba(99,102,241,0.15);
+    color: #6366f1;
+}
+
+.kpi-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.kpi-titulo {
+    color: var(--gray-400);
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-valor {
+    color: var(--branco);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.kpi-gb {
+    font-size: 0.7em;
+    color: var(--gray-400);
+}
+
+.kpi-desc {
+    color: var(--gray-400);
+    font-size: 0.75em;
+    margin-top: 2px;
+}
+
+.kpi-tempo .kpi-desc {
+    font-family: monospace;
+    font-size: 0.8em;
+    color: var(--accent-light);
+}
+/* --- Estilos para KPIs Extras (2ª Linha) --- */
+
+.kpis-row.kpi-extra-row {
+    margin-bottom: 16px; /* Mais espaço para separar o gráfico */
+    /* Você pode ajustar o 'gap' ou 'justify-content' se quiser que eles fiquem mais centralizados ou separados */
+    gap: 20px; /* Reduz o gap entre eles para caberem 3 no espaço de 4 grandes */
+}
+
+.kpi-extra-row .kpi-card {
+    /* Ajusta o tamanho dos cards extras (ex: 3 cards por linha) */
+    max-width: 250px; /* Mais largura para o texto de descrição extra */
+    min-width: 150px;
+    height: 60px; /* Mais altura para acomodar a descrição e valor maior */
+    align-items: flex-start; /* Alinha o conteúdo ao topo para melhor leitura */
+    padding: 8px 12px;
+}
+
+.kpi-extra-row .kpi-icone {
+    margin-top: 2px; /* Pequeno ajuste visual */
+}
+
+.kpi-extra-row .kpi-titulo {
+    margin-bottom: 0px;
+}
+
+.kpi-extra-row .kpi-valor {
+    font-size: 1.1rem; /* Aumenta o valor para destaque */
+}
+
+/* --- Estilos de Cores e Ícones para KPIs Extras --- */
+
+/* TEMPERATURA */
+.kpi-temp-extra .kpi-icone {
+    background: rgba(239, 68, 68, 0.15); /* Vermelho */
+    color: #ef4444;
+}
+
+/* REDE (Tráfego) */
+.kpi-rede .kpi-icone {
+    background: rgba(168, 85, 247, 0.15); /* Roxo/Violeta */
+    color: #a855f7;
+}
+
+/* EVENTOS/ALERTAS */
+.kpi-eventos .kpi-icone {
+    background: rgba(249, 115, 22, 0.15); /* Laranja escuro */
+    color: #f97316;
+}

@@ -6,33 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Funcionários - Synkro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/dash.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/funcionarios.css">
     <script src="./js/sessao.js"></script>
 </head>
 
 <body onload="carregarFuncionarios(), validarSessaoSynkro()">
     <div class="layout-principal">
+
         <!-- BARRA LATERAL -->
         <aside class="barra-lateral">
-            <div class="logo">Synkro</div>
-
-            <div class="perfil-usuario">
-                <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
-                <div class="cargo-usuario">Gerente</div>
-                <div class="nome-usuario" id="nome_login"></div>
-                <div class="email-usuario" id="email_login"></div>
+            <div class="logo">
+                Synkro
             </div>
-
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+                <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+                <div class="cargo-usuario">
+                    <i class="ri-shield-user-line"></i>
+                    Gerente de Infra
+                </div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+            </div>
             <nav>
-                <ul>
-                    <li><a href="dashboardGerente.html" class="btn-adicionar-componente">Visão Geral</a></li>
-                    <li><a href="historico.html" class="btn-adicionar-componente">Alertas</a></li>
-                    <li><a href="#" class="ativo btn-adicionar-componente">Funcionários</a></li>
+                <ul class="menu-links">
+                    <li>
+                        <a href="dashboardGerente.html" class="ativo">
+                            <i class="ri-dashboard-3-line"></i>
+                            Visão Geral
+                        </a>
+                    </li>
+                    <li>
+                        <a href="historico.html">
+                            <i class="ri-file-add-line icon-cadastro"></i>
+                            Logs e Histórico
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Funcionarios.html">
+                            <i class="ri-database-2-line"></i>
+                            Funcionários cadastrados
+                        </a>
+                    </li>
                 </ul>
+                <button class="btn-sair" onclick="limparSessao()">
+                    <i class="ri-logout-box-r-line"></i>
+                    Encerrar Sessão
+                </button>
             </nav>
-
-            <button class="btn-sair" onclick="sair()">Sair</button>
         </aside>
+
 
         <main class="conteudo-principal">
             <div class="dashboard-grid">
@@ -42,31 +65,28 @@
                     </div>
 
                     <div class="top-widgets">
-                        <div class="widget-mainframes-small" style="width: 100%;">
+                        <div class="widget-mainframes-small">
                             <h3>Lista de Funcionários</h3>
 
-                            <table id="tabelaFuncionarios" style="width: 100%; border-collapse: collapse;">
+                            <table id="tabelaFuncionarios">
                                 <thead>
-                                    <tr style="background: #f5f7fd; color: #071026; text-align: left;">
-                                        <th style="padding: 12px;">Nome</th>
-                                        <th style="padding: 12px;">E-mail</th>
-                                        <th style="padding: 12px;">Cargo</th>
-                                        <th style="padding: 12px;">Ações</th>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>E-mail</th>
+                                        <th>Cargo</th>
+                                        <th>Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbodyFuncionarios">
                                     <tr>
-                                        <td colspan="4" style="text-align:center; padding: 20px; color: #777;">
-                                            Carregando...</td>
+                                        <td colspan="4">Carregando...</td>
                                     </tr>
                                 </tbody>
                             </table>
 
-                            <div style="display:flex; justify-content:flex-end; align-items:center; gap:12px; margin:12px 0;">
-                                <a href="CadastroFuncionario.html"
-                                   aria-label="Adicionar Funcionário"
-                                   style="display:inline-flex; align-items:center; gap:10px; padding:8px 14px; background:linear-gradient(90deg,#4f46e5,#2563eb); color:#fff; text-decoration:none; border-radius:10px; font-weight:700; box-shadow:0 8px 20px rgba(37,99,235,0.12); transition:transform .12s ease, box-shadow .12s ease;">
-                                    <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:4px; background:rgba(255,255,255,0.12); font-size:14px; line-height:1;">+</span>
+                            <div class="acoes-tabela">
+                                <a href="CadastroFuncionario.html" class="btn-adicionar">
+                                    <span>+</span>
                                     Adicionar Funcionário
                                 </a>
                             </div>
@@ -78,37 +98,32 @@
     </div>
 
     <!-- Modal de edição -->
-    <div id="modalEditar"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:50;">
+    <div id="modalEditar">
         <div>
-            <h3 style="margin-top:0;">Editar Funcionário</h3>
+            <h3>Editar Funcionário</h3>
             <form id="formEditar">
                 <input type="hidden" id="editId">
                 <label>Nome</label>
-                <input id="editNome" required style="width:100%; margin-bottom:8px;">
+                <input id="editNome" required>
                 <label>E-mail</label>
-                <input id="editEmail" type="email" required style="width:100%; margin-bottom:4px;">
-                <div class="campo-erro" id="editEmailError" style="color:#b91c1c; font-size:0.9rem; height:1.2rem;">
-                </div>
+                <input id="editEmail" type="email" required>
+                <div class="campo-erro" id="editEmailError"></div>
                 <label>Data de nascimento</label>
-                <input id="editNascimento" type="date" style="width:100%; margin-bottom:8px;">
+                <input id="editNascimento" type="date">
                 <label>CPF</label>
-                <input id="editCpf" maxlength="14" placeholder="000.000.000-00" oninput="formatarCPF(this)"
-                    style="width:100%; margin-bottom:4px;">
-                <div class="campo-erro" id="editCpfError" style="color:#b91c1c; font-size:0.9rem; height:1.2rem;"></div>
+                <input id="editCpf" maxlength="14" placeholder="000.000.000-00" oninput="formatarCPF(this)">
+                <div class="campo-erro" id="editCpfError"></div>
                 <label>Cargo</label>
-                <select id="editCargo" style="width:100%; margin-bottom:12px;"></select>
+                <select id="editCargo"></select>
                 <label>Status</label>
-                <select id="editStatus" style="width:100%; margin-bottom:12px;">
+                <select id="editStatus">
                     <option value="1">Ativo</option>
                     <option value="0">Inativo</option>
                 </select>
 
-                <div style="display:flex; gap:8px; justify-content:flex-end;">
-                    <button type="button" id="btnCancelarEdit"
-                        style="background:#9ca3af; color:#fff; border:none; padding:8px 12px; border-radius:6px;">Cancelar</button>
-                    <button type="submit"
-                        style="background:#2563eb; color:#fff; border:none; padding:8px 12px; border-radius:6px;">Salvar</button>
+                <div class="acoes-modal">
+                    <button type="button" id="btnCancelarEdit" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar</button>
                 </div>
             </form>
         </div>
@@ -118,11 +133,11 @@
         async function carregarFuncionarios() {
             const idEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
             const cargoUsuarioRaw = sessionStorage.getItem("CARGO_USUARIO") || "";
-            const cargoUsuario = String(cargoUsuarioRaw).toLowerCase(); // normaliza
+            const cargoUsuario = String(cargoUsuarioRaw).toLowerCase();
             const isGerente = cargoUsuario === "gerente";
 
             const tbody = document.getElementById("tbodyFuncionarios");
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px;">Carregando...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4">Carregando...</td></tr>`;
 
             try {
                 const resposta = await fetch(`/funcionarios/empresa/${idEmpresa}`);
@@ -130,7 +145,7 @@
 
                 const funcionarios = await resposta.json();
                 if (funcionarios.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#777;">Nenhum funcionário cadastrado.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="4">Nenhum funcionário cadastrado.</td></tr>`;
                     return;
                 }
 
@@ -140,18 +155,16 @@
                     const id = func.id ?? func.idFuncionario ?? func.id;
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
-            <td style="padding:10px;">${func.nome}</td>
-            <td style="padding:10px;">${func.email}</td>
-            <td style="padding:10px;">${func.cargo || ''}</td>
-            <td style="padding:10px;">
-              ${''}
-              <button class="btn-editar" data-id="${id}" style="background:#2563eb; color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-weight:600; margin-right:6px;">Editar</button>
-              <button class="btn-excluir" data-id="${id}" style="background:#dc2626; color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-weight:600;">Excluir</button>
-            </td>
-          `;
+                        <td>${func.nome}</td>
+                        <td>${func.email}</td>
+                        <td>${func.cargo || ''}</td>
+                        <td>
+                            <button class="btn-editar" data-id="${id}">Editar</button>
+                            <button class="btn-excluir" data-id="${id}">Excluir</button>
+                        </td>
+                    `;
                     tbody.appendChild(tr);
                 });
-
 
                 tbody.addEventListener('click', (ev) => {
                     const btn = ev.target.closest('button');
@@ -171,7 +184,7 @@
 
             } catch (erro) {
                 console.error(erro);
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#e11d48;">Erro ao carregar funcionários.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="erro-texto">Erro ao carregar funcionários.</td></tr>`;
             }
         }
 
@@ -198,7 +211,8 @@
                 document.getElementById('editCpfError').textContent = '';
                 document.getElementById('editEmailError').textContent = '';
 
-                document.getElementById('modalEditar').style.display = 'flex';
+                const modal = document.getElementById('modalEditar');
+                modal.classList.add('active');
             } catch (err) {
                 alert('Erro ao abrir edição: ' + err.message);
                 console.error(err);
@@ -206,13 +220,15 @@
         }
 
         document.getElementById('btnCancelarEdit').addEventListener('click', () => {
-            document.getElementById('modalEditar').style.display = 'none';
+            const modal = document.getElementById('modalEditar');
+            modal.classList.remove('active');
         });
 
         document.getElementById('editEmail').addEventListener('input', () => {
             document.getElementById('editEmailError').textContent = '';
             document.getElementById('editEmail').style.border = '';
         });
+
         document.getElementById('editCpf').addEventListener('input', () => {
             document.getElementById('editCpfError').textContent = '';
             document.getElementById('editCpf').style.border = '';
@@ -239,7 +255,7 @@
 
                 if (resp.ok) {
                     alert('✅ Funcionário atualizado com sucesso!');
-                    document.getElementById('modalEditar').style.display = 'none';
+                    document.getElementById('modalEditar').classList.remove('active');
                     carregarFuncionarios();
                     return;
                 }
@@ -250,11 +266,11 @@
                 if (resp.status === 409) {
                     if (/cpf/i.test(msg)) {
                         document.getElementById('editCpfError').textContent = msg;
-                        document.getElementById('editCpf').style.border = '2px solid #b91c1c';
+                        document.getElementById('editCpf').style.border = '2px solid var(--perigo)';
                         document.getElementById('editCpf').focus();
                     } else if (/email/i.test(msg)) {
                         document.getElementById('editEmailError').textContent = msg;
-                        document.getElementById('editEmail').style.border = '2px solid #b91c1c';
+                        document.getElementById('editEmail').style.border = '2px solid var(--perigo)';
                         document.getElementById('editEmail').focus();
                     } else {
                         alert('Erro: ' + msg);
@@ -287,8 +303,10 @@
             valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
             input.value = valor;
         }
-
     </script>
+</body>
+
+</html>
 </body>
 
 </html>

@@ -1,0 +1,671 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ======== VARIÁVEIS DE CORES E EFEITOS ======== */
+:root {
+    /* Cores Base */
+    --azul-escuro: #0a1528;
+    --azul-medio: #1e293b;
+    --azul-primario: #0284c7;
+    --azul-hover: #0369a1;
+    --cinza-texto: #e2e8f0;
+    --branco: #f8fafc;
+
+    /* Estados */
+    --sucesso: #059669;
+    --atencao: #d97706;
+    --perigo: #dc2626;
+    --info: #3b82f6;
+
+    /* Interface */
+    --fundo-card: #1f2937;
+    --fundo-input: #111827;
+    --borda-card: rgba(255, 255, 255, 0.1);
+    --fundo-hover: rgba(255, 255, 255, 0.05);
+
+    /* Gradientes */
+    --gradiente-primario: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    --gradiente-hover: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    --gradiente-sidebar: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+
+    /* Efeitos */
+    --borda-sutil: rgba(255, 255, 255, 0.1);
+    --borda-input: rgba(255, 255, 255, 0.05);
+    --sombra-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+    --sombra-hover: 0 8px 30px rgba(0, 0, 0, 0.3);
+    --sombra-input: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    --blur-efeito: blur(20px);
+
+    /* Animações */
+    --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transicao-rapida: all 0.2s ease;
+    --transicao-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--azul-escuro);
+    color: var(--cinza-texto);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* Garante que não haja scroll na página principal */
+}
+
+/* ======== LAYOUT PRINCIPAL ======== */
+.layout-principal {
+    display: flex;
+    width: 98%;
+    max-width: 1500px;
+    /* Limite para telas muito largas */
+    height: 96%;
+    /* Para não preencher 100% da viewport e dar um "respiro" */
+    border-radius: 16px;
+    overflow: hidden;
+    /* Oculta barras de rolagem internas caso o conteúdo passe o limite do 96% de altura */
+    background-color: var(--azul-medio);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* -------- Barra Lateral -------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ======== VARIÁVEIS DE CORES ======== */
+:root {
+    --azul-escuro: #0f172a;
+    --azul-medio: #1e293b;
+    /* Azul primário um pouco mais suave */
+    --azul-primario: #0284c7;
+    --cinza-texto: #cbd5e1;
+    --branco: #f8fafc;
+    /* Verde e Vermelho mais sóbrios, sem saturação excessiva */
+    --sucesso: #16a34a;
+    --atencao: #d97706;
+    /* Laranja/Amarelo */
+    --perigo: #dc2626;
+    --fundo-card: #1f2937;
+    /* Mais escuro que o anterior para melhor elevação */
+    /* Roxo também mais suave */
+    --dasd-cor: #7c3aed;
+
+    /* Variáveis de Sombra e Borda */
+    --borda-sutil: rgba(255, 255, 255, 0.1);
+    --sombra-card: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--azul-escuro);
+    color: var(--cinza-texto);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* Garante que não haja scroll na página principal */
+}
+
+/* ======== LAYOUT PRINCIPAL ======== */
+.layout-principal {
+    display: flex;
+    width: 98%;
+    max-width: 1500px;
+    /* Limite para telas muito largas */
+    height: 96%;
+    /* Para não preencher 100% da viewport e dar um "respiro" */
+    border-radius: 16px;
+    overflow: hidden;
+    /* Oculta barras de rolagem internas caso o conteúdo passe o limite do 96% de altura */
+    background-color: var(--azul-medio);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+/* -------- Barra Lateral -------- */
+.barra-lateral {
+    width: 190px;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--branco);
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+}
+
+.perfil-usuario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.perfil-usuario img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid #071026;
+    transition: transform 0.3s ease;
+}
+
+
+.nome-usuario {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.email-usuario {
+    font-size: 0.85rem;
+    color: var(--cinza);
+    margin-top: 4px;
+}
+
+/* ======== BOTÃO LINKS ======== */
+
+.barra-lateral nav ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.barra-lateral nav ul li {
+    margin: 12px 0;
+}
+
+.barra-lateral nav ul li a {
+    text-decoration: none;
+    color: var(--cinza);
+    font-weight: 500;
+    padding: 12px 18px;
+    display: block;
+    border-radius: 0px 10px 10px 0px;
+    transition: all 0.3s;
+}
+
+.barra-lateral nav ul li a:hover,
+.barra-lateral nav ul li a.ativo {
+    background-color: var(--azul-escuro);
+    color: var(--branco);
+}
+
+.menu-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu-links li a {
+    display: block;
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--cinza);
+    background-color: rgba(255, 255, 255, 0.04);
+    padding: 12px 18px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.menu-links li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background-color: transparent;
+    border-radius: 0px 4px 4px 0px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-links li a:hover {
+    background-color: var(--azul-escuro);
+    color: var(--branco);
+    transform: translateX(4px);
+}
+
+.menu-links li a:hover::after {
+    background-color: var(--azul-escuro);
+}
+
+.menu-links li a.ativo {
+    background-color: var(--azul-escuro);
+    color: var(--branco);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.menu-links li a.ativo::after {
+    background-color: var(--azul-medio);
+}
+
+/* ======== BOTÃO SAIR ======== */
+
+.btn-sair {
+    margin-top: 12px;
+    background: transparent;
+    color: #dbdbdb;
+    border: 2px solid rgba(108, 99, 255, 0.16);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+}
+
+.btn-sair:hover {
+    background: linear-gradient(90deg, rgba(108, 99, 255, 0.12), rgba(0, 194, 199, 0.08));
+    transform: translateY(-3px);
+    color: var(--branco);
+    border-color: rgba(108, 99, 255, 0.28);
+}
+
+.btn-sair::before {
+    content: '\21A4';
+    font-size: 0.95em;
+    opacity: 0.9;
+}
+
+@media (max-width: 900px) {
+    .btn-sair {
+        padding: 8px 14px;
+        font-size: 0.95em;
+    }
+}
+
+/* Conteúdo Principal */
+.conteudo-principal {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+    background: var(--azul-escuro);
+}
+
+/* Painel de Hardware */
+.painel-hardware {
+    background: var(--fundo-card);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: var(--sombra-lg);
+    border: 1px solid var(--glass-border);
+}
+
+.cabecalho-painel {
+    margin-bottom: 32px;
+}
+
+.cabecalho-painel h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--texto-primario);
+    margin: 0;
+    padding-left: 16px;
+    border-left: 4px solid var(--azul-primario);
+}
+
+/* ======== FORMULÁRIO ======== */
+.form-cadastro {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Definindo áreas específicas para certos campos */
+.form-cadastro .campo-form:nth-child(1) {
+    grid-area: nome;
+}
+
+/* Nome */
+.form-cadastro .campo-form:nth-child(2) {
+    grid-area: email;
+}
+
+/* Email */
+.form-cadastro .campo-form:nth-child(3) {
+    grid-area: nasc;
+}
+
+/* Nascimento */
+.form-cadastro .campo-form:nth-child(4) {
+    grid-area: cpf;
+}
+
+/* CPF */
+.form-cadastro .campo-form:nth-child(5) {
+    grid-area: cargo;
+}
+
+/* Cargo */
+.form-cadastro .campo-form:nth-child(6) {
+    grid-area: senha;
+}
+
+/* Senha */
+.form-cadastro .campo-form:nth-child(7) {
+    grid-area: conf;
+}
+
+/* Confirmar Senha */
+.form-cadastro .btn-cadastrar {
+    grid-area: btn;
+}
+
+/* Botão */
+
+.form-cadastro {
+    display: grid;
+    grid-template-areas:
+        "nome   email"
+        "nasc   cpf"
+        "cargo  cargo"
+        "senha  conf"
+        "btn    btn";
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.campo-form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campo-form label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--cinza-texto);
+    display: block;
+    transition: var(--transicao-rapida);
+    position: relative;
+    padding-left: 8px;
+}
+
+.campo-form label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 12px;
+    background: var(--gradiente-primario);
+    border-radius: 2px;
+}
+
+.campo-form input,
+.campo-form select {
+    width: 85%;
+    padding: 14px 16px;
+    background: var(--fundo-input);
+    border: 1px solid var(--borda-input);
+    border-radius: 8px;
+    color: var(--branco);
+    font-size: 0.95rem;
+    transition: var(--transicao);
+    box-shadow: var(--sombra-input);
+}
+
+/* Estilização especial para campos de senha */
+.campo-form:nth-child(6),
+.campo-form:nth-child(7) {
+    position: relative;
+}
+
+.campo-form:nth-child(6)::after,
+.campo-form:nth-child(7)::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--borda-sutil), transparent);
+}
+
+.campo-form input:hover,
+.campo-form select:hover {
+    border-color: var(--borda-sutil);
+}
+
+.campo-form input:focus,
+.campo-form select:focus {
+    outline: none;
+    border-color: var(--azul-primario);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+    background: var(--fundo-card);
+}
+
+.campo-form input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+}
+
+.campo-erro {
+    font-size: 0.875rem;
+    color: var(--perigo);
+    margin-top: 4px;
+    min-height: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.campo-erro::before {
+    content: '\2717';  /* Símbolo X mais elegante */
+    font-size: 1em;
+    color: var(--perigo);
+    margin-right: 6px;
+    font-weight: 500;
+    display: inline-block;
+    opacity: 0.85;
+    font-style: italic;
+    text-shadow: 0 0 8px rgba(220, 38, 38, 0.4);
+    animation: pulseError 2s ease-in-out infinite;
+}
+
+@keyframes pulseError {
+    0% { opacity: 0.85; transform: scale(1.2); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+    100% { opacity: 0.85; transform: scale(1.2); }
+}
+
+.textinho {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Inter', sans-serif;
+    font-style: italic;
+    font-weight: 500;
+    display: inline-block;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+/* Estilização específica para campos com erro */
+.campo-form input.erro,
+.campo-form select.erro {
+    border-color: var(--perigo);
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translateX(-1px);
+    }
+
+    20%,
+    80% {
+        transform: translateX(2px);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translateX(-3px);
+    }
+
+    40%,
+    60% {
+        transform: translateX(3px);
+    }
+}
+
+/* ======== BOTÃO DE CADASTRO ======== */
+.btn-cadastrar {
+    grid-column: 1 / -1;
+    padding: 16px 32px;
+    background: var(--gradiente-primario);
+    border: none;
+    border-radius: 12px;
+    color: var(--branco);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transicao-bounce);
+    margin-top: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-cadastrar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradiente-hover);
+    opacity: 0;
+    z-index: -1;
+    transition: var(--transicao);
+}
+
+.btn-cadastrar:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+}
+
+.btn-cadastrar:hover::before {
+    opacity: 1;
+}
+
+.btn-cadastrar:active {
+    transform: translateY(1px);
+}
+
+/* Efeito de loading no botão */
+.btn-cadastrar.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.btn-cadastrar.loading::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--branco);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+    .layout-principal {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .layout-principal {
+        flex-direction: column;
+    }
+
+    .barra-lateral {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .conteudo-principal {
+        padding: 20px;
+    }
+
+    .form-cadastro {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--fundo-card);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primario);
+    border-radius: 4px;
+    border: 2px solid var(--fundo-card);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-primario);
+    border-width: 1px;
+}
