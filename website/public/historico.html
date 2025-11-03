@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Synkro</title>
+    <title>Dashboard Gerencial - Synkro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/historico.css">
@@ -15,7 +15,6 @@
 <body onload="validarSessaoSynkro()">
     <div class="layout-principal">
 
-        <!-- Barra lateral -->
         <aside class="barra-lateral">
             <div class="logo">
                 Synkro
@@ -57,147 +56,225 @@
             </nav>
         </aside>
 
-
-        <!-- Conteúdo principal -->
         <main class="conteudo-principal">
-            <!-- <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">85%</div>
-                    <div class="stat-label">Uptime Médio</div>
+
+            <div class="grid-estatisticas">
+                <div class="card-estatistica">
+                    <div class="valor-estatistica">99.8%</div>
+                    <div class="rotulo-estatistica">Disponibilidade no Mês</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value">6</div>
-                    <div class="stat-label">Alertas Hoje</div>
+                <div class="card-estatistica">
+                    <div class="valor-estatistica">1.25k</div>
+                    <div class="rotulo-estatistica">Total de Eventos</div>
                 </div>
-            </div> -->
+                <div class="card-estatistica">
+                    <div class="valor-estatistica">48</div>
+                    <div class="rotulo-estatistica">Críticos Resolvidos</div>
+                </div>
+                <div class="card-estatistica">
+                    <div class="valor-estatistica">2.1s</div>
+                    <div class="rotulo-estatistica">Tempo Médio de Resposta</div>
+                </div>
+            </div>
+
+            <header class="historico-header">
+                <h1>Histórico de Eventos e Logs do Mainframe</h1>
+                <p>Visualize indicadores-chave e a sequência cronológica de todos os eventos do sistema principal.</p>
+            </header>
+
             <div class="dashboard-grid">
 
                 <section class="visao-estrategica">
-                    <header class="visao-header">
-                        <h1>Visão Geral dos Mainframes</h1>
-                        <p>Acompanhe os principais indicadores com histórico de alertas.</p>
-                    </header>
-
-                    <div class="top-widgets">
-                        <div class="widget widget-alertas">
-                            <h3>Histórico de alertas</h3>
-                            <ul>
-                                <li class="alert-item"><span class="tag cpu">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 02</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag cpu">Mainframe 05</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 02</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag cpu">Mainframe 02</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 05</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">18/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">17/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">17/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">17/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">17/10/25 • 12:12</span></li>
-                                <li class="alert-item"><span class="tag ram">Mainframe 01</span><span
-                                        class="alert-desc"><strong>Alerta: Emergência</strong> — Setor
-                                        Operação</span><span class="time">17/10/25 • 12:12</span></li>
-                            </ul>
-                        </div>
+                    <div class="widget widget-alertas">
+                        <h3>Histórico de Alertas (Logs Recentes)</h3>
+                        <ul>
+                            <li class="alerta-item critical">
+                                <span class="time">18/10/25 • 12:12</span>
+                                <span class="tag">MFR-01</span>
+                                <span class="alerta-desc"><strong>Alerta Crítico de CPU</strong> — Operações</span>
+                                <span class="status">NÃO RESOLVIDO</span>
+                            </li>
+                            <li class="alerta-item warning">
+                                <span class="time">18/10/25 • 12:45</span>
+                                <span class="tag">MFR-02</span>
+                                <span class="alerta-desc"><strong>Uso de Memória Alto</strong> — Ops</span>
+                                <span class="status">EM PROGRESSO</span>
+                            </li>
+                            <li class="alerta-item info">
+                                <span class="time">18/10/25 • 13:00</span>
+                                <span class="tag">MFR-03</span>
+                                <span class="alerta-desc"><strong>Aviso de Disco</strong> — Armazenamento</span>
+                                <span class="status">NOTIF. ENVIADA</span>
+                            </li>
+                            <li class="alerta-item critical">
+                                <span class="time">18/10/25 • 12:12</span>
+                                <span class="tag">MFR-01</span>
+                                <span class="alerta-desc"><strong>Alerta Crítico de CPU</strong> — Operações</span>
+                                <span class="status">NÃO RESOLVIDO</span>
+                            </li>
+                            <li class="alerta-item warning">
+                                <span class="time">18/10/25 • 12:45</span>
+                                <span class="tag">MFR-02</span>
+                                <span class="alerta-desc"><strong>Uso de Memória Alto</strong> — Ops</span>
+                                <span class="status">EM PROGRESSO</span>
+                            </li>
+                            <li class="alerta-item info">
+                                <span class="time">18/10/25 • 13:00</span>
+                                <span class="tag">MFR-03</span>
+                                <span class="alerta-desc"><strong>Aviso de Disco</strong> — Armazenamento</span>
+                                <span class="status">NOTIF. ENVIADA</span>
+                            </li>
+                            <li class="alerta-item critical">
+                                <span class="time">18/10/25 • 12:12</span>
+                                <span class="tag">MFR-01</span>
+                                <span class="alerta-desc"><strong>Alerta Crítico de CPU</strong> — Operações</span>
+                                <span class="status">NÃO RESOLVIDO</span>
+                            </li>
+                            <li class="alerta-item warning">
+                                <span class="time">18/10/25 • 12:45</span>
+                                <span class="tag">MFR-02</span>
+                                <span class="alerta-desc"><strong>Uso de Memória Alto</strong> — Ops</span>
+                                <span class="status">EM PROGRESSO</span>
+                            </li>
+                            <li class="alerta-item info">
+                                <span class="time">18/10/25 • 13:00</span>
+                                <span class="tag">MFR-03</span>
+                                <span class="alerta-desc"><strong>Aviso de Disco</strong> — Armazenamento</span>
+                                <span class="status">NOTIF. ENVIADA</span>
+                            </li>
+                            <li class="alerta-item warning">
+                                <span class="time">18/10/25 • 12:45</span>
+                                <span class="tag">MFR-02</span>
+                                <span class="alerta-desc"><strong>Uso de Memória Alto</strong> — Ops</span>
+                                <span class="status">EM PROGRESSO</span>
+                            </li>
+                            <li class="alerta-item info">
+                                <span class="time">18/10/25 • 13:00</span>
+                                <span class="tag">MFR-03</span>
+                                <span class="alerta-desc"><strong>Aviso de Disco</strong> — Armazenamento</span>
+                                <span class="status">NOTIF. ENVIADA</span>
+                            </li>
+                            <li class="alerta-item info">
+                                <span class="time">18/10/25 • 13:00</span>
+                                <span class="tag">MFR-03</span>
+                                <span class="alerta-desc"><strong>Aviso de Disco</strong> — Armazenamento</span>
+                                <span class="status">NOTIF. ENVIADA</span>
+                            </li>
+                            <li class="alerta-item info">
+                                <span class="time">18/10/25 • 13:00</span>
+                                <span class="tag">MFR-03</span>
+                                <span class="alerta-desc"><strong>Aviso de Disco</strong> — Armazenamento</span>
+                                <span class="status">NOTIF. ENVIADA</span>
+                            </li>
+                        </ul>
                     </div>
-
                 </section>
 
-                <!-- Mainframes (right column) -->
                 <aside class="mainframes-cadastrados">
-                    <div class="widget widget-pie-chart">
-                        <h3>Alerta geral de todos os mainframes</h3>
-                        <canvas id="pieChart" width="300" height="200"></canvas>
+
+                    <div class="widget widget-grafico-pizza">
+                        <h3>Distribuição Global de Alertas</h3>
+                        <canvas id="pieChart" width="300" height="250"></canvas>
                     </div>
-                    <div class="widget resumo-periodo">
-                        <h3>Visão geral</h3>
-                        <ol class="top-list">
-                            <li>Mainframes com alerta: 3</li>
-                            <li>Alertas Emergência: 2</li>
-                        </ol>
+
+                    <div class="widget widget-metrica-agregada">
+                        <h3>Métricas do Período</h3>
+                        <ul>
+                            <li><strong>Alertas Críticos:</strong> 48 Registrados</li>
+                            <li><strong>Tempo de Inatividade:</strong> 5h 25m</li>
+                            <li><strong>Maior Pico de CPU:</strong> MFR-01 (97%)</li>
+                            <li><strong>Logs Processados:</strong> 1.2M logs</li>
+                        </ul>
                     </div>
                 </aside>
             </div>
 
+            <div class="container-linha-do-tempo widget">
+                <h3>Linha do Tempo de Eventos</h3>
+                <div class="linha-do-tempo">
 
+                    <div class="item-linha-do-tempo">
+                        <div class="conteudo-linha-do-tempo">
+                            <div class="horario-linha-do-tempo">10:45</div>
+                            <div class="titulo-linha-do-tempo">Alerta de CPU (MFR-01)</div>
+                            <div class="descricao-linha-do-tempo">Uso da CPU acima de 90% no MFR-01</div>
+                        </div>
+                    </div>
 
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-time">12:12</div>
-                        <div class="timeline-title">Alerta de CPU</div>
-                        <div class="timeline-description">Uso de CPU acima de 90%</div>
+                    <div class="item-linha-do-tempo">
+                        <div class="conteudo-linha-do-tempo">
+                            <div class="horario-linha-do-tempo">11:15</div>
+                            <div class="titulo-linha-do-tempo">Alerta de Memória (MFR-02)</div>
+                            <div class="descricao-linha-do-tempo">Uso da memória acima de 80% no MFR-02</div>
+                        </div>
                     </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-time">12:12</div>
-                        <div class="timeline-title">Alerta de CPU</div>
-                        <div class="timeline-description">Uso de CPU acima de 90%</div>
+
+                    <div class="item-linha-do-tempo">
+                        <div class="conteudo-linha-do-tempo">
+                            <div class="horario-linha-do-tempo">12:00</div>
+                            <div class="titulo-linha-do-tempo">Alerta de Disco (MFR-03)</div>
+                            <div class="descricao-linha-do-tempo">Disco /var quase cheio no MFR-03</div>
+                            <div class="descricao-linha-do-tempo">Disco /var quase cheio no MFR-03</div>
+                        </div>
                     </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-time">12:12</div>
-                        <div class="timeline-title">Alerta de CPU</div>
-                        <div class="timeline-description">Uso de CPU acima de 90%</div>
-                    </div>
+
                 </div>
             </div>
 
-            <div class="progress-container">
-                <div class="progress-label">
-                    <span class="progress-text">Uso de Memória</span>
-                    <span class="progress-percentage">75%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 75%;"></div>
-                </div>
-            </div>
         </main>
-</body>
-<script>
-    const pieCtx = document.getElementById('pieChart')?.getContext('2d');
-    let pieChart;
-    if (pieCtx) {
-        pieChart = new Chart(pieCtx, {
-            type: 'pie',
-            data: {
-                labels: ['CPU', 'RAM', 'Disco'],
-                datasets: [{ data: [2, 1, 2], backgroundColor: ['#071026', '#dc2626', '#fbbf24'] }]
-            },
-            options: { plugins: { legend: { position: 'bottom' } } }
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            const cores = [
+                '#ef4444',
+                '#f59e0b',
+                '#38bdf8'
+            ];
+
+            const pieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Critico', 'Urgente', 'Normal'],
+                    datasets: [{
+                        data: [3, 15, 25],
+                        backgroundColor: cores,
+                        hoverOffset: 8,
+                        borderColor: '#1e293b',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                color: '#cbd5e1',
+                                font: {
+                                    size: 13,
+                                    family: 'Inter',
+                                    weight: 500
+                                },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#cbd5e1',
+                            borderColor: '#38bdf8',
+                            borderWidth: 1,
+                            cornerRadius: 6
+                        }
+                    }
+                }
+            });
         });
-    }
-    // if (pieChart) {
-    //     const a = rnd(20, 60), b = rnd(10, 50), c = Math.max(0, 100 - (a + b));
-    //     pieChart.data.datasets[0].data = [a, b, c];
-    //     pieChart.update();
-    // }
-    function rnd(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-
-    setInterval(updateDemoData, 4000);
-</script>
+    </script>
+</body>
 
 </html>
