@@ -332,91 +332,129 @@ body {
     margin-top: 4px;
     font-size: 0.9rem;
 }
+/* Botão de período*/
+.btn-periodo-container {
+    position: relative;
+    display: inline-block;
+}
+
+.btn-periodo {
+    background-color: #2A2A3F;
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.btn-periodo:hover {
+    background-color: #3a3a54;
+}
+
+.dropdown-periodo {
+    display: none;
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background-color: #1E1E2F;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: max-content;
+    z-index: 100;
+}
+
+.dropdown-periodo li {
+    padding: 8px 16px;
+    cursor: pointer;
+    color: #E0E0E0;
+    transition: background 0.2s ease;
+}
+
+.dropdown-periodo li:hover {
+    background-color: #2A2A3F;
+}
+
 
 /* --- KPIs NO TOPO --- */
-/* --- KPIs NO TOPO (Visual Profissional e Clean) --- */
 .painel-kpis {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 12px;
     padding: 0 5px;
-    /* Ajuste o padding para compensar a barra lateral */
 }
 
 .kpi {
-    background-color: var(--fundo-card);
-    border: 1px solid var(--borda-sutil);
+    background: var(--fundo-card);
     border-radius: 12px;
-    padding: 20px;
-    height: auto;
-    /* Altura flexível */
-    width: auto;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-shadow: var(--sombra-card);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.kpi:hover {
-    transform: translateY(-5px);
-    /* Elevação maior no hover */
-    box-shadow: var(--sombra-kpi-hover);
-    border-color: rgba(2, 132, 199, 0.3);
-}
-
-/* Indicador de Status na Lateral (Mantido, mas mais sutil) */
 .kpi::before {
-    /* Mantido o estilo com a cor do status */
-    width: 4px;
-    /* Mais fino */
-}
-
-/* Aplicação das Cores de Status no Indicador Lateral (::before) */
-.kpi:nth-child(1)::before {
-    background-color: var(--azul-primario);
-}
-
-.kpi:nth-child(2)::before {
-    background-color: var(--perigo);
-}
-
-.kpi:nth-child(3)::before {
-    background-color: var(--sucesso);
-}
-
-.kpi:nth-child(4)::before {
-    background-color: var(--dasd-cor);
+    height: 4px;
 }
 
 .kpi-label {
-    font-size: 0.9rem;
-    /* Levemente maior */
+    font-size: 0.75rem;
     color: #94a3b8;
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    display: flex;
-    /* Para permitir ícones se necessário */
-    align-items: center;
+    letter-spacing: 0.04em;
 }
 
 .kpi-value {
-    font-size: 3rem;
-    /* Destaque maior */
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 12px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
 }
 
-/* Cores de status aprimoradas */
+.kpi-descricao {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.kpi:nth-child(1)::before {
+    background: linear-gradient(90deg, var(--accent-light), var(--accent-dark));
+}
+
+.kpi:nth-child(2)::before {
+    background: linear-gradient(90deg, #f87171, var(--perigo));
+}
+
+.kpi:nth-child(3)::before {
+    background: linear-gradient(90deg, var(--sucesso), #166534);
+}
+
+.kpi:nth-child(4)::before {
+    background: linear-gradient(90deg, var(--dasd-cor), #6b21a8);
+}
+
 .kpi-value.azul {
-    color: var(--azul-primario);
+    color: var(--accent-light);
 }
 
 .kpi-value.alerta {
     color: var(--perigo);
 }
 
-/* Mantém a classe 'alerta' como 'perigo' */
 .kpi-value.verde {
     color: var(--sucesso);
 }
@@ -425,15 +463,16 @@ body {
     color: var(--dasd-cor);
 }
 
-.kpi-descricao {
-    font-size: 0.75rem;
-    color: #64748b;
-    text-align: center;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    min-height: 30px;
-    /* Garante altura mínima para uniformidade */
+.kpi::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    transition: all 0.3s ease;
 }
 
 /* --- GRADE DE GRÁFICOS --- */
@@ -488,25 +527,30 @@ body {
     width: 10%;
     height: 10%;
 }
+/* --- GRÁFICO PEQUENO: RANKING DE ALERTAS --- */
 .grafico.pequeno.ranking-alertas {
-    background-color: var(--fundo-card);
-    border: 1px solid var(--borda-sutil);
-    border-radius: 16px;
-    padding: 20px;
+    background-color: var(--azul-medio);
+    border-radius: 12px;
+    padding: 25px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    color: var(--cinza-texto);
-    box-shadow: var(--sombra-card);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    gap: 35px;
+    color: #E0E0E0;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.grafico.pequeno.ranking-alertas:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
 .grafico.pequeno.ranking-alertas h3 {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--branco);
-    margin-bottom: 14px;
-    text-align: left;
+    margin-bottom: 10px;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
 }
 
 .lista-mainframes {
@@ -515,60 +559,49 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 10px;
 }
 
 .lista-mainframes li {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(255, 255, 255, 0.04);
-    padding: 10px 14px;
+    background-color: var(--azul-escuro);
+    padding: 10px 16px;
     border-radius: 10px;
     font-size: 0.9rem;
     color: var(--branco);
     border-left: 4px solid var(--azul-primario);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .lista-mainframes li:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    transform: translateX(3px);
+    background-color: #33334D;
+    transform: translateX(2px);
 }
 
 .lista-mainframes li .rank {
-    background-color: var(--azul-primario);
-    color: var(--branco);
-    font-weight: 700;
-    font-size: 0.85rem;
+    width: 28px;
+    height: 28px;
     border-radius: 6px;
-    width: 22px;
-    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-right: 12px;
     flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
 .lista-mainframes li strong {
-    color: var(--perigo);
-    font-weight: 700;
     font-size: 0.9rem;
-    margin-left: 6px;
+    font-weight: 700;
 }
 
-.lista-mainframes li:nth-child(1) .rank {
-    background-color: var(--perigo);
-}
-
-.lista-mainframes li:nth-child(2) .rank {
-    background-color: var(--atencao);
-}
-
-.lista-mainframes li:nth-child(3) .rank {
-    background-color: var(--sucesso);
-}
+.lista-mainframes li:nth-child(1) .rank { background-color: #E74C3C; }
+.lista-mainframes li:nth-child(2) .rank { background-color: #F1C40F; }
+.lista-mainframes li:nth-child(3) .rank { background-color: #2ECC71; }
 
 /* --- NAVEGAÇÃO DO GRÁFICO GRANDE (Botões < >) --- */
 .grafico-header-nav {

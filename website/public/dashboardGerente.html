@@ -62,29 +62,40 @@
             <header class="visao-header">
                 <h1>VISÃO ESTRATÉGICA DOS ALERTAS</h1>
                 <p>Monitoramento em tempo real do status operacional da sua infraestrutura crítica (CPU, RAM, DASD).</p>
-                <button class="btn-periodo">Últimos 7 dias <i class="ri-arrow-down-s-line"></i></button>
             </header>
+
+            <div class="btn-periodo-container">
+                <button class="btn-periodo" id="btnPeriodo">
+                    Últimos 7 dias <i class="ri-arrow-down-s-line"></i>
+                </button>
+                <ul class="dropdown-periodo" id="dropdownPeriodo">
+                    <li data-periodo="hoje">Hoje</li>
+                    <li data-periodo="semana">Última Semana</li>
+                    <li data-periodo="mes">Último Mês</li>
+                    <li data-periodo="ano">Último Ano</li>
+                </ul>
+            </div>
 
             <section class="painel-kpis">
                 <div class="kpi">
                     <span class="kpi-label">Total Alertas (7 dias)</span>
-                    <span class="kpi-value azul">8/8</span>
+                    <span class="kpi-value azul">08</span>
                     <p class="kpi-descricao">Número total de alertas detectados nos últimos 7 dias.</p>
                 </div>
                 <div class="kpi">
                     <span class="kpi-label">Alertas de CPU (7 dias)</span>
-                    <span class="kpi-value alerta">72%</span>
+                    <span class="kpi-value alerta">07</span>
                     <p class="kpi-descricao">Carga média de processamento dos mainframes.</p>
                 </div>
                 <div class="kpi">
                     <span class="kpi-label">Alertas de RAM (7 dias)</span>
-                    <span class="kpi-value verde">55%</span>
+                    <span class="kpi-value verde">05</span>
                     <p class="kpi-descricao">Percentual médio de memória utilizada.
                     </p>
                 </div>
                 <div class="kpi">
                     <span class="kpi-label">Alertas de Disco (7 dias)</span>
-                    <span class="kpi-value roxo">85%</span>
+                    <span class="kpi-value roxo">08</span>
                     <p class="kpi-descricao">Espaço de armazenamento médio ocupado.</p>
                 </div>
             </section>
@@ -248,6 +259,85 @@
             if (typeof validarSessaoSynkro === 'function') validarSessaoSynkro();
             initCharts();
         };
+
+        const btnPeriodo = document.getElementById('btnPeriodo');
+        const dropdownPeriodo = document.getElementById('dropdownPeriodo');
+
+        btnPeriodo.addEventListener('click', () => {
+            dropdownPeriodo.style.display = dropdownPeriodo.style.display === 'block' ? 'none' : 'block';
+        });
+
+        dropdownPeriodo.querySelectorAll('li').forEach(item => {
+            item.addEventListener('click', () => {
+                const periodo = item.getAttribute('data-periodo');
+
+                // Atualiza o texto do botão
+                btnPeriodo.innerHTML = item.innerText + ' <i class="ri-arrow-down-s-line"></i>';
+
+                // Fecha o dropdown
+                dropdownPeriodo.style.display = 'none';
+
+                // Atualiza KPIs
+                atualizarKPIs(periodo);
+
+                // Atualiza lista de mainframes
+                atualizarMainframes(periodo);
+            });
+        });
+
+        // Simulação de dados para diferentes períodos
+        const dadosKPIs = {
+            hoje: { total: 3, cpu: 2, ram: 1, disco: 2 },
+            semana: { total: 8, cpu: 7, ram: 5, disco: 8 },
+            mes: { total: 30, cpu: 22, ram: 18, disco: 25 },
+            ano: { total: 320, cpu: 270, ram: 200, disco: 280 }
+        };
+
+        const dadosMainframes = {
+            hoje: [
+                { nome: 'Mainframe 2', alertas: 3 },
+                { nome: 'Mainframe 5', alertas: 2 },
+                { nome: 'Mainframe 1', alertas: 1 }
+            ],
+            semana: [
+                { nome: 'Mainframe 2', alertas: 20 },
+                { nome: 'Mainframe 7', alertas: 12 },
+                { nome: 'Mainframe 3', alertas: 7 },
+                { nome: 'Mainframe 1', alertas: 5 },
+                { nome: 'Mainframe 5', alertas: 2 }
+            ],
+            mes: [
+                { nome: 'Mainframe 2', alertas: 80 },
+                { nome: 'Mainframe 7', alertas: 50 },
+                { nome: 'Mainframe 3', alertas: 40 }
+            ],
+            ano: [
+                { nome: 'Mainframe 2', alertas: 900 },
+                { nome: 'Mainframe 7', alertas: 850 },
+                { nome: 'Mainframe 3', alertas: 700 }
+            ]
+        };
+
+        function atualizarKPIs(periodo) {
+            const kpis = dadosKPIs[periodo];
+            document.querySelector('.painel-kpis .kpi:nth-child(1) .kpi-value').textContent = kpis.total.toString().padStart(2, '0');
+            document.querySelector('.painel-kpis .kpi:nth-child(2) .kpi-value').textContent = kpis.cpu.toString().padStart(2, '0');
+            document.querySelector('.painel-kpis .kpi:nth-child(3) .kpi-value').textContent = kpis.ram.toString().padStart(2, '0');
+            document.querySelector('.painel-kpis .kpi:nth-child(4) .kpi-value').textContent = kpis.disco.toString().padStart(2, '0');
+        }
+
+        function atualizarMainframes(periodo) {
+            const lista = document.querySelector('.lista-mainframes');
+            lista.innerHTML = '';
+            dadosMainframes[periodo].forEach((mf, index) => {
+                lista.innerHTML += `
+        <li>
+            <span class="rank">${index + 1}</span>
+            ${mf.nome}<strong class="vermelho">${mf.alertas} alertas</strong>
+        </li>`;
+            });
+        }
+
     </script>
 
 </body>
