@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <title>Empresas Cadastradas - Synkro</title>
     <link rel="stylesheet" href="css/detalhes.css">
+    <link rel="stylesheet" href="css/aceitar.css">
     <script src="./js/sessao.js" defer></script>
     <script defer>
         async function carregarTodasEmpresas() {
@@ -63,20 +65,38 @@
 <body>
     <div class="layout-principal">
         <aside class="barra-lateral">
-            <div class="logo">Synkro</div>
+            <div class="logo">
+                Synkro
+            </div>
             <div class="perfil-usuario">
-                <img src="./assets/imgs/foto_perfil_padrao.webp" alt="Foto de perfil">
-                <div class="nome-usuario" id="nome_login"></div>
-                <div class="email-usuario" id="email_login"></div>
+                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+                <div class="nome-usuario" id="nome_login">Synkro</div>
+                <div class="cargo-usuario">
+                    <i class="ri-shield-user-line"></i>
+                    Administrador Synkro
+                </div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
             </div>
             <nav>
                 <ul class="menu-links">
-                    <li><a href="aceitarEmpresas.html">Aprovações</a></li>
-                    <li><a href="detalhesEmpresa.html" class="ativo">Ver detalhes</a></li>
+                    <li>
+                        <a href="aceitarEmpresas.html">
+                            <i class="ri-dashboard-3-line"></i>
+                            Aprovações
+                        </a>
+                    </li>
+                    <li>
+                        <a href="detalhesEmpresa.html" class="ativo">
+                            <i class="ri-file-add-line icon-cadastro"></i>
+                            Ver detalhes
+                        </a>
+                    </li>
+
                 </ul>
-
-
-                <button class="btn-sair" onclick="limparSessao()">Sair</button>
+                <button class="btn-sair" onclick="limparSessao()">
+                    <i class="ri-logout-box-r-line"></i>
+                    Encerrar Sessão
+                </button>
             </nav>
         </aside>
 
