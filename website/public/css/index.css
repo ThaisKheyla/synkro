@@ -677,7 +677,7 @@ html {
 }
 
 .imagemTime img {
-    max-width: 100%;
+    max-width: 90%;
     height: fit-content;
     border-radius: 12px;
     border: solid white 5px;
