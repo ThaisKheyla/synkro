@@ -1,7 +1,7 @@
 var database = require("../database/config");
 
 function listarCargos() {
-  var instrucao = "SELECT idCargo, nome FROM cargo ORDER BY nome;";
+  var instrucao = "SELECT id, nome FROM cargo ORDER BY nome;";
   return database.executar(instrucao);
 }
 
@@ -32,7 +32,7 @@ function listarPorEmpresa(idEmpresa) {
   var instrucao = `
     SELECT f.id, f.nome, f.email, c.nome AS cargo
     FROM funcionario f
-    LEFT JOIN cargo c ON f.fkCargo = c.idCargo
+    LEFT JOIN cargo c ON f.fkCargo = c.id
     WHERE f.fkEmpresa = ${idEmpresa}
     ORDER BY f.nome;
   `;

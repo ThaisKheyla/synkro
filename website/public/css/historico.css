@@ -1,31 +1,68 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
+    /* Cores Base e Tipografia */
     --azul-escuro: #0f172a;
     --azul-medio: #1e293b;
     --azul-primario: #2563eb;
+    
     --accent-light: #38bdf8;
     --accent-dark: #0284c7;
+    --azul-hover: #0284c7;
+    --destaque: #7c3aed;
+    --destaque-hover: #6d28d9;
 
-    --cinza-texto: #cbd5e1;
     --branco: #f8fafc;
+    --texto-primario: #f8fafc;
+    --cinza: #cbd5e1;
+    --texto-secundario: #cbd5e1;
+    --texto-terciario: #94a3b8;
+    --cinza-texto: #cbd5e1;
 
+    /* Cores de Estados (Feedback) */
     --sucesso: #10b981;
     --atencao: #f59e0b;
     --perigo: #ef4444;
+    --info: #3b82f6;
     --very-urgent: #ff6b00;
 
+    /* UI e Cards */
+    --fundo-card: #1f2937;
+    --fundo-card-hover: #263449;
+
+    /* Sombras e Bordas */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 12px 20px -3px rgba(0, 0, 0, 0.6);
     --shadow-xl: 0 20px 30px -5px rgba(0, 0, 0, 0.8);
+
+    --sombra-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --sombra-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    --sombra-lg: 0 10px 30px rgba(0, 0, 0, 0.25), 0 4px 6px rgba(0, 0, 0, 0.1);
+    --sombra-xl: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 12px rgba(0, 0, 0, 0.15);
+
+    --borda-sutil: rgba(255, 255, 255, 0.1);
+    --borda-fina: 1px solid rgba(255, 255, 255, 0.1);
+
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.05);
+
+    /* Gradientes */
+    --gradient-primario: linear-gradient(135deg, var(--azul-primario), var(--destaque));
+    --gradient-success: linear-gradient(135deg, var(--sucesso) 0%, #059669 100%);
+    --gradient-danger: linear-gradient(135deg, var(--perigo) 0%, #dc2626 100%);
+    --gradient-warning: linear-gradient(135deg, var(--atencao) 0%, #d97706 100%);
+
+    /* Espaçamento (Spacing) */
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
     --spacing-md: 1.5rem;
     --spacing-lg: 2rem;
     --spacing-xl: 2.5rem;
 
-    --borda-fina: 1px solid rgba(255, 255, 255, 0.1);
+    /* Animações */
+    --transicao-rapida: 0.2s ease-in-out;
+    --transicao-suave: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 html,
