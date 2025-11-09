@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/sessao.js"></script>
+</head>
+<body>
+    <canvas id="myChart" style="max-width: 800px; max-height: 500px;"></canvas>
+    <div id="processo">
+
+    </div>
+</body>
+<script>
+  const ctx = document.getElementById('myChart');
+
+  data={
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: 'My First Dataset',
+        data: [65, 59, 80, 81, 56, 55, 40],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+        },
+        {
+        label: 'My First Dataset',
+        data: [62, 9, 8, 8, 5, 5, 4],
+        fill: false,
+        borderColor: 'rgb(4, 192, 255)',
+        tension: 0.1
+        },
+    ]
+  }
+
+  new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        onClick: (event, elements) => {
+        if (elements.length > 0) {
+            // Pega o índice do ponto clicado
+            const index = elements[0].index;
+            const label = data.labels[index];
+            const value = data.datasets[0].data[index];
+            processo.innerHTML=`<h1>aa</h1>`
+            // Ação JavaScript customizada
+            alert(`Você clicou em ${label}: ${value}% `);
+            
+            // Aqui você pode chamar qualquer função JS
+            // exemplo: mostrarDetalhes(label, value);
+        }
+        },
+        plugins: {
+        tooltip: {
+            enabled: true
+        }
+        },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  function clicou() { 
+    
+  }
+</script>
+</html>
