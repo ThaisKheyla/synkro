@@ -1,8 +1,8 @@
 var database = require("../database/config");
 
 // ===== LISTAGENS =====
-function listarSetores() {
-  var instrucao = `SELECT id, nome FROM setor ORDER BY nome;`;
+function listarSetores(idEmpresa) {
+  var instrucao = `SELECT id, nome, localizacao FROM setor WHERE fkEmpresa = ${idEmpresa} ORDER BY nome;`;
   return database.executar(instrucao);
 }
 
@@ -43,16 +43,16 @@ function cadastrarTipo(descricao) {
 }
 
 // ===== OBTÉM OU CRIA REGISTROS =====
-async function obterOuCriarSetor(nome) {
-  const existe = await database.executar(`SELECT id FROM setor WHERE nome = '${nome}' LIMIT 1;`);
+async function obterOuCriarSetor(nome, idEmpresa) {
+  const existe = await database.executar(`SELECT id FROM setor WHERE id = '${nome}' AND fkEmpresa = ${idEmpresa};`);
   if (existe.length > 0) return existe[0].id;
 
-  const novo = await database.executar(`INSERT INTO setor (nome) VALUES ('${nome}');`);
+  const novo = await database.executar(`INSERT INTO setor (nome, localizacao, fkEmpresa) VALUES ('${nome}', 'Mainframe', ${idEmpresa});`);
   return novo.insertId;
 }
 
 async function obterOuCriarSistema(nome) {
-  const existe = await database.executar(`SELECT id FROM sistema_operacional WHERE nome = '${nome}' LIMIT 1;`);
+  const existe = await database.executar(`SELECT id FROM sistema_operacional WHERE id = '${nome}';`);
   if (existe.length > 0) return existe[0].id;
 
   const novo = await database.executar(`INSERT INTO sistema_operacional (nome) VALUES ('${nome}');`);
@@ -60,17 +60,17 @@ async function obterOuCriarSistema(nome) {
 }
 
 // ===== INSERÇÃO DE MAINFRAME =====
-async function inserirMainframe(fabricante, modelo, mac, fkEmpresa, fkSetor, fkSistemaOperacional) {
+async function inserirMainframe(fabricante, modelo, mac, fkSetor, fkSistemaOperacional) {
   const instrucao = `
-    INSERT INTO mainframe (fabricante, modelo, macAdress, fkEmpresa, fkSetor, fkSistemaOperacional)
-    VALUES ('${fabricante}', '${modelo}', '${mac}', ${fkEmpresa}, ${fkSetor}, ${fkSistemaOperacional});
+    INSERT INTO mainframe (fabricante, modelo, macAdress, fkSetor, fkSistemaOperacional)
+    VALUES ('${fabricante}', '${modelo}', '${mac}', ${fkSetor}, ${fkSistemaOperacional});
   `;
   const resultado = await database.executar(instrucao);
   return resultado.insertId;
 }
 
 // ===== INSERÇÃO DE MÉTRICA (CORRIGIDA) =====
-async function inserirMetrica(descricao, min, max, fkComponente, fkTipo) {
+async function inserirMetrica(descricao, min, max, fkComponente, fkTipo, mac) {
   // Primeiro busca o maior ID atual para o componente
   const consultaId = `
     SELECT IFNULL(MAX(id), 0) + 1 AS novoId
@@ -83,21 +83,13 @@ async function inserirMetrica(descricao, min, max, fkComponente, fkTipo) {
 
   // Depois insere com o ID calculado
   const instrucao = `
-    INSERT INTO metrica (id, fkComponente, min, max, fkTipo)
-    VALUES (${novoId}, ${fkComponente}, ${min}, ${max}, ${fkTipo});
+    INSERT INTO metrica (id, fkComponente, min, max, fkTipo, fkMainframe)
+    VALUES (${novoId}, ${fkComponente}, ${min}, ${max}, ${fkTipo}, 
+    (SELECT id FROM mainframe WHERE macAdress = '${mac}'));
   `;
   
   const resposta = await database.executar(instrucao);
   return resposta.insertId || novoId;
-}
-
-// ===== VÍNCULO ENTRE COMPONENTE E MAINFRAME =====
-async function vincularComponenteMainframe(fkComponente, fkMainframe, fkMetrica) {
-  const instrucao = `
-    INSERT INTO componente_mainframe (fkComponente, fkMainframe, fkMetrica)
-    VALUES (${fkComponente}, ${fkMainframe}, ${fkMetrica});
-  `;
-  return database.executar(instrucao);
 }
 
 // ===== LISTAGENS DE MAINFRAME =====
@@ -130,7 +122,7 @@ function listarPorEmpresa(idEmpresa) {
     FROM mainframe m
     JOIN sistema_operacional s ON m.fkSistemaOperacional = s.id
     JOIN setor se ON m.fkSetor = se.id
-    WHERE m.fkEmpresa = ${idEmpresa}
+    WHERE se.fkEmpresa = ${idEmpresa}
     ORDER BY m.id;
   `;
   return database.executar(instrucao);
@@ -150,7 +142,6 @@ module.exports = {
   obterOuCriarSistema,
   inserirMainframe,
   inserirMetrica,
-  vincularComponenteMainframe,
   listarMainframes,
   listarPorEmpresa
 };

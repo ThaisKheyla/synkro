@@ -195,7 +195,7 @@
                 const cargosResp = await fetch('/funcionarios/cargos');
                 const cargos = cargosResp.ok ? await cargosResp.json() : [];
                 const cargoSelect = document.getElementById('editCargo');
-                cargoSelect.innerHTML = cargos.map(c => `<option value="${c.idCargo}">${c.nome}</option>`).join('');
+                cargoSelect.innerHTML = cargos.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
 
                 document.getElementById('editId').value = id;
                 document.getElementById('editNome').value = func.nome || '';

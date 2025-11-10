@@ -1,7 +1,8 @@
 var mainframesModel = require("../models/mainframesModel");
 
 function listarSetores(req, res) {
-  mainframesModel.listarSetores()
+  const { idEmpresa } = req.params;
+  mainframesModel.listarSetores(idEmpresa)
     .then(resultado => res.status(200).json(resultado))
     .catch(erro => {
       console.error("Erro ao listar setores:", erro);
@@ -97,14 +98,13 @@ async function cadastrarMainframe(req, res) {
       return res.status(400).json({ erro: "Campos obrigatórios ausentes." });
     }
 
-    const idSetor = await mainframesModel.obterOuCriarSetor(setor);
+    const idSetor = await mainframesModel.obterOuCriarSetor(setor, fkEmpresa);
     const idSistema = await mainframesModel.obterOuCriarSistema(sistema);
 
     const idMainframe = await mainframesModel.inserirMainframe(
       fabricante,
       modelo,
       mac,
-      fkEmpresa,
       idSetor,
       idSistema
     );
@@ -115,9 +115,9 @@ async function cadastrarMainframe(req, res) {
         m.min,
         m.max,
         m.fkComponente,
-        m.fkTipo
+        m.fkTipo,
+        mac
       );
-      await mainframesModel.vincularComponenteMainframe(m.fkComponente, idMainframe, idMetrica, m.fkTipo);
     }
 
     res.status(201).json({ mensagem: "✅ Mainframe e métricas cadastrados com sucesso!" });
