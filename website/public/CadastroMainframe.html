@@ -229,9 +229,10 @@
 
       // Carregar selects de setor, sistema, componente e tipo
       async function carregarSelects() {
+        const idEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
         try {
           const [setoresResp, sistemasResp, componentesResp, tiposResp] = await Promise.all([
-            fetch("/mainframes/setores"),
+            fetch(`/mainframes/setores/${idEmpresa}`),
             fetch("/mainframes/sistemas"),
             fetch("/mainframes/componentes"),
             fetch("/mainframes/tipos")
@@ -252,7 +253,7 @@
           const sistemaSelect = document.getElementById("sistema");
 
           setorSelect.innerHTML = `<option value="">Selecione o setor</option>` +
-            setores.map(s => `<option value="${s.id}">${s.nome}</option>`).join('');
+            setores.map(s => `<option value="${s.id}">${s.nome} (${s.localizacao})</option>`).join('');
 
           sistemaSelect.innerHTML = `<option value="">Selecione o sistema</option>` +
             sistemas.map(s => `<option value="${s.id}">${s.nome}</option>`).join('');
