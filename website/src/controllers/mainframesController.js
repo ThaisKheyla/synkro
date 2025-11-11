@@ -39,10 +39,10 @@ function listarTipos(req, res) {
 
 async function cadastrarSetor(req, res) {
   try {
-    const { nome } = req.body;
-    if (!nome) return res.status(400).json({ erro: "Nome do setor é obrigatório." });
+    const { nome, localizacao } = req.body;
+    if (!nome || !localizacao) return res.status(400).json({ erro: "Nome do setor é obrigatório." });
 
-    await mainframesModel.cadastrarSetor(nome);
+    await mainframesModel.cadastrarSetor(nome, localizacao, fkEmpresa);
     res.status(201).json({ mensagem: "Setor cadastrado com sucesso!" });
   } catch (erro) {
     console.error("Erro ao cadastrar setor:", erro);

@@ -22,8 +22,8 @@ function listarTipos() {
 }
 
 // ===== CADASTROS SIMPLES =====
-function cadastrarSetor(nome) {
-  var instrucao = `INSERT INTO setor (nome) VALUES ('${nome}');`;
+function cadastrarSetor(nome, localizacao, idEmpresa) {
+  var instrucao = `INSERT INTO setor (nome, localizacao, fkEmpresa) VALUES ('${nome}', '${localizacao}', ${idEmpresa});`;
   return database.executar(instrucao);
 }
 

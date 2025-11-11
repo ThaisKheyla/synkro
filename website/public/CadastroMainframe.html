@@ -79,7 +79,8 @@
             <button type="button" class="btn-pequeno" id="toggleAddSetor">+</button>
           </div>
           <div class="inline-add oculto" id="addSetorBox">
-            <input type="text" id="novoSetor" placeholder="Novo setor">
+            <input type="text" id="novoSetor" placeholder="Setor">
+            <input type="text" id="novaLocalizacao" placeholder="Localização">
             <button type="button" class="btn-pequeno" id="salvarSetor">Salvar</button>
             <button type="button" class="btn-pequeno" id="cancelSetor">Cancelar</button>
           </div>
@@ -269,14 +270,17 @@
           });
           document.getElementById("cancelSetor").addEventListener("click", () => {
             document.getElementById("novoSetor").value = "";
+            document.getElementById("novaLocalizacao").value = "";
             document.getElementById("addSetorBox").classList.add("oculto");
           });
           document.getElementById("salvarSetor").addEventListener("click", async () => {
             const nome = document.getElementById("novoSetor").value.trim();
-            if (!nome) return alert("Digite o nome do setor.");
-            const ok = await adicionarSimples("/mainframes/setores", { nome });
+            const localizacao = document.getElementById("novaLocalizacao").value.trim();
+            if (!nome || !localizacao) return alert("Digite o nome do setor e a localização.");
+            const ok = await adicionarSimples("/mainframes/setores", { nome, localizacao });
             if (ok) {
               document.getElementById("novoSetor").value = "";
+              document.getElementById("novaLocalizacao").value = "";
               document.getElementById("addSetorBox").classList.add("oculto");
               await carregarSelects();
             }
