@@ -1,7 +1,7 @@
 -- =====================================================
 -- Banco de dados Synkro
 -- =====================================================
-DROP DATABASE synkro;
+-- DROP DATABASE synkro;
 CREATE DATABASE synkro;
 USE synkro;
 
@@ -83,7 +83,7 @@ CREATE TABLE mainframe (
   id INT NOT NULL AUTO_INCREMENT,
   fabricante VARCHAR(100),
   modelo VARCHAR(100),
-  macAdress VARCHAR(100),
+  macAdress VARCHAR(100) UNIQUE,
   fkSetor INT NOT NULL,
   fkSistemaOperacional INT NOT NULL,
   PRIMARY KEY (id),
