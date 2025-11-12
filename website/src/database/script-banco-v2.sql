@@ -1,7 +1,7 @@
 -- =====================================================
 -- Banco de dados Synkro
 -- =====================================================
--- DROP DATABASE synkro;
+DROP DATABASE synkro;
 CREATE DATABASE synkro;
 USE synkro;
 
@@ -360,17 +360,17 @@ from metrica as m
 join tipo t on m.fkTipo = t.id
 where m.fkMainframe = 1;
 
-SELECT 
-      m.id,
-      m.fabricante,
-      m.modelo,
-      s.nome AS sistema,
-      se.nome AS setor
-    FROM mainframe m
-    JOIN sistema_operacional s ON m.fkSistemaOperacional = s.id
-    JOIN setor se ON m.fkSetor = se.id
-    WHERE se.fkEmpresa = 1
-    ORDER BY m.id;
-
-SELECT * FROM metrica;
-SELECT * FROM mainframe;
+SELECT
+            m.id AS idMainframe,
+            m.modelo AS nomeMainframe,
+            g.descricao AS gravidade,
+            COUNT(a.id) AS qtdAlertas
+        FROM alerta a
+        JOIN metrica me ON a.fkMetrica = me.id
+        JOIN mainframe m ON me.fkMainframe = m.id
+        JOIN gravidade g ON a.fkGravidade = g.id
+        JOIN setor se ON m.fkSetor = se.id
+        WHERE se.fkEmpresa = 1
+          AND g.descricao IN ('Emergência', 'Muito Urgente', 'Urgente')
+        GROUP BY m.id, m.modelo, g.descricao
+        ORDER BY m.id, FIELD(g.descricao, 'Emergência', 'Muito Urgente', 'Urgente');

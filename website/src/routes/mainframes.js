@@ -16,7 +16,12 @@ router.post("/tipos", mainframesController.cadastrarTipo);
 router.post("/", mainframesController.cadastrarMainframe);
 
 router.get("/empresa/:idEmpresa", mainframesController.listarPorEmpresa);
+router.get("/visaoGeral/:idEmpresa", mainframesController.visaoGeralPorEmpresa);
 
 router.get("/", mainframesController.listarMainframes);
+
+router.get("/alertasPorMainframe/:fkEmpresa", function (req, res) {
+    mainframesController.contarAlertasPorMainframe(req, res);
+});
 
 module.exports = router;

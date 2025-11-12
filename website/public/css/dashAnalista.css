@@ -42,19 +42,6 @@
     --spacing-xl: 3rem;
 }
 
-.grafico-pizza {
-    min-width: 100%;
-    min-height: 170px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.85);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
-    margin-bottom: 8px;
-    padding: 8px 0;
-}
-
 /* --- REGRAS DE CONTROLE DE OVERFLOW (ESSENCIAIS) --- */
 html,
 body {
@@ -371,7 +358,7 @@ body {
     box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
     width: 90%;
-    max-height: 340px;
+    max-height: 400px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -539,17 +526,17 @@ body {
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
 
-.status.emergency {
+.status.emergencia {
     background: var(--emergencia);
     box-shadow: 0 0 8px var(--emergencia);
 }
 
-.status.very-urgent {
+.status.muito-urgente {
     background: var(--muito-urgente);
     box-shadow: 0 0 8px var(--muito-urgente);
 }
 
-.status.urgent {
+.status.urgente {
     background: var(--urgente);
     box-shadow: 0 0 8px var(--urgente);
 }
@@ -634,9 +621,8 @@ body {
 .grafico canvas {
     width: 100% !important;
     height: 100% !important;
-    max-height: 320px;
+    max-height: 250px;
 }
-
 
 /* Ajuste do grafico e legendas para textos pequenos */
 .grafico p.descricao-grafico,
@@ -656,4 +642,51 @@ body {
             transparent);
     opacity: 0.2;
     margin-bottom: 10px;
+}
+
+.mainframe-evento {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--azul-medio);
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--gray-500);
+    transition: border-color 0.18s, background 0.18s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.mainframe-numero {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-100);
+    background: var(--azul-escuro);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 6px;
+    box-shadow: none;
+}
+
+.mainframe-desc {
+    font-size: 0.98rem;
+    color: var(--gray-200);
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    text-shadow: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.página.mainframe, .página-de-mainframe {
+    width: 100%;
+    text-decoration: none;
 }
