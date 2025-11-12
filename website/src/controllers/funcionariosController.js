@@ -21,8 +21,7 @@ function listarEmpresas(req, res) {
 async function cadastrarFuncionario(req, res) {
   try {
     let { nome, email, cpf, dtnascimento, senha, fkCargo, fkEmpresa } = req.body;
-
-    if (!nome || !email || !cpf || !dtnascimento || !senha || !fkCargo) {
+    if (!nome || !email || !cpf || !dtnascimento || !senha || !fkCargo || !fkEmpresa) {
       return res.status(400).json({ mensagem: "Campos obrigatórios ausentes." });
     }
 

@@ -1,7 +1,8 @@
 var mainframesModel = require("../models/mainframesModel");
 
 function listarSetores(req, res) {
-  mainframesModel.listarSetores()
+  const { idEmpresa } = req.params;
+  mainframesModel.listarSetores(idEmpresa)
     .then(resultado => res.status(200).json(resultado))
     .catch(erro => {
       console.error("Erro ao listar setores:", erro);
@@ -38,10 +39,10 @@ function listarTipos(req, res) {
 
 async function cadastrarSetor(req, res) {
   try {
-    const { nome } = req.body;
-    if (!nome) return res.status(400).json({ erro: "Nome do setor é obrigatório." });
+    const { nome, localizacao } = req.body;
+    if (!nome || !localizacao) return res.status(400).json({ erro: "Nome do setor é obrigatório." });
 
-    await mainframesModel.cadastrarSetor(nome);
+    await mainframesModel.cadastrarSetor(nome, localizacao, fkEmpresa);
     res.status(201).json({ mensagem: "Setor cadastrado com sucesso!" });
   } catch (erro) {
     console.error("Erro ao cadastrar setor:", erro);
@@ -97,14 +98,13 @@ async function cadastrarMainframe(req, res) {
       return res.status(400).json({ erro: "Campos obrigatórios ausentes." });
     }
 
-    const idSetor = await mainframesModel.obterOuCriarSetor(setor);
+    const idSetor = await mainframesModel.obterOuCriarSetor(setor, fkEmpresa);
     const idSistema = await mainframesModel.obterOuCriarSistema(sistema);
 
     const idMainframe = await mainframesModel.inserirMainframe(
       fabricante,
       modelo,
       mac,
-      fkEmpresa,
       idSetor,
       idSistema
     );
@@ -115,9 +115,9 @@ async function cadastrarMainframe(req, res) {
         m.min,
         m.max,
         m.fkComponente,
-        m.fkTipo
+        m.fkTipo,
+        mac
       );
-      await mainframesModel.vincularComponenteMainframe(m.fkComponente, idMainframe, idMetrica, m.fkTipo);
     }
 
     res.status(201).json({ mensagem: "✅ Mainframe e métricas cadastrados com sucesso!" });
@@ -147,6 +147,40 @@ async function listarPorEmpresa(req, res) {
   }
 }
 
+async function visaoGeralPorEmpresa(req, res) {
+  try {
+    const { idEmpresa } = req.params;
+    const resultado = await mainframesModel.visaoGeralPorEmpresa(idEmpresa);
+    res.status(200).json(resultado);
+  } catch (erro) {
+    console.error("Erro ao listar mainframes por empresa:", erro);
+    res.status(500).json({ erro: "Erro ao listar mainframes por empresa." });
+  }
+}
+
+function contarAlertasPorMainframe(req, res) {
+    const fkEmpresa = req.params.fkEmpresa;
+
+    if (fkEmpresa == undefined) {
+        res.status(400).send("O ID da empresa está indefinido!");
+        return;
+    }
+
+    // Chama a função SQL
+    mainframesModel.contarAlertasPorMainframe(fkEmpresa)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum alerta encontrado!");
+            }
+        }).catch(function (erro) {
+            console.log(erro);
+            console.log("Houve um erro ao buscar alertas por mainframe: ", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 module.exports = {
   listarSetores,
   listarSistemas,
@@ -158,5 +192,7 @@ module.exports = {
   cadastrarTipo,
   cadastrarMainframe,
   listarMainframes,
-  listarPorEmpresa
+  visaoGeralPorEmpresa,
+  listarPorEmpresa,
+  contarAlertasPorMainframe
 };

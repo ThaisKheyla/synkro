@@ -58,38 +58,36 @@
 
 
         <main class="conteudo-principal">
-            <div class="dashboard-grid">
-                <div class="visao-estrategica">
-                    <div class="visao-header">
-                        <h1>Funcionários Cadastrados</h1>
-                    </div>
+            <div class="visao-estrategica">
+                <div class="visao-header">
+                    <h1>Funcionários Cadastrados</h1>
+                </div>
 
-                    <div class="top-widgets">
-                        <div class="widget-mainframes-small">
-                            <h3>Lista de Funcionários</h3>
+                <div class="top-widgets">
+                    <div class="widget-mainframes-small">
+                        <h3>Lista de Funcionários</h3>
 
-                            <table id="tabelaFuncionarios">
-                                <thead>
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>E-mail</th>
-                                        <th>Cargo</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbodyFuncionarios">
-                                    <tr>
-                                        <td colspan="4">Carregando...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <table id="tabelaFuncionarios">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>E-mail</th>
+                                    <th>Cargo</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyFuncionarios">
+                                <tr>
+                                    <td colspan="4">Carregando...</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                            <div class="acoes-tabela">
-                                <a href="CadastroFuncionario.html" class="btn-adicionar">
-                                    <span>+</span>
-                                    Adicionar Funcionário
-                                </a>
-                            </div>
+                        <div class="acoes-tabela">
+                            <a href="CadastroFuncionario.html" class="btn-adicionar">
+                                <span>+</span>
+                                Adicionar Funcionário
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -197,13 +195,18 @@
                 const cargosResp = await fetch('/funcionarios/cargos');
                 const cargos = cargosResp.ok ? await cargosResp.json() : [];
                 const cargoSelect = document.getElementById('editCargo');
-                cargoSelect.innerHTML = cargos.map(c => `<option value="${c.idCargo}">${c.nome}</option>`).join('');
+                cargoSelect.innerHTML = cargos.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
 
                 document.getElementById('editId').value = id;
                 document.getElementById('editNome').value = func.nome || '';
                 document.getElementById('editEmail').value = func.email || '';
 
-                document.getElementById('editNascimento').value = func.dtnascimento || func.dtnascimento || '';
+                if (func.dtnascimento) {
+                    document.getElementById('editNascimento').value = func.dtnascimento.substring(0, 10);
+                } else {
+                    document.getElementById('editNascimento').value = '';
+                }
+                
                 document.getElementById('editCpf').value = func.cpf || '';
                 if (func.fkCargo) document.getElementById('editCargo').value = func.fkCargo;
                 if (typeof func.statusAcesso !== 'undefined') document.getElementById('editStatus').value = func.statusAcesso ? "1" : "0";

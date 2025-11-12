@@ -101,7 +101,7 @@
                 const cargos = await cargosResp.json();
                 const cargoSelect = document.getElementById("cargo");
                 cargoSelect.innerHTML = `<option value="">Selecione um cargo</option>` + 
-                    cargos.map(c => `<option value="${c.idCargo}">${c.nome}</option>`).join('');
+                    cargos.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
             } catch (err) {
                 alert("Erro ao carregar cargos: " + err.message);
                 console.error(err);
@@ -123,23 +123,24 @@
 
             const senha = document.getElementById("senha").value;
             const confirmar = document.getElementById("confirmar").value;
-            const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO")
+            const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+            const dataNascimento = document.getElementById("nascimento").value || null;
 
             if (senha !== confirmar) {
                 alert("As senhas não coincidem!");
                 return;
             }
-
+            
             const funcionario = {
-                nome: document.getElementById("nome").value,
-                email: document.getElementById("email").value,
-                dtnascimento: document.getElementById("nascimento").value,
-                cpf: document.getElementById("cpf").value,
-                senha: senha,
-                fkCargo: parseInt(document.getElementById("cargo").value),
-                fkEmpresa: fkEmpresa
-            };
-
+                nome: document.getElementById("nome").value,
+                email: document.getElementById("email").value,
+                dtnascimento: dataNascimento,
+                cpf: document.getElementById("cpf").value,
+                senha: senha,
+                fkCargo: parseInt(document.getElementById("cargo").value),
+                fkEmpresa: fkEmpresa
+            };
+            
             try {
                 const resp = await fetch("/funcionarios/cadastrar", {
                     method: "POST",

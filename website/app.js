@@ -23,6 +23,7 @@ const aceitarEmpresasRouter = require("./src/routes/aceitarEmpresas");
 const mainframesRouter = require("./src/routes/mainframes");
 const funcionariosRouter = require("./src/routes/funcionarios");
 const empresaDetalhadaRouter = require("./src/routes/empresaDetalhada");
+const csvRouter = require("./src/routes/csv");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -37,6 +38,7 @@ app.use("/aceitarEmpresas", aceitarEmpresasRouter);
 app.use("/mainframes", mainframesRouter);
 app.use("/funcionarios", funcionariosRouter);
 app.use("/empresa", empresaDetalhadaRouter);
+app.use("/csv", csvRouter);
 
 app.listen(PORTA_APP, () => {
   console.log(`
