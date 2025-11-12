@@ -12,7 +12,7 @@
     <script src="./js/sessao.js"></script>
 </head>
 
-<body onload="validarSessaoSynkro()">
+<body onload="validarSessaoSynkro(); carregarMainframes(); plotarGraficoAlertas();">
     <div class="layout-principal">
 
         <!-- Barra lateral -->
@@ -75,36 +75,7 @@
                     <p class="descricao-status">
                         Cada mainframe mostra seu nível de alerta, nome e setor. As cores indicam a gravidade.
                     </p>
-                    <div class="item-status">
-                        <span class="status emergency"></span>
-                        <span class="nome-mainframe">Mainframe 1</span>
-                        <span class="alerta-mainframe">Alerta: Emergência</span>
-                        <span class="setor-mainframe">Setor: Operações</span>
-                    </div>
-                    <div class="item-status">
-                        <span class="status emergency"></span>
-                        <span class="nome-mainframe">Mainframe 2</span>
-                        <span class="alerta-mainframe">Alerta: Emergência</span>
-                        <span class="setor-mainframe">Setor: Operações</span>
-                    </div>
-                    <div class="item-status">
-                        <span class="status very-urgent"></span>
-                        <span class="nome-mainframe">Mainframe 3</span>
-                        <span class="alerta-mainframe">Alerta: Muito urgente</span>
-                        <span class="setor-mainframe">Setor: Operações</span>
-                    </div>
-                    <div class="item-status">
-                        <span class="status urgent"></span>
-                        <span class="nome-mainframe">Mainframe 4</span>
-                        <span class="alerta-mainframe">Alerta: Urgente</span>
-                        <span class="setor-mainframe">Setor: Operações</span>
-                    </div>
-                    <div class="item-status">
-                        <span class="status normal"></span>
-                        <span class="nome-mainframe">Mainframe 5</span>
-                        <span class="alerta-mainframe">Alerta: Nenhum</span>
-                        <span class="setor-mainframe">Setor: Operações</span>
-                    </div>
+                    <div id="listandoMainframes"></div>
                 </div>
 
                 <div class="legenda-status">
@@ -113,15 +84,15 @@
                         <p>As cores representam a gravidade dos alertas dos mainframes:</p>
                     </div>
                     <div class="item-legenda">
-                        <span class="status emergency"></span>
+                        <span class="status emergencia"></span>
                         <span>Emergência</span>
                     </div>
                     <div class="item-legenda">
-                        <span class="status very-urgent"></span>
+                        <span class="status muito-urgente"></span>
                         <span>Muito Urgente</span>
                     </div>
                     <div class="item-legenda">
-                        <span class="status urgent"></span>
+                        <span class="status urgente"></span>
                         <span>Urgente</span>
                     </div>
                     <div class="item-legenda">
@@ -131,17 +102,16 @@
                 </div>
 
                 <div class="estatisticas-dashboard">
-                    <!-- Gráfico de Pizza -->
                     <div class="grafico">
                         <h3>
-                            <i class="ri-pie-chart-line"></i>
-                            Distribuição de Status
+                            <i class="ri-bar-chart-2-line"></i>
+                            Alertas por Mainframe e Gravidade
                         </h3>
                         <p class="descricao-grafico">
-                            Proporção de mainframes em cada nível de alerta.
+                            Contagem de alertas (Emergência, Muito Urgente, Urgente) por Mainframe.
                         </p>
-                        <div class="grafico-pizza">
-                            <canvas id="statusPieChart" width="90px" height="90px"></canvas>
+                        <div class="grafico-barras">
+                            <canvas id="alertasBarChart" width="100%" height="400px"></canvas>
                         </div>
                     </div>
 
@@ -191,39 +161,122 @@
 </html>
 
 <script>
+    async function plotarGraficoAlertas() {
+        const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+        if (!fkEmpresa) return;
 
-    const statusCtx = document.getElementById('statusPieChart').getContext('2d');
-    const statusChart = new Chart(statusCtx, {
-        type: 'pie',
-        data: {
-            labels: ['Emergência', 'Muito Urgente', 'Urgente', 'Normal'],
-            datasets: [{
-                data: [40, 20, 20, 20], // 2 emergência, 1 muito urgente, 1 urgente, 1 normal
-                backgroundColor: [
-                    '#ef4444', // vermelho - emergência
-                    '#ff6b00', // laranja - muito urgente
-                    '#f59e0b', // amarelo - urgente
-                    '#10b981', // verde - normal
-                ],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            aspectRatio: 4,  // Força uma proporção quadrada
-            plugins: {
-                legend: {
-                    position: 'left',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 20,
-                        font: {
-                            size: 10
+        try {
+            const resposta = await fetch(`/mainframes/alertasPorMainframe/${fkEmpresa}`);
+            if (resposta.status === 204) {
+                console.log("Nenhum alerta crítico para exibir.");
+                return;
+            }
+            const dados = await resposta.json();
+
+            // 1. Processamento dos Dados
+            const mainframes = {};
+            const gravidades = ['Emergência', 'Muito Urgente', 'Urgente'];
+            const cores = {
+                'Emergência': '#ef4444',
+                'Muito Urgente': '#ff6b00',
+                'Urgente': '#f59e0b'
+            };
+
+            // Agrupa os dados por Mainframe e inicializa contadores
+            dados.forEach(item => {
+                const id = item.idMainframe;
+                // ALTERAÇÃO 1: Usar apenas o ID como rótulo do Mainframe
+                const nome = `MF ${id}`; // Rótulo do Eixo X
+                if (!mainframes[id]) {
+                    mainframes[id] = { nome: nome, contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } };
+                }
+                mainframes[id].contagens[item.gravidade] = item.qtdAlertas;
+            });
+
+            // Cria as labels (eixo X) e os datasets
+            const labelsMainframes = Object.values(mainframes).map(mf => mf.nome);
+            const datasets = gravidades.map(gravidade => {
+                return {
+                    label: gravidade,
+                    data: labelsMainframes.map(nomeMF => {
+                        const mainframeId = Object.keys(mainframes).find(key => mainframes[key].nome === nomeMF);
+                        return mainframes[mainframeId].contagens[gravidade];
+                    }),
+                    backgroundColor: cores[gravidade],
+                    stack: 'Stack 1'
+                };
+            });
+
+            // 2. Configuração e Plotagem do Gráfico
+            const ctx = document.getElementById('alertasBarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labelsMainframes,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Mainframe'
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Quantidade de Alertas'
+                            },
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            // ALTERAÇÃO 2: Posiciona a legenda no canto superior direito
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                // Adiciona um pouco de padding e borda para parecer "dentro de um retângulo"
+                                boxWidth: 10,
+                                padding: 15
+                            }
+                        },
+                        title: {
+                            display: false
                         }
                     }
                 }
-            }
+            });
+
+        } catch (err) {
+            console.error("Erro ao carregar o gráfico de alertas:", err);
+            // O erro de sintaxe original acontece aqui caso o backend retorne HTML.
         }
-    });
+    }
+
+    async function carregarMainframes() {
+        try {
+            const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+            const lista = await fetch(`/mainframes/visaoGeral/${fkEmpresa}`).then(r => r.json());
+            const container = document.getElementById("listandoMainframes");
+            container.innerHTML = lista.map(m => `
+            <div class="item-status">
+                <span class="status ${m.gravidade ? m.gravidade.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "-") : 'normal'}"></span>
+                <span class="nome-mainframe">Mainframe ${m.id}</span>
+                <span class="alerta-mainframe">Alerta: ${m.gravidade}</span>
+                <span class="alerta-mainframe">${m.componente} - ${m.valor_coletado}</span>
+                <span class="setor-mainframe">Setor: ${m.setor} (${m.localizacao})</span>
+            </div>
+        `).join('');
+        } catch (err) {
+            console.warn("Erro ao listar mainframes:", err);
+        }
+    }
 </script>

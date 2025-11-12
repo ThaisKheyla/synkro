@@ -147,6 +147,40 @@ async function listarPorEmpresa(req, res) {
   }
 }
 
+async function visaoGeralPorEmpresa(req, res) {
+  try {
+    const { idEmpresa } = req.params;
+    const resultado = await mainframesModel.visaoGeralPorEmpresa(idEmpresa);
+    res.status(200).json(resultado);
+  } catch (erro) {
+    console.error("Erro ao listar mainframes por empresa:", erro);
+    res.status(500).json({ erro: "Erro ao listar mainframes por empresa." });
+  }
+}
+
+function contarAlertasPorMainframe(req, res) {
+    const fkEmpresa = req.params.fkEmpresa;
+
+    if (fkEmpresa == undefined) {
+        res.status(400).send("O ID da empresa está indefinido!");
+        return;
+    }
+
+    // Chama a função SQL
+    mainframesModel.contarAlertasPorMainframe(fkEmpresa)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum alerta encontrado!");
+            }
+        }).catch(function (erro) {
+            console.log(erro);
+            console.log("Houve um erro ao buscar alertas por mainframe: ", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 module.exports = {
   listarSetores,
   listarSistemas,
@@ -158,5 +192,7 @@ module.exports = {
   cadastrarTipo,
   cadastrarMainframe,
   listarMainframes,
-  listarPorEmpresa
+  visaoGeralPorEmpresa,
+  listarPorEmpresa,
+  contarAlertasPorMainframe
 };

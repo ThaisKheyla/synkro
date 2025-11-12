@@ -77,7 +77,7 @@ async function inserirMetrica(descricao, min, max, fkComponente, fkTipo, mac) {
     FROM metrica
     WHERE fkComponente = ${fkComponente};
   `;
-  
+
   const resultado = await database.executar(consultaId);
   const novoId = resultado[0].novoId;
 
@@ -87,7 +87,7 @@ async function inserirMetrica(descricao, min, max, fkComponente, fkTipo, mac) {
     VALUES (${novoId}, ${fkComponente}, ${min}, ${max}, ${fkTipo}, 
     (SELECT id FROM mainframe WHERE macAdress = '${mac}'));
   `;
-  
+
   const resposta = await database.executar(instrucao);
   return resposta.insertId || novoId;
 }
@@ -128,6 +128,60 @@ function listarPorEmpresa(idEmpresa) {
   return database.executar(instrucao);
 }
 
+function visaoGeralPorEmpresa(idEmpresa) {
+  const instrucao = `
+    SELECT
+        m.id,
+        m.macAdress,
+        se.nome AS setor,
+        se.localizacao AS localizacao,
+        c.nome AS componente,
+        a.valor_coletado,
+        g.descricao AS gravidade
+    FROM alerta a
+    JOIN metrica me ON a.fkMetrica = me.id
+    JOIN mainframe m ON me.fkMainframe = m.id
+    JOIN gravidade g ON a.fkGravidade = g.id
+    JOIN componente c ON me.fkComponente = c.id
+    JOIN setor se ON m.fkSetor = se.id
+    INNER JOIN (
+        SELECT
+            me_inner.fkMainframe,
+            MAX(a_inner.valor_coletado) AS max_valor
+        FROM alerta a_inner
+        JOIN metrica me_inner ON a_inner.fkMetrica = me_inner.id
+        JOIN mainframe m_inner ON me_inner.fkMainframe = m_inner.id
+        JOIN setor se_inner ON m_inner.fkSetor = se_inner.id
+        WHERE se_inner.fkEmpresa = ${idEmpresa}
+        GROUP BY me_inner.fkMainframe
+        ) AS max_alertas ON m.id = max_alertas.fkMainframe
+            AND a.valor_coletado = max_alertas.max_valor
+    WHERE se.fkEmpresa = ${idEmpresa}
+    ORDER BY m.id, a.valor_coletado ASC;
+  `;
+  return database.executar(instrucao);
+}
+
+function contarAlertasPorMainframe(idEmpresa) {
+    const instrucao = `
+        SELECT
+            m.id AS idMainframe,
+            m.modelo AS nomeMainframe,
+            g.descricao AS gravidade,
+            COUNT(a.id) AS qtdAlertas
+        FROM alerta a
+        JOIN metrica me ON a.fkMetrica = me.id
+        JOIN mainframe m ON me.fkMainframe = m.id
+        JOIN gravidade g ON a.fkGravidade = g.id
+        JOIN setor se ON m.fkSetor = se.id
+        WHERE se.fkEmpresa = ${idEmpresa}
+          AND g.descricao IN ('Emergência', 'Muito Urgente', 'Urgente')
+        GROUP BY m.id, m.modelo, g.descricao
+        ORDER BY m.id, FIELD(g.descricao, 'Emergência', 'Muito Urgente', 'Urgente');
+    `;
+    return database.executar(instrucao);
+}
+
 // ===== EXPORTA TODAS AS FUNÇÕES =====
 module.exports = {
   listarSetores,
@@ -143,5 +197,7 @@ module.exports = {
   inserirMainframe,
   inserirMetrica,
   listarMainframes,
-  listarPorEmpresa
+  visaoGeralPorEmpresa,
+  listarPorEmpresa,
+  contarAlertasPorMainframe
 };
