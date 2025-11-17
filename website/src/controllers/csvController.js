@@ -10,8 +10,7 @@ async function buscarCSV(req, res) {
   
   csv({ delimiter: ';' })
     .fromFile(csvFilePath)
-    .then((jsonObj) => { 
-      console.log(jsonObj)
+    .then((jsonObj) => {  
       /**
        * [
        * 	{a:"1", b:"2", c:"3"},
