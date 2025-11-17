@@ -1,73 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="./js/sessao.js"></script>
-</head>
-<body>
-    <canvas id="myChart" style="max-width: 800px; max-height: 500px;"></canvas>
-    <div id="processo">
 
-    </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="./js/sessao.js"></script>
+  <script>
+    var datares = []
+    var processosjson = []
+    async function carregar() {
+      try {
+        const res = await fetch('http://localhost:8080/csv/processo');
+        if (!res.ok) throw new Error('Erro ao buscar dados');
+        datares = await res.json();
+        grafico()
+
+      } catch (erro) {
+        console.error('Erro ao buscar todas as empresas:', erro);
+      }
+    }
+
+    window.addEventListener('load', () => {
+      // validarSessaoSynkro();
+      carregar();
+      document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
+    });
+  </script>
+</head>
+
+<body onload="carregar()">
+  <canvas id="myChart" style="max-width: 800px; max-height: 500px;"></canvas>
+
+  <div id="processo">
+
+  </div>
 </body>
 <script>
-  const ctx = document.getElementById('myChart');
-
-  data={
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+  function grafico() {
+    const ctx = document.getElementById('myChart');
+    data = {
+      labels: ['tempo1', 'tempo2', 'tempo3', 'tempo4', 'tempo5', 'tempo6'],
       datasets: [{
-        label: 'My First Dataset',
-        data: [65, 59, 80, 81, 56, 55, 40],
+        label: 'cputotal',
+        data: [
+          datares[datares.length - 6].uso_cpu_total_perc,
+          datares[datares.length - 5].uso_cpu_total_perc,
+          datares[datares.length - 4].uso_cpu_total_perc,
+          datares[datares.length - 3].uso_cpu_total_perc,
+          datares[datares.length - 2].uso_cpu_total_perc,
+          datares[datares.length - 1].uso_cpu_total_perc
+        ],
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1
-        },
-        {
-        label: 'My First Dataset',
-        data: [62, 9, 8, 8, 5, 5, 4],
+      }, 
+      {
+        label: 'processo1',
+        data: [
+          datares[datares.length - 6].cpu_perc1,
+          datares[datares.length - 5].cpu_perc1,
+          datares[datares.length - 4].cpu_perc1,
+          datares[datares.length - 3].cpu_perc1,
+          datares[datares.length - 2].cpu_perc1,
+          datares[datares.length - 1].cpu_perc1
+        ],
         fill: false,
         borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1
-        },
-    ]
-  }
+        tension: 0.1,
+        hidden: true
+      },
+      {
+        label: 'processo2',
+        data: [
+          datares[datares.length - 6].cpu_perc2,
+          datares[datares.length - 5].cpu_perc2,
+          datares[datares.length - 4].cpu_perc2,
+          datares[datares.length - 3].cpu_perc2,
+          datares[datares.length - 2].cpu_perc2,
+          datares[datares.length - 1].cpu_perc2
+        ],
+        fill: false,
+        borderColor: 'rgb(4, 192, 255)',
+        tension: 0.1,
+        hidden: true
+        
+      },
+      {
+        label: 'processo3',
+        data: [
+          datares[datares.length - 6].cpu_perc3,
+          datares[datares.length - 5].cpu_perc3,
+          datares[datares.length - 4].cpu_perc3,
+          datares[datares.length - 3].cpu_perc3,
+          datares[datares.length - 2].cpu_perc3,
+          datares[datares.length - 1].cpu_perc3
+        ],
+        fill: false,
+        borderColor: 'rgb(4, 192, 255)',
+        tension: 0.1,
+        hidden: true
+      },
+      {
+        label: 'processo4',
+        data: [
+          datares[datares.length - 6].cpu_perc4,
+          datares[datares.length - 5].cpu_perc4,
+          datares[datares.length - 4].cpu_perc4,
+          datares[datares.length - 3].cpu_perc4,
+          datares[datares.length - 2].cpu_perc4,
+          datares[datares.length - 1].cpu_perc4
+        ],
+        fill: false,
+        borderColor: 'rgb(4, 192, 255)',
+        tension: 0.1,
+        hidden: true
+      },
+      {
+        label: 'processo5',
+        data: [
+          datares[datares.length - 6].cpu_perc5,
+          datares[datares.length - 5].cpu_perc5,
+          datares[datares.length - 4].cpu_perc5,
+          datares[datares.length - 3].cpu_perc5,
+          datares[datares.length - 2].cpu_perc5,
+          datares[datares.length - 1].cpu_perc5
+        ],
+        fill: false,
+        borderColor: 'rgb(4, 192, 255)',
+        tension: 0.1,
+        hidden: true
+      },
+      {
+        label: 'processo6',
+        data: [
+          datares[datares.length - 6].cpu_perc6,
+          datares[datares.length - 5].cpu_perc6,
+          datares[datares.length - 4].cpu_perc6,
+          datares[datares.length - 3].cpu_perc6,
+          datares[datares.length - 2].cpu_perc6,
+          datares[datares.length - 1].cpu_perc6
+        ],
+        fill: false,
+        borderColor: 'rgb(4, 192, 255)',
+        tension: 0.1,
+        hidden: true
+      },
+       {
+        label: 'processo7',
+        data: [
+          datares[datares.length - 6].cpu_perc7,
+          datares[datares.length - 5].cpu_perc7,
+          datares[datares.length - 4].cpu_perc7,
+          datares[datares.length - 3].cpu_perc7,
+          datares[datares.length - 2].cpu_perc7,
+          datares[datares.length - 1].cpu_perc7
+        ],
+        fill: false,
+        borderColor: 'rgb(4, 192, 255)',
+        tension: 0.1,
+        hidden: true
+      },
+      {
+        label: 'processo8',
+        data: [
+          datares[datares.length - 6].cpu_perc8,
+          datares[datares.length - 5].cpu_perc8,
+          datares[datares.length - 4].cpu_perc8,
+          datares[datares.length - 3].cpu_perc8,
+          datares[datares.length - 2].cpu_perc8,
+          datares[datares.length - 1].cpu_perc8
+        ],
+        fill: false,
+        borderColor: 'rgb(4, 192, 255)',
+        tension: 0.1,
+        hidden: true
+      },
+      {
+        label: 'processo9',
+        data: [
+          datares[datares.length - 6].cpu_perc9,
+          datares[datares.length - 5].cpu_perc9,
+          datares[datares.length - 4].cpu_perc9,
+          datares[datares.length - 3].cpu_perc9,
+          datares[datares.length - 2].cpu_perc9,
+          datares[datares.length - 1].cpu_perc9
+        ],
+        fill: false,
+        borderColor: 'rgb(4, 192, 255)',
+        tension: 0.1,
+        hidden: true
+      },
+      ]
+    }
 
-  new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
+    new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
         onClick: (event, elements) => {
-        if (elements.length > 0) {
+          if (elements.length > 0) {
             // Pega o índice do ponto clicado
             const index = elements[0].index;
             const label = data.labels[index];
             const value = data.datasets[0].data[index];
-            processo.innerHTML=`<h1>aa</h1>`
+            const realIndex = index - 6;
+
+            const obj = datares[datares.length + realIndex];
+
+            processosjson = [
+              { nome: obj.nome1, cpu: parseFloat(obj.cpu_perc1) },
+              { nome: obj.nome2, cpu: parseFloat(obj.cpu_perc2) },
+              { nome: obj.nome3, cpu: parseFloat(obj.cpu_perc3) },
+              { nome: obj.nome4, cpu: parseFloat(obj.cpu_perc4) },
+              { nome: obj.nome5, cpu: parseFloat(obj.cpu_perc5) },
+              { nome: obj.nome6, cpu: parseFloat(obj.cpu_perc6) },
+              { nome: obj.nome7, cpu: parseFloat(obj.cpu_perc7) },
+              { nome: obj.nome8, cpu: parseFloat(obj.cpu_perc8) },
+              { nome: obj.nome9, cpu: parseFloat(obj.cpu_perc9) },
+            ];
+            processosjson.sort((a, b) => b.cpu - a.cpu);
+            console.log(processosjson)
+            processo.innerHTML =``
+            for (let x = 0; x < 10; x++) {
+              processo.innerHTML += `
+                <h1>${processosjson[x].cpu}%</h1>
+                <h1>${processosjson[x].nome}</h1>
+                <hr>
+              `;
+            }
+
             // Ação JavaScript customizada
-            alert(`Você clicou em ${label}: ${value}% `);
-            
+            alert(`Você clicou em ${label}: ${value}% ${realIndex} `);
+
             // Aqui você pode chamar qualquer função JS
             // exemplo: mostrarDetalhes(label, value);
-        }
+          }
         },
         plugins: {
-        tooltip: {
+          tooltip: {
             enabled: true
-        }
+          }
         },
-      scales: {
-        y: {
-          beginAtZero: true
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
       }
-    }
-  });
-
-  function clicou() { 
-    
+    });
   }
+ 
 </script>
+
 </html>

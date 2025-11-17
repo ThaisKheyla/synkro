@@ -1,0 +1,32 @@
+#myChart{
+    width: 100px; 
+     
+}
+
+#processo{
+    background-color: var(--azul-escuro);
+}
+.processobox{
+    display: flex;
+    max-width: 100%;
+    justify-content: space-between;
+    background-color: var(--azul-medio);
+    margin-bottom: 20px; 
+    padding: 0px 20px;
+}
+.titulo{
+    width: 40%;
+}
+.mainframeprocesso{
+    background-color: var(--azul-escuro);
+    padding: 20px;
+    border-radius: 6px;
+    /* bem sutil */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid var(--azul-medio);
+    /* linha fina tecnológica */
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
