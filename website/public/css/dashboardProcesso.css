@@ -2,17 +2,30 @@
     width: 100px; 
      
 }
+.graficos{
+    max-width:65%;
+}
 
 #processo{
-    background-color: var(--azul-escuro);
+    background-color: var(--azul-escuro); 
+    
+    border: 1px solid var(--azul-medio);
+    min-width:30% ;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 .processobox{
     display: flex;
-    max-width: 100%;
+    min-width: 20%;
     justify-content: space-between;
     background-color: var(--azul-medio);
-    margin-bottom: 20px; 
-    padding: 0px 20px;
+    border-bottom: 1px;
+    border: 2px solid;
+    padding: 0px 20px; 
+    
+}
+#cabecalho{
+    background-color: #1d315f; 
 }
 .titulo{
     width: 40%;
@@ -24,9 +37,17 @@
     /* bem sutil */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     color: #e0e0e0;
-    font-family: 'Inter', sans-serif;
-    border: 1px solid var(--azul-medio);
-    /* linha fina tecnológica */
-    margin-top: 40px;
-    margin-bottom: 40px;
+    font-family: 'Inter', sans-serif; 
+    border: 1px solid var(--azul-medio); 
+    
+
+}
+.processobox>h3{
+    font-size: 12px;
+}
+ 
+.col{
+    display: flex;
+    gap: 40px;
+    width: 100%;
 }
