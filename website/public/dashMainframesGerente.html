@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Gerencial - Synkro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/dashMainframesGerente.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/sessao.js"></script>
+</head>
+
+<body>
+
+    <div class="layout-principal">
+
+        <aside class="barra-lateral">
+            <div class="logo">
+                Synkro
+            </div>
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+                <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+                <div class="cargo-usuario">
+                    <i class="ri-shield-user-line"></i>
+                    Gerente de Infra
+                </div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+            </div>
+            <nav>
+                <ul class="menu-links">
+                    <li>
+                        <a href="dashboardGerente.html">
+                            <i class="ri-dashboard-3-line"></i>
+                            Visão Geral
+                        </a>
+                    </li>
+                    <li>
+                        <a href="visaoMainframesGerente.html" class="ativo">
+                            <i class="ri-dashboard-3-line"></i>
+                            Mainframes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="historico.html">
+                            <i class="ri-file-add-line icon-cadastro"></i>
+                            Logs e Histórico
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Funcionarios.html">
+                            <i class="ri-database-2-line"></i>
+                            Funcionários cadastrados
+                        </a>
+                    </li>
+                </ul>
+                <button class="btn-sair" onclick="limparSessao()">
+                    <i class="ri-logout-box-r-line"></i>
+                    Encerrar Sessão
+                </button>
+            </nav>
+        </aside>
+
+        
+    </div>
+
+    <script>
+        // Use esta função para garantir que o ID da empresa está na sessão
+        const ID_EMPRESA = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+
+        function carregarDashboardGerente() {
+            // A ordem é importante: KPIs busca dados e chama o Gráfico de Pizza
+            carregarKpisEStatus();
+            carregarListaAlertas();
+        }
+
+
+        // 1. Carrega a lista de MAINFRAMES COM MAIS ALERTAS (Ranking)
+        async function carregarListaAlertas() {
+            const fkEmpresa = ID_EMPRESA;
+            const container = document.getElementById("lista-mais-alertas");
+
+            if (!fkEmpresa) {
+                container.innerHTML = "<li>Erro: ID da empresa não encontrado na sessão.</li>";
+                return;
+            }
+
+            container.innerHTML = "<li><i class='ri-loader-4-line ri-spin'></i> Carregando ranking...</li>";
+
+            try {
+                // Endpoint: /mainframes/rankingAlertas/:fkEmpresa
+                const resposta = await fetch(`/mainframes/rankingAlertas/${fkEmpresa}`);
+
+                if (resposta.ok) {
+                    const dados = await resposta.json();
+
+                    if (dados.length > 0) {
+                        container.innerHTML = dados.map((mf, index) =>
+                            `<li>
+                                <span class="rank">${index + 1}</span>
+                                <span class="nome">${mf.nomeMainframe}</span>
+                                <span class="info">| Alertas: <span class="conta-alerta">${mf.alertas}</span></span>
+                                <span class="info">| Setor: <span class="setor">${mf.setor}</span></span>
+                            </li>`
+                        ).join('');
+                    } else {
+                        container.innerHTML = "<li>Nenhum mainframe com alertas de alta gravidade encontrado.</li>";
+                    }
+                } else if (resposta.status === 204) {
+                    container.innerHTML = "<li>Nenhum mainframe com alertas de alta gravidade encontrado.</li>";
+                } else {
+                    throw new Error(`Erro ao carregar o ranking: ${resposta.status}`);
+                }
+            } catch (error) {
+                console.error("Erro no fetch de ranking:", error);
+                container.innerHTML = "<li>Ocorreu um erro ao conectar ao servidor.</li>";
+            }
+        }
+
+
+        // 2. Plota o GRÁFICO DE PIZZA (Função auxiliar)
+        function plotarGraficoStatus(total, comAlerta) {
+            const semAlerta = total - comAlerta;
+
+            // Tratamento para evitar divisão por zero
+            const percComAlerta = total > 0 ? (comAlerta / total) * 100 : 0;
+            const percSemAlerta = total > 0 ? (semAlerta / total) * 100 : 0;
+
+            const cores = ['#7c3aed', '#38bdf8']; // Usando as cores do seu CSS: var(--dasd-cor) e var(--accent-light)
+            const ctx = document.getElementById('statusPieChart').getContext('2d');
+
+            // Destrói o gráfico anterior (se existir) para evitar duplicação
+            if (window.statusPieChartInstance) {
+                window.statusPieChartInstance.destroy();
+            }
+
+            window.statusPieChartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Com Alerta', 'Sem Alerta'],
+                    datasets: [{
+                        data: [percComAlerta.toFixed(1), percSemAlerta.toFixed(1)],
+                        backgroundColor: cores,
+                        borderColor: 'transparent',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'var(--cinza-texto)', // Cor da variável no CSS
+                                font: {
+                                    family: "'Inter', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // 3. Carrega os KPIS e, em seguida, chama o gráfico
+        async function carregarKpisEStatus() {
+            const fkEmpresa = ID_EMPRESA;
+
+            // Exibe o loader nos KPIs
+            document.getElementById("kpi-total-mainframes").innerText = '...';
+            document.getElementById("kpi-alertas-mainframes").innerText = '...';
+
+            if (!fkEmpresa) {
+                document.getElementById("kpi-total-mainframes").innerText = '0';
+                document.getElementById("kpi-alertas-mainframes").innerText = '0';
+                plotarGraficoStatus(0, 0);
+                return;
+            }
+
+            try {
+                // Endpoint: /mainframes/statusGeralEKPIs/:fkEmpresa
+                const resposta = await fetch(`/mainframes/statusGeralEKPIs/${fkEmpresa}`);
+
+                if (resposta.ok) {
+                    // O backend retorna: { totalMainframes: X, mainframesComAlerta: Y }
+                    const dados = await resposta.json();
+
+                    const total = dados.totalMainframes || 0;
+                    const comAlerta = dados.mainframesComAlerta || 0;
+
+                    // Atualiza os KPIs
+                    document.getElementById("kpi-total-mainframes").innerText = total;
+                    document.getElementById("kpi-alertas-mainframes").innerText = comAlerta;
+
+                    // Chama o gráfico de pizza APÓS buscar os dados
+                    plotarGraficoStatus(total, comAlerta);
+
+                } else {
+                    throw new Error(`Erro ao carregar os KPIs: ${resposta.status}`);
+                }
+            } catch (error) {
+                console.error("Erro no fetch de KPIs:", error);
+                document.getElementById("kpi-total-mainframes").innerText = '?';
+                document.getElementById("kpi-alertas-mainframes").innerText = '?';
+                plotarGraficoStatus(0, 0); // Plota gráfico zerado em caso de erro
+            }
+        }
+
+
+        // Chamada principal quando a página carrega
+        window.onload = function () {
+            // Chamada de validação de sessão (do seu arquivo sessao.js)
+            if (typeof validarSessaoSynkro === 'function') validarSessaoSynkro();
+
+            // Inicia o carregamento da dashboard
+            carregarDashboardGerente();
+        };
+
+        // ... Mantenha o restante do seu código JavaScript (Dropdown, etc.)
+
+        // 1. Carrega a lista de MAINFRAMES COM MAIS ALERTAS (Ranking)
+        async function carregarListaAlertas() {
+            const fkEmpresa = ID_EMPRESA;
+            const container = document.getElementById("lista-mais-alertas");
+
+            // ... [código de validação e loading] ...
+
+            try {
+                const resposta = await fetch(`/mainframes/rankingAlertas/${fkEmpresa}`);
+
+                if (resposta.ok) {
+                    const dados = await resposta.json();
+
+                    if (dados.length > 0) {
+                        container.innerHTML = dados.map((mf, index) =>
+                            // ATENÇÃO À MUDANÇA: Adiciona o atributo data-id e a classe 'mainframe-item'
+                            `<li class="mainframe-item" data-id="${mf.idMainframe}">
+                        <span class="rank">${index + 1}</span>
+                        <span class="nome">${mf.nomeMainframe}</span>
+                        <span class="info">| Alertas: <span class="conta-alerta">${mf.alertas}</span></span>
+                        <span class="info">| Setor: <span class="setor">${mf.setor}</span></span>
+                    </li>`
+                        ).join('');
+
+                        // NOVO: Adiciona o Listener de Clique após montar a lista
+                        adicionarListenersDeClique(container);
+
+                    } else {
+                        container.innerHTML = "<li>Nenhum mainframe com alertas de alta gravidade encontrado.</li>";
+                    }
+                } // ... [código de erro e 204] ...
+
+            } catch (error) {
+                // ... [código de erro] ...
+            }
+        }
+
+        // NOVA FUNÇÃO: Trata o clique e armazena o ID
+        function adicionarListenersDeClique(container) {
+            container.querySelectorAll('.mainframe-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const idMainframe = item.getAttribute('data-id');
+
+                    // 1. Armazena o ID na sessionStorage para a próxima página ler
+                    sessionStorage.setItem('ID_MAINFRAME_SELECIONADO', idMainframe);
+
+                    // 2. Redireciona para a nova dashboard de detalhes
+                    window.location.href = 'dashMainframesGerente.html';
+                });
+            });
+        }
+
+        function adicionarListenersDeClique(container) {
+            container.querySelectorAll('.mainframe-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const idMainframe = item.getAttribute('data-id');
+
+                    // 1. Armazena o ID na sessionStorage para a próxima página ler
+                    sessionStorage.setItem('ID_MAINFRAME_SELECIONADO', idMainframe);
+
+                    // 2. Redireciona para a nova dashboard de detalhes
+                    // Mudei o nome do arquivo de destino para o que acabamos de criar
+                    window.location.href = 'dashMainframesGerente.html';
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
