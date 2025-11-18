@@ -17,6 +17,7 @@ router.post("/", mainframesController.cadastrarMainframe);
 
 router.get("/empresa/:idEmpresa", mainframesController.listarPorEmpresa);
 router.get("/visaoGeral/:idEmpresa", mainframesController.visaoGeralPorEmpresa);
+router.get("/statusComponentes/:fkEmpresa", mainframesController.buscarStatusComponentes);
 
 router.get("/", mainframesController.listarMainframes);
 

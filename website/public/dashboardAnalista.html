@@ -7,12 +7,13 @@
     <title>Dashboard - Synkro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="./css/dashAnalista.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/sessao.js"></script>
 </head>
 
-<body onload="validarSessaoSynkro(); carregarMainframes(); plotarGraficoAlertas();">
+<body onload="validarSessaoSynkro(); carregarMainframes(); plotarGraficoAlertas(); plotarStatusComponentes();">
     <div class="layout-principal">
 
         <!-- Barra lateral -->
@@ -60,10 +61,9 @@
 
         <!-- Conteúdo principal -->
         <main class="conteudo-dashboard">
-            <div class="container">
-
+            <section class="container">
                 <header class="dashboard-header">
-                    <h1>VISÃO GERAL DOS MAINFRAMES EM TEMPO REAL</h1>
+                    <h1>VISÃO GERAL DOS MAINFRAMES</h1>
                     <p class="descricao-header">
                         Esta dashboard apresenta o status atual de todos os mainframes monitorados, permitindo
                         identificar rapidamente alertas e prioridades.
@@ -114,46 +114,13 @@
                             <canvas id="alertasBarChart" width="100%" height="400px"></canvas>
                         </div>
                     </div>
-
-                    <!-- KPIs -->
-                    <div class="estatistica-kpis">
-                        <div class="card-kpi">
-
-                            <div class="icone-kpi">
-                                <i class="ri-alert-line"></i>
-                            </div>
-                            <div class="info-kpi">
-                                <div class="titulo-kpi">Mainframes com Alertas</div>
-                                <div class="valor-kpi">4</div>
-                                <p class="descricao-kpi">
-                                    Número total de mainframes com algum alerta ativo.
-                                </p>
-                            </div>
-                            <div class="tendencia-kpi up">
-                                <i class="ri-arrow-up-line"></i>
-                                +2 desde ontem
-                            </div>
-                        </div>
-                        <div class="card-kpi">
-                            <div class="icone-kpi emergency">
-                                <i class="ri-error-warning-line"></i>
-                            </div>
-                            <div class="info-kpi">
-                                <div class="titulo-kpi">Alertas de Emergência</div>
-                                <div class="valor-kpi">2</div>
-                                <p class="descricao-kpi">
-                                    Número total de mainframes com algum alerta ativo.
-                                </p>
-                            </div>
-                            <div class="tendencia-kpi down">
-                                <i class="ri-arrow-down-line"></i>
-                                -1 desde ontem
-                            </div>
+                    <div class="card-componentes">
+                        <h2 class="titulo-componentes">Status dos Componentes</h2>
+                        <div id="componentesTabela" class="tabela-componentes-container">
                         </div>
                     </div>
                 </div>
-                </section>
-            </div>
+            </section>
         </main>
     </div>
 </body>
@@ -175,7 +142,7 @@
 
             // 1. Processamento dos Dados
             const mainframes = {};
-            const gravidades = ['Emergência', 'Muito Urgente', 'Urgente'];
+            const gravidades = ['Urgente', 'Muito Urgente', 'Emergência'];
             const cores = {
                 'Emergência': '#ef4444',
                 'Muito Urgente': '#ff6b00',
@@ -209,6 +176,8 @@
 
             // 2. Configuração e Plotagem do Gráfico
             const ctx = document.getElementById('alertasBarChart').getContext('2d');
+            const corGraficoSuave = '#a0aec0'; // Equivalente ao gray-400 do Tailwind, mais suave.
+
             new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -221,31 +190,42 @@
                     scales: {
                         x: {
                             stacked: true,
+                            ticks: {
+                                color: corGraficoSuave // Rótulos do Eixo X
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)' // Linhas de grade mais suaves
+                            },
                             title: {
                                 display: true,
-                                text: 'Mainframe'
+                                text: 'Mainframe',
+                                color: corGraficoSuave // Título do Eixo X
                             }
                         },
                         y: {
                             stacked: true,
+                            ticks: {
+                                precision: 0,
+                                color: corGraficoSuave // Rótulos do Eixo Y
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)' // Linhas de grade mais suaves
+                            },
                             title: {
                                 display: true,
-                                text: 'Quantidade de Alertas'
-                            },
-                            ticks: {
-                                precision: 0
+                                text: 'Quantidade de Alertas',
+                                color: corGraficoSuave // Título do Eixo Y
                             }
                         }
                     },
                     plugins: {
                         legend: {
-                            // ALTERAÇÃO 2: Posiciona a legenda no canto superior direito
                             position: 'top',
                             align: 'end',
                             labels: {
-                                // Adiciona um pouco de padding e borda para parecer "dentro de um retângulo"
                                 boxWidth: 10,
-                                padding: 15
+                                padding: 15,
+                                color: corGraficoSuave // Rótulos da Legenda
                             }
                         },
                         title: {
@@ -261,22 +241,122 @@
         }
     }
 
+    function obterUnidade(tipoMetrica) {
+        if (tipoMetrica === 'Uso') {
+            return '%';
+        } else if (tipoMetrica === 'Temperatura') {
+            return '°C';
+        }
+        return ''; // Padrão
+    }
+
     async function carregarMainframes() {
         try {
             const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+            // A requisição usa a API que executa o SQL corrigido no backend
             const lista = await fetch(`/mainframes/visaoGeral/${fkEmpresa}`).then(r => r.json());
             const container = document.getElementById("listandoMainframes");
-            container.innerHTML = lista.map(m => `
+
+            if (!lista || lista.length === 0) {
+                container.innerHTML = `<p class="sem-dados">Nenhum Mainframe encontrado para esta empresa.</p>`;
+                return;
+            }
+
+            container.innerHTML = lista.map(m => {
+                const unidade = obterUnidade(m.tipo_metrica);
+                const alertaDetalhado = `${m.componente} - ${m.valor_coletado}${unidade} (Métrica de alerta: ${m.max_alerta_valor}${unidade})`;
+                const gravidadeClass = m.gravidade ? m.gravidade.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "-") : 'normal';
+
+                return `
             <div class="item-status">
-                <span class="status ${m.gravidade ? m.gravidade.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "-") : 'normal'}"></span>
+                <span class="status ${gravidadeClass}"></span>
                 <span class="nome-mainframe">Mainframe ${m.id}</span>
                 <span class="alerta-mainframe">Alerta: ${m.gravidade}</span>
-                <span class="alerta-mainframe">${m.componente} - ${m.valor_coletado}</span>
+                
+                <span class="alerta-mainframe">${alertaDetalhado}</span>
+                
                 <span class="setor-mainframe">Setor: ${m.setor} (${m.localizacao})</span>
             </div>
-        `).join('');
+            `;
+            }).join('');
         } catch (err) {
-            console.warn("Erro ao listar mainframes:", err);
+            console.error("Erro ao carregar mainframes:", err);
+            document.getElementById("listandoMainframes").innerHTML = `<p class="erro-dados">Erro ao buscar dados. Verifique a conexão com o servidor.</p>`;
+        }
+    }
+
+    async function plotarStatusComponentes() {
+        const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+        const container = document.getElementById('componentesTabela');
+        container.innerHTML = 'Carregando status dos componentes...';
+        const iconMap = {
+            'Processador': 'fa-microchip',
+            'Disco Rígido': 'fa-hdd',
+            'Memória RAM': 'fa-memory',
+            'default': 'fa-box'
+        };
+
+        try {
+            const resposta = await fetch(`/mainframes/statusComponentes/${fkEmpresa}`);
+
+            if (resposta.status === 204) {
+                container.innerHTML = 'Nenhum status de componente encontrado.';
+                return;
+            }
+
+            const dadosComponentesFlat = await resposta.json();
+
+            const classMap = {
+                'Normal': 'status-normal',
+                'Urgente': 'status-urgente',
+                'Muito Urgente': 'status-muito-urgente',
+                'Emergência': 'status-emergencia'
+            };
+
+            const mainframesAgrupados = dadosComponentesFlat.reduce((acc, item) => {
+                const id = item.idMainframe;
+                if (!acc[id]) {
+                    acc[id] = {
+                        idMainframe: id,
+                        componentes: []
+                    };
+                }
+                acc[id].componentes.push({
+                    nome: item.nomeComponente,
+                    valor: item.valor_coletado,
+                    status: item.status
+                });
+                return acc;
+            }, {});
+
+            let htmlContent = '';
+
+            Object.values(mainframesAgrupados).forEach(mainframe => {
+                htmlContent += `<div class="mainframe-row">`;
+                htmlContent += `<div class="mainframe-nome">Mainframe ${mainframe.idMainframe}:</div>`;
+                htmlContent += `<div class="componente-info">`;
+
+                mainframe.componentes.forEach(comp => {
+                    const statusClass = classMap[comp.status] || '';
+                    const valorFormatado = comp.valor !== null && comp.valor !== undefined
+                        ? `${comp.valor.toFixed(2)}%`
+                        : '';
+                    const iconClass = iconMap[comp.nome] || 'fa-box';
+                    htmlContent += `
+                    <div class="componente-item ${statusClass}">
+                        <i class="fas ${iconClass}"></i> ${comp.nome} ${valorFormatado}
+                    </div>
+                    `;
+                });
+
+                htmlContent += `</div></div>`;
+            });
+
+            container.innerHTML = htmlContent;
+
+        } catch (erro) {
+            console.error("Erro ao carregar status dos componentes:", erro);
+            container.innerHTML = 'Erro ao carregar os dados dos componentes.';
         }
     }
 </script>
