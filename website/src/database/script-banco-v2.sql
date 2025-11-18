@@ -1,7 +1,7 @@
 -- =====================================================
 -- Banco de dados Synkro
 -- =====================================================
-DROP DATABASE synkro;
+DROP DATABASE IF EXISTS synkro;
 CREATE DATABASE synkro;
 USE synkro;
 
@@ -245,11 +245,13 @@ INSERT INTO status (descricao) VALUES
 -- Alertas (com fkComponente e fkMetrica)
 INSERT INTO alerta (dt_hora, valor_coletado, fkGravidade, fkMetrica, fkStatus) VALUES
 (NOW(), 75.5, 4, 1, 2),
-(NOW(), 85.0, 3, 2, 1),
+(NOW(), 85.0, 4, 2, 1),
 (NOW(), 20.0, 4, 1, 3),
-(NOW(), 98.0, 1, 1, 1),
-(NOW(), 92.0, 2, 2, 2),
-(NOW(), 95.0, 1, 1, 1);
+(NOW(), 90.0, 3, 1, 2),
+(NOW(), 98.0, 2, 1, 1),
+(NOW(), 92.0, 3, 2, 2),
+(NOW(), 95.0, 2, 1, 1),
+(NOW(), 100.0, 1, 1, 2);
 
 -- =====================================================
 -- TRIGGER PARA CRIAR GERENTE AUTOMATICAMENTE
@@ -371,6 +373,20 @@ SELECT
         JOIN gravidade g ON a.fkGravidade = g.id
         JOIN setor se ON m.fkSetor = se.id
         WHERE se.fkEmpresa = 1
-          AND g.descricao IN ('Emergência', 'Muito Urgente', 'Urgente')
         GROUP BY m.id, m.modelo, g.descricao
-        ORDER BY m.id, FIELD(g.descricao, 'Emergência', 'Muito Urgente', 'Urgente');
+        ORDER BY m.id;
+
+SELECT dt_hora, c.nome, valor_coletado, min, max, descricao FROM alerta a
+JOIN gravidade g ON a.fkGravidade = g.id
+JOIN metrica m ON a.fkMetrica = m.id
+JOIN componente c ON m.fkComponente = c.id;
+
+SELECT fkEmpresa, fkMainframe, macAdress, dt_hora, c.nome, valor_coletado, min, max, descricao, s.nome, s.localizacao FROM alerta a
+JOIN gravidade g ON a.fkGravidade = g.id
+JOIN metrica m ON a.fkMetrica = m.id
+JOIN componente c ON m.fkComponente = c.id
+JOIN mainframe ma ON m.fkMainframe = ma.id
+JOIN setor s ON ma.fkSetor = s.id
+JOIN empresa e ON s.fkEmpresa = e.id
+WHERE fkEmpresa = 1
+ORDER BY descricao;

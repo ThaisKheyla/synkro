@@ -180,6 +180,26 @@ function contarAlertasPorMainframe(req, res) {
             res.status(500).json(erro.sqlMessage);
         });
 }
+function buscarStatusComponentes(req, res) {
+    var fkEmpresa = req.params.fkEmpresa;
+
+    if (fkEmpresa == undefined) {
+        res.status(400).send("A fkEmpresa está indefinida!");
+        return;
+    }
+
+    mainframesModel.buscarStatusComponentes(fkEmpresa).then(function (resultado) {
+        if (resultado.length > 0) {
+            res.status(200).json(resultado);
+        } else {
+            res.status(204).send("Nenhum status de componente encontrado!");
+        }
+    }).catch(function (erro) {
+        console.log(erro);
+        console.log("Houve um erro ao buscar o status dos componentes: ", erro.sqlMessage);
+        res.status(500).json(erro.sqlMessage);
+    });
+}
 
 // ======================================================
 // NOVAS FUNÇÕES PARA A DASHBOARD DE ALERTAS
@@ -254,6 +274,7 @@ module.exports = {
   cadastrarMainframe,
   listarMainframes,
   visaoGeralPorEmpresa,
+  buscarStatusComponentes,
   listarPorEmpresa,
   contarAlertasPorMainframe,
   buscarRankingAlertas, 
