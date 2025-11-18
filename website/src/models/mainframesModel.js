@@ -182,6 +182,84 @@ function contarAlertasPorMainframe(idEmpresa) {
     return database.executar(instrucao);
 }
 
+// ======================================================
+// NOVAS FUNÇÕES PARA A DASHBOARD DE ALERTAS
+// ======================================================
+
+/**
+ * 1. Ranking dos Mainframes com mais Alertas (Alta Gravidade - Top 5)
+ * @param {number} fkEmpresa O ID da empresa logada.
+ */
+function buscarRankingAlertas(fkEmpresa) {
+    console.log("Acessando o model: buscarRankingAlertas");
+    // Consulta otimizada para a lista: Agrega todos os alertas de alta prioridade.
+    const instrucaoSql = `
+        SELECT
+            m.id AS idMainframe,
+            m.modelo AS nomeMainframe,
+            s.nome AS setor,
+            COUNT(a.id) AS alertas
+        FROM alerta a
+        JOIN metrica me ON a.fkMetrica = me.id
+        JOIN gravidade g ON a.fkGravidade = g.id
+        JOIN mainframe m ON me.fkMainframe = m.id
+        JOIN setor s ON m.fkSetor = s.id
+        WHERE
+            s.fkEmpresa = ${fkEmpresa} AND
+            g.descricao IN ('Emergência', 'Muito Urgente', 'Urgente')
+        GROUP BY m.id, m.modelo, s.nome
+        ORDER BY alertas DESC
+        LIMIT 5;
+    `;
+    return database.executar(instrucaoSql);
+}
+
+/**
+ * 2. Busca Status Geral e KPIs (Total de Mainframes e Mainframes com Alerta)
+ * Retorna um único objeto com os dois KPIs.
+ * @param {number} fkEmpresa O ID da empresa logada.
+ */
+function buscarStatusGeralEKPIs(fkEmpresa) {
+    console.log("Acessando o model: buscarStatusGeralEKPIs");
+    const instrucaoSql = `
+        SELECT
+            (SELECT COUNT(m1.id) FROM mainframe m1
+             JOIN setor s1 ON m1.fkSetor = s1.id
+             WHERE s1.fkEmpresa = ${fkEmpresa}) AS totalMainframes,
+            (SELECT COUNT(DISTINCT m2.id) FROM alerta a
+             JOIN metrica me ON a.fkMetrica = me.id
+             JOIN mainframe m2 ON me.fkMainframe = m2.id
+             JOIN setor s2 ON m2.fkSetor = s2.id
+             JOIN gravidade g ON a.fkGravidade = g.id
+             WHERE s2.fkEmpresa = ${fkEmpresa} AND g.descricao IN ('Emergência', 'Muito Urgente', 'Urgente')) AS mainframesComAlerta;
+    `;
+    return database.executar(instrucaoSql);
+}
+
+/**
+ * 3. Busca a lista detalhada de alertas para UM mainframe.
+ * @param {number} idMainframe O ID do mainframe.
+ */
+function buscarAlertasPorMainframe(idMainframe) {
+    console.log("Acessando o model: buscarAlertasPorMainframe");
+    const instrucaoSql = `
+        SELECT
+            a.id AS idAlerta,
+            me.nome AS metrica,
+            a.valor_coletado AS valor,
+            g.descricao AS gravidade,
+            DATE_FORMAT(a.data_alerta, '%d/%m/%Y %H:%i:%s') AS dataHora
+        FROM alerta a
+        JOIN metrica me ON a.fkMetrica = me.id
+        JOIN gravidade g ON a.fkGravidade = g.id
+        JOIN mainframe m ON me.fkMainframe = m.id
+        WHERE m.id = ${idMainframe}
+        ORDER BY a.data_alerta DESC
+        LIMIT 50; -- Limita para não sobrecarregar
+    `;
+    return database.executar(instrucaoSql);
+}
+
 // ===== EXPORTA TODAS AS FUNÇÕES =====
 module.exports = {
   listarSetores,
@@ -199,5 +277,8 @@ module.exports = {
   listarMainframes,
   visaoGeralPorEmpresa,
   listarPorEmpresa,
-  contarAlertasPorMainframe
+  contarAlertasPorMainframe,
+  buscarRankingAlertas,
+  buscarStatusGeralEKPIs,
+  buscarAlertasPorMainframe
 };

@@ -181,6 +181,67 @@ function contarAlertasPorMainframe(req, res) {
         });
 }
 
+// ======================================================
+// NOVAS FUNÇÕES PARA A DASHBOARD DE ALERTAS
+// ======================================================
+
+function buscarRankingAlertas(req, res) {
+    const fkEmpresa = req.params.fkEmpresa;
+    // ... [Validação de fkEmpresa, como nas suas outras funções] ...
+
+    mainframesModel.buscarRankingAlertas(fkEmpresa)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                // Retorna 204 (No Content) se não houver dados, o que é bom para o front-end
+                res.status(204).send("Nenhum mainframe encontrado no ranking."); 
+            }
+        }).catch(function (erro) {
+            console.log("Houve um erro ao buscar o ranking de alertas: ", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
+function buscarStatusGeralEKPIs(req, res) {
+    const fkEmpresa = req.params.fkEmpresa;
+    // ... [Validação de fkEmpresa] ...
+
+    mainframesModel.buscarStatusGeralEKPIs(fkEmpresa)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                // O Model retorna um array de 1 posição, enviamos o objeto diretamente.
+                res.status(200).json(resultado[0]); 
+            } else {
+                // Retorna 0 para os KPIs se a consulta não retornar nada (por segurança)
+                res.status(200).json({ totalMainframes: 0, mainframesComAlerta: 0 }); 
+            }
+        }).catch(function (erro) {
+            console.log("Houve um erro ao buscar o status geral/KPIs: ", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+function buscarAlertasPorMainframe(req, res) {
+    const idMainframe = req.params.idMainframe;
+
+    if (idMainframe == undefined) {
+        res.status(400).send("O ID do mainframe está indefinido!");
+        return;
+    }
+
+    mainframesModel.buscarAlertasPorMainframe(idMainframe)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum alerta encontrado para este mainframe.");
+            }
+        }).catch(function (erro) {
+            console.log("Houve um erro ao buscar alertas por mainframe: ", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 module.exports = {
   listarSetores,
   listarSistemas,
@@ -194,5 +255,8 @@ module.exports = {
   listarMainframes,
   visaoGeralPorEmpresa,
   listarPorEmpresa,
-  contarAlertasPorMainframe
+  contarAlertasPorMainframe,
+  buscarRankingAlertas, 
+  buscarStatusGeralEKPIs,
+  buscarAlertasPorMainframe
 };
