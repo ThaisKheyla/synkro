@@ -228,7 +228,7 @@ function buscarStatusComponentes(fkEmpresa) {
             AND g3.descricao IN ('Urgente', 'Muito Urgente', 'Emergência')
         )
         ORDER BY
-            m.id, comp.nome;
+            m.id, comp.nome DESC;
     `;
 
   return database.executar(instrucaoSql);
