@@ -6,10 +6,18 @@
     flex-wrap: wrap;
 }
 
+.kpis-linha-2 {
+    display: flex;
+    gap: 52px;
+    margin-top: 13px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
 .kpi-card {
     flex: 1;
     min-width: 110px;
-    max-width: 160px;
+    max-width: 180px;
     padding: 8px 10px;
     border-radius: 8px;
     background: var(--azul-medio);
@@ -21,6 +29,24 @@
     height: 48px;
 }
 
+.kpi-card-disk {
+    flex: 1;
+    min-width: 160px;
+    max-width: 180px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--azul-medio);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 48px;
+}
+
+.kpi-card .kpi-tempo{
+background-color: #2563eb;
+}
 .kpi-icone {
     width: 28px;
     height: 28px;
@@ -100,7 +126,7 @@
     gap: 20px; /* Reduz o gap entre eles para caberem 3 no espaço de 4 grandes */
 }
 
-.kpi-extra-row .kpi-card {
+.kpi-extra-row .kpi-card  .kpi-card-disk{
     /* Ajusta o tamanho dos cards extras (ex: 3 cards por linha) */
     max-width: 250px; /* Mais largura para o texto de descrição extra */
     min-width: 150px;

@@ -68,7 +68,7 @@ body {
 
 /* ======== BARRA LATERAL ======== */
 .barra-lateral {
-    width: 205px;
+    width: 200px;
     background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
     padding: 24px 16px;
     display: flex;
@@ -301,7 +301,6 @@ body {
 }
 
 /* -------- CONTEÚDO PRINCIPAL DA DASHBOARD -------- */
-
 .conteudo-dashboard {
     flex: 1;
     max-width: 1400px;
@@ -309,20 +308,24 @@ body {
     height: calc(100vh - var(--spacing-md) * 2);
     background: var(--azul-escuro);
     border-radius: 16px;
+
+   
+    display: flex;
+    flex-direction: column;   
+    align-items: stretch;    
+    justify-content: flex-start;
+
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 0;
     flex-shrink: 1;
+
     padding: 0 var(--spacing-md);
-    overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--azul-medio) transparent;
-    scroll-behavior: smooth;
-    /* rolagem suave */
+
     max-height: 100vh;
-    /* garante que o scroll fique dentro da tela */
-    padding-right: 4px;
-    /* evita que o conteúdo fique colado */
+    padding-right: 24px;
 }
 
 .main-container {
@@ -354,14 +357,13 @@ body {
 
 .kpi-card {
     flex: 1;
-    min-width: 220px;
+    min-width: 240px;
     /* NOVO: Efeito Glassmorphism Sutil */
     background: rgba(30, 41, 59, 0.7);
     /* Fundo semi-transparente */
     backdrop-filter: blur(5px);
     /* Efeito de vidro */
     -webkit-backdrop-filter: blur(5px);
-
     padding: 1.5rem;
     border-radius: 16px;
     /* Mais arredondado */
@@ -374,7 +376,15 @@ body {
     /* Borda semi-transparente */
 }
 
-.kpi-card:hover {
+.kpi-card.kpi-info {
+    background: #12557c;
+    border: 1px solid #16cbf9;
+    border-radius: 20px;
+    max-width: 150px ;
+    
+}
+
+.kpi-card:hover, .btnModal:Hover , .kpi-card-disk:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-xl);
     border: 1px solid var(--accent-light);
@@ -413,6 +423,12 @@ body {
     background: linear-gradient(135deg, var(--azul-primario), #1d4ed8);
     /* Azul mais escuro */
 }
+
+.kpi-card.kpi-infom{
+    background: #3b82f6 ;   /* cor personalizada */
+    border: 1px solid #1e3a8a;
+}
+
 
 /* Tipografia KPI - Mantida em destaque */
 .kpi-title {
@@ -453,7 +469,7 @@ body {
     flex-wrap: wrap;
 }
 
-.kpi-extra .kpi-card {
+.kpi-extra .kpi-card .kpi-card-disk{
     flex-direction: column;
     align-items: flex-start;
     padding: var(--spacing-md);
@@ -494,7 +510,7 @@ body {
     flex: 1;
     margin: 10px;
     min-width: 210px;
-    max-width: 240px;
+    max-width: 120px;
     width: 240px;
     height: 98%;
     background: var(--azul-escuro);
@@ -519,10 +535,20 @@ body {
     color: var(--gray-100);
     margin-bottom: 18px;
     letter-spacing: 0.5px;
+    text-align: center;
     text-shadow: none;
     display: block;
 }
 
+a {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+a:visited {
+    color: inherit !important;
+    text-decoration: none !important;
+}
 
 .página.mainframe,
 .página-de-mainframe {
@@ -537,7 +563,7 @@ body {
     background: var(--azul-medio);
     border-radius: 8px;
     box-shadow: none;
-    padding: 10px 12px;
+    padding: 10px 25px;
     margin-bottom: 10px;
     border-left: 3px solid var(--gray-500);
     transition: border-color 0.18s, background 0.18s;
@@ -597,12 +623,12 @@ body {
 }
 
 .grafico-box {
-    background-color: var(--azul-medio);
-    /* <-- O FUNDO AZUL DEVE ESTAR AQUI */
+    background-color: var(--azul-medio);        
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 12px;
     box-shadow: var(--shadow-lg);
+    margin-top: 20px;
 }
 
 .grafico-box h4 {
@@ -659,8 +685,11 @@ body {
 
 /* --- Chart Container --- */
 .grafico-container {
-    flex-grow: 1;
-    height: 350px;  
+        flex-grow: 1;
+    height: 350px;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
     transition: all 0.3s ease;
     background: transparent !important;
     position: relative;
@@ -712,6 +741,8 @@ body {
 }
 
 /* ====== MAINFRAME DETALHES TECHNO DARK ====== */
+
+
 .mainframe-detalhes {
     background-color: var(--azul-escuro);
     padding: 30px;
@@ -752,6 +783,59 @@ body {
     padding: 2px 8px;
     border-radius: 3px;
     font-size: 1rem;
+}
+
+/* Fundo escuro */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    display: none;          /* oculto por padrão */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* Caixa do modal */
+.modal-content {
+    background: #fff;
+    padding: 25px;
+    width: 420px;
+    border-radius: 12px;
+    animation: fadeIn .25s ease;
+}
+
+/* Animação */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* Botões */
+.btnModal, .close-btn {
+    padding: 10px 16px;
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+
+
+.close-btn {
+    background: #dc2626;
+    margin-top: 20px;
+}
+
+.close-btn:hover{
+      background: red;
+      border-inline-color: white;
+      margin-top: 20px;
+ 
 }
 
 /* Row de cards */
