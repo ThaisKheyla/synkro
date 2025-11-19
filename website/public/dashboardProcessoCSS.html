@@ -13,26 +13,50 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- <script src="./js/sessao.js"></script> -->
     <script>
-        var datares = []
+        var dadosfiltrados = []
+        var dadoscru = []
         var processosjson = []
         async function carregar() {
             try {
                 const res = await fetch('http://localhost:8080/csv/processo');
                 if (!res.ok) throw new Error('Erro ao buscar dados');
-                datares = await res.json();
-                grafico()
+                dadosfiltrados = await res.json();
+                //datares=filtrardados(dadoscru);
+                 
+                grafico();
                 listaprocesso();
 
             } catch (erro) {
-                console.error('Erro ao buscar todas as empresas:', erro);
+                console.error(  erro);
             }
         }
+
 
         window.addEventListener('load', () => {
             // validarSessaoSynkro();
             carregar();
             document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
         });
+
+        function filtrardados(dados) {
+            // data = dados[dados.length - 1].timestamp;
+            // const dateObj = new Date(data.replace(" ", "T"));
+
+            // const hora = String(dateObj.getHours()).padStart(2, "0");
+            // const minuto = String(dateObj.getMinutes()).padStart(2, "0");
+
+            //horaminuto = hora + ":" + minuto
+            const dadofiltrado = dados.filter(item => {
+                const dateObj = new Date(item.timestamp.replace(" ", "T"));
+
+                const hora = String(dateObj.getHours()).padStart(2, "0");
+                const minuto = String(dateObj.getMinutes()).padStart(2, "0");
+
+                return minuto % 5 === 0;
+            });
+            return dadofiltrado
+        }
+
     </script>
 </head>
 
@@ -140,7 +164,7 @@
                             Selecione uma métrica abaixo para visualizar o histórico de uso detalhado e a evolução do
                             desempenho.
                         </p>
-    
+
                         <div class="grupo-botoes" role="tablist" aria-label="Seleção de Gráfico">
                             <button class="botao-nav ativo" id="btnCPU" onclick="showChart('cpu')"
                                 title="Visualizar o gráfico de uso da CPU ao longo do tempo" role="tab"
@@ -148,26 +172,29 @@
                             <button class="botao-nav" id="btnRAM" onclick="showChart('ram')"
                                 title="Visualizar o gráfico de consumo de memória RAM ao longo do tempo" role="tab"
                                 aria-selected="false">RAM</button>
-    
+
                         </div>
-    
-                        <h4 id="titulo-grafico" title="Métrica atualmente exibida no gráfico"><i class="ri-cpu-line"></i>
+
+                        <h4 id="titulo-grafico" title="Métrica atualmente exibida no gráfico"><i
+                                class="ri-cpu-line"></i>
                             CPU - Uso em Tempo Real (Gráfico Histórico)</h4>
-    
+
                         <div class="grafico-info" id="graficoInfo"
                             title="Métrica atual e variação em relação ao dia anterior">
                             <div class="grafico-metrica">
-                                <span class="value" id="graficoValor" aria-live="polite">78%</span>
+                                <span class="value" id="graficoValor" aria-live="polite"></span>
                                 <span class="label" id="graficoTexto">Captura Atual</span>
                             </div>
                         </div>
-                        <p class="legenda-grafico-container" style="font-size: 0.85rem; color: #adb5bd; margin-top: 10px;">
-                            O gráfico apresenta dados coletados a cada 5 minutos, cobrindo o período das últimas 24 horas.
+                        <p class="legenda-grafico-container"
+                            style="font-size: 0.85rem; color: #adb5bd; margin-top: 10px;">
+                            O gráfico apresenta dados coletados a cada 5 minutos, cobrindo o período das últimas 24
+                            horas.
                         </p>
                         <div class="grafico-container">
                             <canvas id="myChart" aria-label="Gráfico de linha Histórico da Métrica Selecionada"
-                                style="display: block; box-sizing: border-box; height: 350px; min-width: 100%;"></canvas>
-    
+                                style="display: block; box-sizing: border-box; height: 300px; min-width: 100%;"></canvas>
+
                         </div>
                     </div>
                 </div>
@@ -580,6 +607,9 @@
 
 
     <script>
+        function grafico2() {
+
+        }
         function grafico() {
 
             const ctx = document.getElementById('myChart');
@@ -588,12 +618,12 @@
                 datasets: [{
                     label: 'cputotal',
                     data: [
-                        datares[datares.length - 6].uso_cpu_total_perc,
-                        datares[datares.length - 5].uso_cpu_total_perc,
-                        datares[datares.length - 4].uso_cpu_total_perc,
-                        datares[datares.length - 3].uso_cpu_total_perc,
-                        datares[datares.length - 2].uso_cpu_total_perc,
-                        datares[datares.length - 1].uso_cpu_total_perc
+                        dadosfiltrados[dadosfiltrados.length - 6].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 5].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 4].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 3].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 2].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
                     ],
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
@@ -602,43 +632,43 @@
                 {
                     label: 'processo1',
                     data: [
-                        datares[datares.length - 6].cpu_perc1,
-                        datares[datares.length - 5].cpu_perc1,
-                        datares[datares.length - 4].cpu_perc1,
-                        datares[datares.length - 3].cpu_perc1,
-                        datares[datares.length - 2].cpu_perc1,
-                        datares[datares.length - 1].cpu_perc1
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc1
                     ],
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
                     tension: 0.1,
-                    hidden: true
+                    hidden: false
                 },
                 {
                     label: 'processo2',
                     data: [
-                        datares[datares.length - 6].cpu_perc2,
-                        datares[datares.length - 5].cpu_perc2,
-                        datares[datares.length - 4].cpu_perc2,
-                        datares[datares.length - 3].cpu_perc2,
-                        datares[datares.length - 2].cpu_perc2,
-                        datares[datares.length - 1].cpu_perc2
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc2
                     ],
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
                     tension: 0.1,
-                    hidden: true
+                    hidden: false
 
                 },
                 {
                     label: 'processo3',
                     data: [
-                        datares[datares.length - 6].cpu_perc3,
-                        datares[datares.length - 5].cpu_perc3,
-                        datares[datares.length - 4].cpu_perc3,
-                        datares[datares.length - 3].cpu_perc3,
-                        datares[datares.length - 2].cpu_perc3,
-                        datares[datares.length - 1].cpu_perc3
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc3
                     ],
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
@@ -648,12 +678,12 @@
                 {
                     label: 'processo4',
                     data: [
-                        datares[datares.length - 6].cpu_perc4,
-                        datares[datares.length - 5].cpu_perc4,
-                        datares[datares.length - 4].cpu_perc4,
-                        datares[datares.length - 3].cpu_perc4,
-                        datares[datares.length - 2].cpu_perc4,
-                        datares[datares.length - 1].cpu_perc4
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc4
                     ],
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
@@ -663,12 +693,12 @@
                 {
                     label: 'processo5',
                     data: [
-                        datares[datares.length - 6].cpu_perc5,
-                        datares[datares.length - 5].cpu_perc5,
-                        datares[datares.length - 4].cpu_perc5,
-                        datares[datares.length - 3].cpu_perc5,
-                        datares[datares.length - 2].cpu_perc5,
-                        datares[datares.length - 1].cpu_perc5
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc5
                     ],
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
@@ -678,12 +708,12 @@
                 {
                     label: 'processo6',
                     data: [
-                        datares[datares.length - 6].cpu_perc6,
-                        datares[datares.length - 5].cpu_perc6,
-                        datares[datares.length - 4].cpu_perc6,
-                        datares[datares.length - 3].cpu_perc6,
-                        datares[datares.length - 2].cpu_perc6,
-                        datares[datares.length - 1].cpu_perc6
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc6
                     ],
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
@@ -693,12 +723,12 @@
                 {
                     label: 'processo7',
                     data: [
-                        datares[datares.length - 6].cpu_perc7,
-                        datares[datares.length - 5].cpu_perc7,
-                        datares[datares.length - 4].cpu_perc7,
-                        datares[datares.length - 3].cpu_perc7,
-                        datares[datares.length - 2].cpu_perc7,
-                        datares[datares.length - 1].cpu_perc7
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc7
                     ],
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
@@ -708,12 +738,12 @@
                 {
                     label: 'processo8',
                     data: [
-                        datares[datares.length - 6].cpu_perc8,
-                        datares[datares.length - 5].cpu_perc8,
-                        datares[datares.length - 4].cpu_perc8,
-                        datares[datares.length - 3].cpu_perc8,
-                        datares[datares.length - 2].cpu_perc8,
-                        datares[datares.length - 1].cpu_perc8
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc8
                     ],
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
@@ -723,12 +753,12 @@
                 {
                     label: 'processo9',
                     data: [
-                        datares[datares.length - 6].cpu_perc9,
-                        datares[datares.length - 5].cpu_perc9,
-                        datares[datares.length - 4].cpu_perc9,
-                        datares[datares.length - 3].cpu_perc9,
-                        datares[datares.length - 2].cpu_perc9,
-                        datares[datares.length - 1].cpu_perc9
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc9
                     ],
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
@@ -746,13 +776,15 @@
                 options: {
                     onClick: (event, elements) => {
                         if (elements.length > 0) {
+
                             // Pega o índice do ponto clicado
                             const index = elements[0].index;
                             const label = data.labels[index];
                             const value = data.datasets[0].data[index];
                             const realIndex = index - 6;
+                            atribuirvalor(realIndex)
 
-                            const obj = datares[datares.length + realIndex];
+                            const obj = dadosfiltrados[dadosfiltrados.length + realIndex];
 
                             processosjson = [
                                 { nome: obj.nome1, cpu: parseFloat(obj.cpu_perc1), mem: parseFloat(obj.mem_perc1) },
@@ -808,7 +840,10 @@
         }
 
         function listaprocesso() {
-            const obj1 = datares[datares.length - 1];
+            let valor = dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
+
+            document.getElementById("graficoValor").textContent = valor + "%";
+            const obj1 = dadosfiltrados[dadosfiltrados.length - 1];
 
             processosjson = [
                 { nome: obj1.nome1, cpu: parseFloat(obj1.cpu_perc1), mem: parseFloat(obj1.mem_perc1) },
@@ -843,6 +878,12 @@
               `;
             }
 
+        }
+
+        function atribuirvalor(realIndex) {
+            let valor = dadosfiltrados[dadosfiltrados.length + realIndex].uso_cpu_total_perc
+
+            document.getElementById("graficoValor").textContent = valor + "%";
         }
     </script>
 

@@ -1,18 +1,21 @@
 #myChart{
-    width: 100px; 
-     
+    width: 100px;  
 }
 .graficos{
     max-width:65%;
+    max-height: 20%;
 }
-
+.grafico-box{
+     
+    padding-bottom: 0px;
+}
+.grafico-container{
+ height: 310px;
+}
 #processo{
     background-color: var(--azul-escuro); 
-    
-    border: 1px solid var(--azul-medio);
-    min-width:30% ;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+     
+    min-width:30% ; 
 }
 .processobox{
     display: flex;
@@ -22,26 +25,18 @@
     border-bottom: 1px;
     border: 2px solid;
     padding: 0px 20px; 
-    
 }
 #cabecalho{
     background-color: #1d315f; 
+  
+}
+#cabecalho>h3{
+    font-size: 11pt;
 }
 .titulo{
-    width: 40%;
+    width: 50%;
 }
-.mainframeprocesso{
-    background-color: var(--azul-escuro);
-    padding: 20px;
-    border-radius: 6px;
-    /* bem sutil */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    color: #e0e0e0;
-    font-family: 'Inter', sans-serif; 
-    border: 1px solid var(--azul-medio); 
-    
-
-}
+ 
 .processobox>h3{
     font-size: 12px;
 }
@@ -49,5 +44,5 @@
 .col{
     display: flex;
     gap: 40px;
-    width: 100%;
-}
+    width: 100%; 
+} 
