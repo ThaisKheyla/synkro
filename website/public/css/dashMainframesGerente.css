@@ -12,7 +12,9 @@
     --branco: #f8fafc; /* Definido duas vezes, mantive o primeiro */
 
     --sucesso: #16a34a;
-    --perigo: #dc2626;
+    --emergencia: #dc2626;
+    --muito-urgente: #ff5e00;
+    --urgente: #ffd000;
     --fundo-card: #1f2937; /* Fundo escuro dos cards */
 
     --dasd-cor: #7c3aed; /* Roxo */
@@ -50,13 +52,9 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* ---------------------------------------------------------------------- */
-/* ======== BARRA LATERAL (INTACTA) ===================================== */
-/* ---------------------------------------------------------------------- */
-
 /* -------- Barra Lateral -------- */
 .barra-lateral {
-    width: 205px;
+    width: 232px;
     background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
     padding: 24px 16px;
     display: flex;
@@ -144,7 +142,6 @@ body {
     margin-top: 4px;
 }
 
-/* ======== BOTÃO LINKS (Antigo) ======== */
 
 .barra-lateral nav ul {
     list-style: none;
@@ -158,7 +155,7 @@ body {
 
 .barra-lateral nav ul li a {
     text-decoration: none;
-    color: var(--cinza); /* Esta variável não existe, mas mantida como no original */
+    color: var(--cinza); 
     font-weight: 500;
     padding: 12px 18px;
     display: block;
@@ -299,7 +296,13 @@ body {
 /* ---------------------------------------------------------------------- */
 /* ======== CONTEÚDO PRINCIPAL (REGRAS MANTIDAS) ========================= */
 /* ---------------------------------------------------------------------- */
-
+.titulo-dashboard {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--branco);
+    margin-bottom: 25px;
+    margin-top: 5px;
+}
 .conteudo-dashboard { 
     flex-grow: 1;
     padding: 30px;
@@ -328,165 +331,214 @@ body {
     min-height: 100px;
 }
 
-/* 1. MAINFRAMES COM MAIS ALERTAS (Topo e lista) */
-.card-topo {
-    grid-column: 1 / 3; 
-}
+/* =============================
+   DASHBOARD PRINCIPAL À DIREITA
+   ============================= */
 
-.card-titulo-roxo {
-    color: var(--dasd-cor);
-    font-size: 1.4rem;
-    font-weight: 800;
-    margin: 0 0 20px 0;
-    letter-spacing: 0.05em;
-    text-shadow: 0 0 8px rgba(124, 58, 237, 0.3);
-}
-
-/* 2. MAINFRAMES COM MAIS ALERTAS - LISTA */
-.lista-alertas {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* Modificado: Removemos o layout flexível do LI para aplicar ao A, mas mantemos a borda */
-.lista-alertas li {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.lista-alertas li:last-child {
-    border-bottom: none;
-}
-
-/* NOVO: Estilização do link (<a>) para preencher o LI e ter efeito de clique/layout */
-.lista-alertas li a {
-    display: flex; /* Essencial para o layout da linha */
-    align-items: center;
-    text-decoration: none; /* Remove o sublinhado padrão */
-    color: inherit; /* Garante que a cor do texto seja herdada do LI ou do CONTAINER */
-    font-size: 1.1rem; /* Movemos o tamanho e peso da fonte para o link */
-    font-weight: 600;
-    padding: 10px 0; /* Retorna o padding ao link */
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    cursor: pointer;
-}
-
-.lista-alertas li a:hover {
-    background-color: rgba(255, 255, 255, 0.05); /* Fundo sutil ao passar o mouse */
-    transform: translateX(3px); /* Movimento sutil para indicar clique */
-}
-
-/* Estilos dos spans internos (rank, nome, info, conta-alerta, setor) mantidos */
-.lista-alertas .rank {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--accent-light);
-    min-width: 40px;
-    text-align: right;
-    margin-right: 15px;
-}
-
-.lista-alertas .nome {
-    color: var(--branco);
+.conteudo-dashboard {
+    padding: 26px;
+    box-sizing: border-box;
     flex-grow: 1;
-    white-space: nowrap;
+    background-color: var(--azul-escuro);
 }
 
-.lista-alertas .info {
-    font-size: 1rem;
+/* GRID PRINCIPAL */
+.container-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+/* =============================
+   TOP KPIs
+   ============================= */
+.top-kpis {
+    grid-column: 1 / 3;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.kpi-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius: 10px;
+    padding: 14px;
+    border: 2px solid rgba(0,0,0,0.35);
+    box-shadow: var(--sombra-card);
+    min-height: 90px;
     color: var(--cinza-texto);
-    margin-left: 15px;
 }
 
-.lista-alertas .conta-alerta {
-    color: var(--perigo);
+.kpi-card .kpi-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--cinza-texto);
+    margin-bottom: 6px;
+}
+
+.kpi-card .kpi-value {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--branco);
+}
+
+.kpi-sub {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #e2e8f0;
+}
+
+/* =============================
+   CARDS DE GRÁFICOS
+   ============================= */
+
+.chart-left,
+.chart-right {
+    min-height: 220px;
+}
+
+.card .chart-title {
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    color: var(--cinza-texto);
     font-weight: 700;
 }
 
-.lista-alertas .setor {
-    font-weight: 400;
-    color: var(--cinza-texto);
+/* Ajuste para garantir que os canvas respeitem o tamanho */
+canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
+/* =============================
+   HISTÓRICO INFERIOR COM ABAS
+   ============================= */
 
-/* 3. GRÁFICO DE PIZZA (Coluna 1, Linha 2 do Grid) */
-.card-pizza {
-    grid-column: 1 / 2;
+.history-card {
+    grid-column: 1 / 3;
+    min-height: 320px;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+/* Aba lateral */
+.history-tabs {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius: 10px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    gap: 12px;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+
+.history-tabs button {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.04);
+    color: var(--cinza-texto);
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+}
+
+.history-tabs button.active {
+    background: linear-gradient(90deg, rgba(99,102,241,0.12), rgba(56,189,248,0.06));
+    color: var(--accent-light);
+    border-color: rgba(99,102,241,0.18);
+    transform: translateX(4px);
+}
+
+/* Área do gráfico inferior */
+.history-graph {
     position: relative;
+    padding: 8px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    border: 1px solid rgba(255,255,255,0.03);
+    border-radius: 10px;
 }
 
-.card-titulo-cinza {
-    color: var(--cinza-texto);
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 15px 0;
-    text-align: center;
-}
-
-.grafico-pizza-container {
-    width: 100%;
-    max-width: 300px; 
-    height: 100%;
-    min-height: 250px; 
-}
-
-/* 4. KPIS (Coluna 2, Linha 2 do Grid) */
-.card-kpis {
-    grid-column: 2 / 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    gap: 15px;
-    background-color: transparent;
-    box-shadow: none;
-    padding: 0;
-}
-
-.kpi-box {
-    background-color: var(--branco); 
-    border-radius: 12px;
-    padding: 20px 15px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    height: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.kpi-titulo {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--azul-escuro); 
-}
-
-.kpi-box:nth-child(1) .kpi-titulo {
-    color: var(--azul-primario);
-}
-
-.kpi-box:nth-child(2) .kpi-titulo {
+.trend-badge {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: rgba(220,38,38,0.08);
     color: var(--perigo);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    border: 1px solid rgba(220,38,38,0.12);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
+/* =============================
+   RESPONSIVIDADE
+   ============================= */
+@media (max-width: 1100px) {
+    .container-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+    }
 
-.kpi-valor {
-    font-size: 3rem;
-    font-weight: 800;
-    line-height: 1;
+    .top-kpis {
+        grid-column: 1 / 2;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-left,
+    .chart-right {
+        grid-column: 1 / 2;
+    }
+
+    .history-card {
+        grid-column: 1 / 2;
+        grid-template-columns: 1fr;
+    }
+
+    .history-tabs {
+        flex-direction: row;
+        overflow-x: auto;
+    }
+}
+/* =============================
+   AJUSTE DO GRÁFICO INFERIOR
+   ============================= */
+
+.history-card {
+    grid-column: 1 / 3;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 18px;
+    align-items: stretch;
+    height: auto;              
+    min-height: unset;        
+    padding-bottom: 12px;
 }
 
-.kpi-box:nth-child(1) .kpi-valor {
-    color: var(--azul-primario);
+.history-graph {
+    position: relative;
+    padding: 12px 10px 0 10px;
+    overflow: hidden;          
+    height: auto;
 }
 
-.kpi-box:nth-child(2) .kpi-valor {
-    color: var(--perigo);
+.history-graph canvas {
+    height: 260px !important; 
+    max-height: 260px;         
 }
+
+.history-tabs {
+    height: fit-content;
+}
+
+.history-card {
+    margin-top: 80px;
+}
+
