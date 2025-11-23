@@ -16,18 +16,19 @@
         var dadosfiltrados = []
         var dadoscru = []
         var processosjson = []
+        var horarioformatado = []
         async function carregar() {
             try {
                 const res = await fetch('http://localhost:8080/csv/processo');
                 if (!res.ok) throw new Error('Erro ao buscar dados');
                 dadosfiltrados = await res.json();
                 //datares=filtrardados(dadoscru);
-                 
+                formatarHorario();
                 grafico();
                 listaprocesso();
 
             } catch (erro) {
-                console.error(  erro);
+                console.error(erro);
             }
         }
 
@@ -166,10 +167,10 @@
                         </p>
 
                         <div class="grupo-botoes" role="tablist" aria-label="Seleção de Gráfico">
-                            <button class="botao-nav ativo" id="btnCPU" onclick="showChart('cpu')"
+                            <button class="botao-nav ativo" id="btnCPU" onclick="grafico()"
                                 title="Visualizar o gráfico de uso da CPU ao longo do tempo" role="tab"
                                 aria-selected="true">CPU</button>
-                            <button class="botao-nav" id="btnRAM" onclick="showChart('ram')"
+                            <button class="botao-nav" id="btnRAM" onclick="grafico2()"
                                 title="Visualizar o gráfico de consumo de memória RAM ao longo do tempo" role="tab"
                                 aria-selected="false">RAM</button>
 
@@ -193,402 +194,23 @@
                         </p>
                         <div class="grafico-container">
                             <canvas id="myChart" aria-label="Gráfico de linha Histórico da Métrica Selecionada"
-                                style="display: block; box-sizing: border-box; height: 300px; min-width: 100%;"></canvas>
+                                style="display: block; box-sizing: border-box; max-height: 300px; min-width: 100%;"></canvas>
 
                         </div>
                     </div>
                 </div>
-                <div id="processo"> </div>
+                <div class="direita">
+
+                    <div id="processo"></div>
+                    <button onclick="carregarUltimoAlerta()">ultimo alerta</button>
+                </div>
             </div>
     </div>
     </main>
 
     </div>
     <script>
-        // --- Variáveis Globais ---
-        const MAX_DATA_POINTS = 10;
-        let currentChartType = 'cpu';
-        let currentMainframeId = 1; // Mainframe ativo por padrão
-        let mainChart;
 
-        // Função auxiliar para gerar dados simulados dentro de um range
-        function generateSimulatedData(low, high, dataLength = 6) {
-            return Array.from({ length: dataLength }, () => Math.floor(Math.random() * (high - low + 1)) + low);
-        }
-
-        // Função auxiliar para criar a estrutura padrão de um recurso
-        function createResource(data, color, trendText, trendClass) {
-            return {
-                data: data,
-                color: color,
-                trendText: trendText,
-                trendClass: trendClass
-            };
-        }
-
-        // --- Estrutura de Dados Mockada para Múltiplos Mainframes (1 a 10) ---
-        const mainframesData = {
-            1: { // CRÍTICO: Offline, CPU/Temp Altas
-                nome: "Mainframe 1",
-                statusClass: "offline",
-                cpu: createResource(generateSimulatedData(90, 99), '#ef4444', '+15% desde ontem', 'up'),
-                ram: createResource(generateSimulatedData(70, 85), '#10b981', '+2% desde ontem', 'up'),
-                disk: createResource(generateSimulatedData(80, 95), '#f59e0b', '+10% desde ontem', 'up'),
-                temp: createResource(generateSimulatedData(80, 90), '#ef4444', '+8°C desde ontem', 'up'),
-                uptime: { value: 95.2, desc: '95.2% (Alto Risco)' },
-                extras: {
-                    temperatura: { value: '88°C', desc: 'Crítico' },
-                    rede: { value: '2.5 Gb/s', desc: 'Alto Tráfego' },
-                    eventos: { value: '15', desc: 'Últimas 24h' }
-                }
-            },
-            2: { // WARNING: Atenção, RAM Média/Alta
-                nome: "Mainframe 2",
-                statusClass: "warning",
-                cpu: createResource(generateSimulatedData(75, 88), '#2563eb', '+5% desde ontem', 'up'),
-                ram: createResource(generateSimulatedData(65, 78), '#10b981', '-5% desde ontem', 'down'),
-                disk: createResource(generateSimulatedData(55, 68), '#f59e0b', '+3% desde ontem', 'up'),
-                temp: createResource(generateSimulatedData(60, 70), '#6366f1', 'Estável', 'neutral'),
-                uptime: { value: 99.7, desc: '99.7% (Estável)' },
-                extras: {
-                    temperatura: { value: '63°C', desc: 'Atual' },
-                    rede: { value: '1.2 Gb/s', desc: 'Última hora' },
-                    eventos: { value: '2', desc: 'Últimas 24h' }
-                }
-            },
-            3: { // NORMAL: Ideal, Baixa Utilização
-                nome: "Mainframe 3",
-                statusClass: "warning",
-                cpu: createResource(generateSimulatedData(40, 55), '#2563eb', '-1% desde ontem', 'down'),
-                ram: createResource(generateSimulatedData(30, 45), '#10b981', '-10% desde ontem', 'down'),
-                disk: createResource(generateSimulatedData(25, 40), '#f59e0b', '0% desde ontem', 'neutral'),
-                temp: createResource(generateSimulatedData(45, 55), '#2563eb', '-5°C desde ontem', 'down'),
-                uptime: { value: 99.99, desc: '99.99% (Ideal)' },
-                extras: {
-                    temperatura: { value: '50°C', desc: 'Frio' },
-                    rede: { value: '0.5 Gb/s', desc: 'Baixo Tráfego' },
-                    eventos: { value: '0', desc: 'Últimas 24h' }
-                }
-            },
-            4: { // NORMAL: Uso Mediano, Estável
-                nome: "Mainframe 4",
-                statusClass: "warning",
-                cpu: createResource(generateSimulatedData(55, 65), '#2563eb', 'Estável', 'neutral'),
-                ram: createResource(generateSimulatedData(50, 60), '#10b981', 'Estável', 'neutral'),
-                disk: createResource(generateSimulatedData(60, 70), '#f59e0b', 'Estável', 'neutral'),
-                temp: createResource(generateSimulatedData(55, 65), '#6366f1', 'Estável', 'neutral'),
-                uptime: { value: 99.8, desc: '99.8% (Estável)' },
-                extras: {
-                    temperatura: { value: '55°C', desc: 'Normal' },
-                    rede: { value: '0.8 Gb/s', desc: 'Normal' },
-                    eventos: { value: '1', desc: 'Últimas 24h' }
-                }
-            },
-            5: { // WARNING: Atenção, Disk/Temp Subindo
-                nome: "Mainframe 5",
-                statusClass: "normal",
-                cpu: createResource(generateSimulatedData(70, 85), '#2563eb', 'Atenção (+)', 'up'),
-                ram: createResource(generateSimulatedData(60, 75), '#10b981', 'Estável', 'neutral'),
-                disk: createResource(generateSimulatedData(70, 85), '#f59e0b', 'Atenção (+)', 'up'),
-                temp: createResource(generateSimulatedData(65, 75), '#f59e0b', 'Atenção (+)', 'up'),
-                uptime: { value: 98.5, desc: '98.5% (Atenção)' },
-                extras: {
-                    temperatura: { value: '70°C', desc: 'Atenção' },
-                    rede: { value: '1.5 Gb/s', desc: 'Alto' },
-                    eventos: { value: '5', desc: 'Últimas 24h' }
-                }
-            }
-        };
-
-        // 1. Atualiza o gráfico principal (CPU/RAM/DISCO/TEMP)
-        function initMainChart(chartType, mainframeId) {
-            const mfData = mainframesData[mainframeId];
-            const config = mfData[chartType];
-            currentChartType = chartType;
-
-            const titleText =
-                chartType === "temp"
-                    ? "Temperatura (°C)"
-                    : chartType === "cpu"
-                        ? "Uso da CPU (%)"
-                        : chartType === "ram"
-                            ? "Uso da Memória (%)"
-                            : "Uso do Disco (%)";
-
-            if (mainChart) mainChart.destroy();
-
-            const ctx = document.getElementById("mainChart").getContext("2d");
-
-            // === gradiente slk === //
-            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, `${config.color}88`);
-            gradient.addColorStop(1, `${config.color}08`);
-
-            mainChart = new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: config.data.map((_, i) => `${(config.data.length - i - 1) * 3}s atrás`),
-                    datasets: [{
-                        label: titleText,
-                        data: config.data.slice().reverse(),
-                        borderColor: config.color,
-                        backgroundColor: gradient,
-                        fill: true,
-                        tension: 0.35,
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: "#fff",
-                        pointBorderColor: config.color,
-                        pointBorderWidth: 2,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false,
-                            labels: {
-                                color: "#0f172a",
-                                font: { size: 14, weight: "500" },
-                                padding: 1,
-                                boxWidth: 12,
-                            },
-                        },
-                        tooltip: {
-                            backgroundColor: "rgba(20, 24, 35, 0.9)",
-                            titleColor: "#fff",
-                            bodyColor: "#e5e5e5",
-                            borderColor: config.color,
-                            borderWidth: 1,
-                            displayColors: false,
-                            cornerRadius: 8,
-                            titleFont: { weight: "600" },
-                            bodyFont: { size: 13 },
-                            padding: 1,
-                            callbacks: {
-                                label: (ctx) => `${ctx.parsed.y}${chartType === 'temp' ? '°C' : '%'}`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            reverse: true,
-                            grid: {
-                                color: "rgba(255, 255, 255, 0.06)",
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: "#bfbfbf",
-                                font: { size: 12 },
-                                padding: 1
-                            },
-                            title: {
-                                display: false,
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            max: chartType === 'temp' ? 100 : 100,
-                            grid: {
-                                color: "rgba(255,255,255,0.06)",
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: "#bfbfbf",
-                                font: { size: 12 },
-                                stepSize: 10,
-                                padding: 1,
-                                callback: function (value) {
-                                    return value + (chartType === 'temp' ? '°C' : '');
-                                }
-                            },
-                            title: {
-                                display: false,
-                            }
-                        }
-                    },
-                    layout: {
-                        padding: { top: 2, left: 5, right: 5, bottom: 0 }
-                    },
-                    animation: {
-                        duration: 900,
-                        easing: "easeOutQuart"
-                    }
-                },
-                plugins: [{
-                    id: 'customCanvasBackgroundColor',
-                    beforeDraw: (chart, args, options) => {
-                        const { ctx } = chart;
-                        ctx.save();
-                        ctx.globalCompositeOperation = 'destination-over';
-                        ctx.fillStyle = 'transparent'; // O CRUCIAL mds
-                        ctx.fillRect(0, 0, chart.width, chart.height);
-                        ctx.restore();
-                    }
-                }]
-            });
-
-            updateChartKpis(mainframeId);
-        }
-        // 3. Atualiza os KPIs principais
-        function updateMainKpis(mainframeId) {
-            const mfData = mainframesData[mainframeId];
-            const units = {
-                cpu: '%',
-                ram: `% <span class="kpi-gb">(13/20 GB)</span>`,
-                disk: `% <span class="kpi-gb">(550/1000 GB)</span>`
-            }
-
-            // Seletores dos elementos principais
-            const cpuValueEl = document.querySelector('.kpi-cpu .kpi-valor');
-            const ramValueEl = document.querySelector('.kpi-ram .kpi-valor');
-            const diskValueEl = document.querySelector('.kpi-disk .kpi-valor');
-
-            // Atualização com verificação
-            if (cpuValueEl) cpuValueEl.innerHTML = `${mfData.cpu.data[mfData.cpu.data.length - 1]}${units.cpu}`;
-            if (ramValueEl) ramValueEl.innerHTML = `${mfData.ram.data[mfData.ram.data.length - 1]}${units.ram}`;
-            if (diskValueEl) diskValueEl.innerHTML = `${mfData.disk.data[mfData.disk.data.length - 1]}${units.disk}`;
-        }
-
-        // 4. Atualiza os KPIs Extras (Detalhes do Mainframe)
-        function updateMainframeDetails(mainframeId) {
-            const mfData = mainframesData[mainframeId];
-            const extras = mfData.extras;
-
-            // Título Principal
-            const mfNomeEl = document.getElementById('mfNome');
-            if (mfNomeEl) mfNomeEl.textContent = mfData.nome;
-
-            // Detalhes estáticos/mockados (IP, Status, Evento, Uptime em Horas)
-            const mfStatusEl = document.getElementById('mfStatus');
-            if (mfStatusEl) mfStatusEl.textContent = mfData.statusClass.toUpperCase();
-            if (mfStatusEl) mfStatusEl.className = 'mf-card-valor ' + mfData.statusClass; // Adiciona classe de cor
-            // Os outros IDs (mfIP, mfUltEvento, mfUptime) precisam ser atualizados manualmente se quiser dados dinâmicos, 
-            // mas manteremos estáticos no mock de extras por simplicidade.
-
-            // Métricas Extras
-            const kpiTempValor = document.getElementById('kpiTempValor');
-            const kpiTempDesc = document.getElementById('kpiTempDesc');
-            const kpiRedeValor = document.getElementById('kpiRedeValor');
-            const kpiRedeDesc = document.getElementById('kpiRedeDesc');
-            const kpiEventosValor = document.getElementById('kpiEventosValor');
-            const kpiEventosDesc = document.getElementById('kpiEventosDesc');
-
-            if (kpiTempValor) kpiTempValor.textContent = extras.temperatura.value;
-            if (kpiTempDesc) kpiTempDesc.textContent = extras.temperatura.desc;
-
-            if (kpiRedeValor) kpiRedeValor.textContent = extras.rede.value;
-            if (kpiRedeDesc) kpiRedeDesc.textContent = extras.rede.desc;
-
-            if (kpiEventosValor) kpiEventosValor.textContent = extras.eventos.value;
-            if (kpiEventosDesc) kpiEventosDesc.textContent = extras.eventos.desc;
-        }
-
-        // 5. Atualiza as métricas e título do gráfico selecionado (barra lateral do gráfico)
-        function updateChartKpis(mainframeId) {
-            const mfData = mainframesData[mainframeId];
-            const config = mfData[currentChartType];
-
-            const latestValue = config.data[config.data.length - 1];
-            let unit = currentChartType === 'temp' ? '°C' : '%';
-
-            const iconClass = currentChartType === 'temp' ? 'ri-temp-hot-line' : currentChartType === 'cpu' ? 'ri-cpu-line' : currentChartType === 'ram' ? 'ri-database-2-line' : 'ri-hard-drive-2-line';
-            const titleText = currentChartType === 'temp' ? 'TEMPERATURA (°C)' : currentChartType.toUpperCase() + ' - Uso (%)';
-
-            document.getElementById('titulo-grafico').innerHTML = `<i class="${iconClass}"></i> ${titleText}`;
-            document.getElementById('graficoValor').textContent = `${latestValue}${unit}`;
-            document.getElementById('graficoTexto').textContent = 'Valor Atual';
-
-            const trendElement = document.getElementById('graficoTendencia');
-            trendElement.innerHTML = `<i class="ri-arrow-${config.trendClass === 'up' ? 'up' : config.trendClass === 'down' ? 'down' : 'up'}-line"></i> ${config.trendText}`; // Usando 'up' como fallback para 'neutral' para o ícone
-            trendElement.className = 'grafico-tendencia ' + config.trendClass;
-        }
-
-        // 6. Simulação em tempo real para o Mainframe ATUAL
-        function updateChartData() {
-            const mfData = mainframesData[currentMainframeId];
-
-            for (const type of ['cpu', 'ram', 'disk', 'temp']) {
-                const config = mfData[type];
-                let newValue;
-                let range;
-
-                // Define os ranges de simulação com base no status do Mainframe
-                if (currentMainframeId == 1) { // Crítico
-                    range = type === 'temp' ? [80, 90] : [90, 99];
-                } else if (currentMainframeId == 3 || currentMainframeId == 6) { // Baixa Utilização
-                    range = type === 'temp' ? [45, 55] : [30, 55];
-                } else if (currentMainframeId == 9) { // Desligado/Offline
-                    range = type === 'temp' ? [30, 40] : [0, 5];
-                } else { // Padrão/Normal/Warning
-                    range = type === 'temp' ? [55, 75] : [60, 85];
-                }
-
-                newValue = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
-
-                // Adiciona o novo valor e remove o mais antigo
-                config.data.push(newValue);
-                if (config.data.length > MAX_DATA_POINTS) {
-                    config.data.shift();
-                }
-            }
-
-            // Atualiza o gráfico e KPIs
-            if (mainChart) {
-                // Atualiza o dataset e labels (o Chart.js usa a ordem reversa para o eixo X)
-                mainChart.data.datasets[0].data = mfData[currentChartType].data.slice().reverse();
-                mainChart.data.labels = new Array(mfData[currentChartType].data.length).fill('').map((_, i) => `${(mfData[currentChartType].data.length - 1 - i) * 3}s atrás`);
-                mainChart.update();
-                updateChartKpis(currentMainframeId);
-            }
-            // OBS: O gráfico de Uptime e MainKpis não são simulados em tempo real aqui.
-        }
-
-        // 7. Função Principal de Troca de Mainframe
-        function loadMainframeDetails(mainframeId) {
-            // Garante que o ID exista e converte para número
-            const id = parseInt(mainframeId);
-            if (!mainframesData[id]) {
-                console.error(`Mainframe com ID ${id} não encontrado.`);
-                return;
-            }
-            currentMainframeId = id;
-
-            // 1. Atualiza o título da página/dashboard
-            document.title = `Dashboard - Synkro: ${mainframesData[id].nome}`;
-
-            // 2. Atualiza o card de Mainframes (aside) para destacar o ativo
-            document.querySelectorAll('.mainframe-evento').forEach(div => {
-                div.classList.remove('ativo');
-                div.classList.remove('offline', 'warning', 'normal');
-            });
-            const activeMFElement = document.querySelector(`.mainframe-evento[data-id="${id}"]`);
-            if (activeMFElement) {
-                activeMFElement.classList.add('ativo');
-                activeMFElement.classList.add(mainframesData[id].statusClass);
-            }
-
-
-            // 3. Renderiza todos os KPIs e Gráficos com os novos dados
-            updateMainKpis(id);
-            updateMainframeDetails(id);
-            initMainChart(currentChartType, id);
-        }
-        function showChart(chartType) {
-            initMainChart(chartType, currentMainframeId);
-
-            document.querySelectorAll('.botao-nav').forEach(btn => btn.classList.remove('ativo'));
-
-            // Seleciona o botão correto, usando 'DISCO' como ID para 'disk'
-            const btnId = 'btn' + (chartType === 'disk' ? 'DISK' : chartType.toUpperCase());
-            const activeBtn = document.getElementById(btnId);
-
-            if (activeBtn) {
-                activeBtn.classList.add('ativo');
-            }
-        }
 
         // --- Inicialização na Carga da Página ---
         window.onload = function () {
@@ -607,17 +229,49 @@
 
 
     <script>
-        function grafico2() {
-
-        }
+        meugrafico = null
+        
         function grafico() {
+            if (meugrafico) {
+                meugrafico.destroy();
+                document.querySelectorAll('.botao-nav').forEach(btn => btn.classList.remove('ativo'));
+                elemento = document.getElementById('btnCPU');
+                elemento.classList.add('ativo')
+                let valor = dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
+                document.getElementById("graficoValor").textContent = valor + "%";
+
+            }
+
+
+
 
             const ctx = document.getElementById('myChart');
             data = {
-                labels: ['tempo1', 'tempo2', 'tempo3', 'tempo4', 'tempo5', 'tempo6'],
+                labels: [
+                    dadosfiltrados[dadosfiltrados.length - 13].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 12].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 11].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 10].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 9].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 8].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 7].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 6].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 5].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 4].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 3].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 2].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 1].timestamp
+                ],
                 datasets: [{
                     label: 'cputotal',
-                    data: [
+                    data: [ 
+                        dadosfiltrados[dadosfiltrados.length - 13].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 12].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 11].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 10].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 9].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 8].uso_cpu_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 7].uso_cpu_total_perc,
                         dadosfiltrados[dadosfiltrados.length - 6].uso_cpu_total_perc,
                         dadosfiltrados[dadosfiltrados.length - 5].uso_cpu_total_perc,
                         dadosfiltrados[dadosfiltrados.length - 4].uso_cpu_total_perc,
@@ -630,8 +284,15 @@
                     tension: 0.1
                 },
                 {
-                    label: 'processo1',
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome1,
                     data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc1,
                         dadosfiltrados[dadosfiltrados.length - 6].cpu_perc1,
                         dadosfiltrados[dadosfiltrados.length - 5].cpu_perc1,
                         dadosfiltrados[dadosfiltrados.length - 4].cpu_perc1,
@@ -645,8 +306,15 @@
                     hidden: false
                 },
                 {
-                    label: 'processo2',
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome2,
                     data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc2,
                         dadosfiltrados[dadosfiltrados.length - 6].cpu_perc2,
                         dadosfiltrados[dadosfiltrados.length - 5].cpu_perc2,
                         dadosfiltrados[dadosfiltrados.length - 4].cpu_perc2,
@@ -661,8 +329,15 @@
 
                 },
                 {
-                    label: 'processo3',
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome3,
                     data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc3,
                         dadosfiltrados[dadosfiltrados.length - 6].cpu_perc3,
                         dadosfiltrados[dadosfiltrados.length - 5].cpu_perc3,
                         dadosfiltrados[dadosfiltrados.length - 4].cpu_perc3,
@@ -676,8 +351,15 @@
                     hidden: true
                 },
                 {
-                    label: 'processo4',
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome4,
                     data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc4,
                         dadosfiltrados[dadosfiltrados.length - 6].cpu_perc4,
                         dadosfiltrados[dadosfiltrados.length - 5].cpu_perc4,
                         dadosfiltrados[dadosfiltrados.length - 4].cpu_perc4,
@@ -691,8 +373,15 @@
                     hidden: true
                 },
                 {
-                    label: 'processo5',
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome5,
                     data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc5,
                         dadosfiltrados[dadosfiltrados.length - 6].cpu_perc5,
                         dadosfiltrados[dadosfiltrados.length - 5].cpu_perc5,
                         dadosfiltrados[dadosfiltrados.length - 4].cpu_perc5,
@@ -706,8 +395,15 @@
                     hidden: true
                 },
                 {
-                    label: 'processo6',
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome6,
                     data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc6,
                         dadosfiltrados[dadosfiltrados.length - 6].cpu_perc6,
                         dadosfiltrados[dadosfiltrados.length - 5].cpu_perc6,
                         dadosfiltrados[dadosfiltrados.length - 4].cpu_perc6,
@@ -721,8 +417,15 @@
                     hidden: true
                 },
                 {
-                    label: 'processo7',
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome7,
                     data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc7,
                         dadosfiltrados[dadosfiltrados.length - 6].cpu_perc7,
                         dadosfiltrados[dadosfiltrados.length - 5].cpu_perc7,
                         dadosfiltrados[dadosfiltrados.length - 4].cpu_perc7,
@@ -736,8 +439,15 @@
                     hidden: true
                 },
                 {
-                    label: 'processo8',
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome8,
                     data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc8,
                         dadosfiltrados[dadosfiltrados.length - 6].cpu_perc8,
                         dadosfiltrados[dadosfiltrados.length - 5].cpu_perc8,
                         dadosfiltrados[dadosfiltrados.length - 4].cpu_perc8,
@@ -751,8 +461,15 @@
                     hidden: true
                 },
                 {
-                    label: 'processo9',
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome9,
                     data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc9,
                         dadosfiltrados[dadosfiltrados.length - 6].cpu_perc9,
                         dadosfiltrados[dadosfiltrados.length - 5].cpu_perc9,
                         dadosfiltrados[dadosfiltrados.length - 4].cpu_perc9,
@@ -769,8 +486,7 @@
 
 
             }
-
-            new Chart(ctx, {
+            meugrafico = new Chart(ctx, {
                 type: 'line',
                 data: data,
                 options: {
@@ -781,9 +497,11 @@
                             const index = elements[0].index;
                             const label = data.labels[index];
                             const value = data.datasets[0].data[index];
-                            const realIndex = index - 6;
-                            atribuirvalor(realIndex)
-
+                            const realIndex = index - 13;
+                            const atributo = "uso_cpu_total_perc"
+                             
+                            atribuirvalor(realIndex, atributo)
+                             
                             const obj = dadosfiltrados[dadosfiltrados.length + realIndex];
 
                             processosjson = [
@@ -820,6 +538,8 @@
                 `;
                             }
 
+
+
                             alert(`Você clicou em ${label}: ${value}% ${realIndex} `);
 
                         }
@@ -839,7 +559,329 @@
 
         }
 
+        function grafico2() {
+            if (meugrafico) {
+                meugrafico.destroy();
+                document.querySelectorAll('.botao-nav').forEach(btn => btn.classList.remove('ativo'));
+                elemento = document.getElementById('btnRAM');
+                elemento.classList.add('ativo')
+                let valor = dadosfiltrados[dadosfiltrados.length - 1].uso_ram_total_perc
+                document.getElementById("graficoValor").textContent = valor + "%";
+            }
+
+            const ctx = document.getElementById('myChart');
+            data = {
+                labels: [
+                    dadosfiltrados[dadosfiltrados.length - 13].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 12].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 11].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 10].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 9].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 8].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 7].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 6].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 5].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 4].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 3].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 2].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 1].timestamp
+                ],
+                datasets: [{
+                    label: 'ramtotal',
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 12].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 11].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 10].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 9].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 8].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 7].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 6].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 5].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 4].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 3].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 2].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 1].uso_ram_total_perc
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome1,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc1
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: false
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome2,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc2
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: false
+
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome3,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc3
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome4,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc4
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome5,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc5
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome6,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc6
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome7,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc7
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome8,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc8
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome9,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc9
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                ]
+
+            }
+            meugrafico = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+
+                            // Pega o índice do ponto clicado
+                            const index = elements[0].index;
+                            const label = data.labels[index];
+                            const value = data.datasets[0].data[index];
+                            const realIndex = index - 13;
+                            const atributo = "uso_ram_total_perc"
+                            atribuirvalor(realIndex, atributo)
+
+                            const obj = dadosfiltrados[dadosfiltrados.length + realIndex];
+
+                            processosjson = [
+                                { nome: obj.nome1, cpu: parseFloat(obj.cpu_perc1), mem: parseFloat(obj.mem_perc1) },
+                                { nome: obj.nome2, cpu: parseFloat(obj.cpu_perc2), mem: parseFloat(obj.mem_perc2) },
+                                { nome: obj.nome3, cpu: parseFloat(obj.cpu_perc3), mem: parseFloat(obj.mem_perc3) },
+                                { nome: obj.nome4, cpu: parseFloat(obj.cpu_perc4), mem: parseFloat(obj.mem_perc4) },
+                                { nome: obj.nome5, cpu: parseFloat(obj.cpu_perc5), mem: parseFloat(obj.mem_perc5) },
+                                { nome: obj.nome6, cpu: parseFloat(obj.cpu_perc6), mem: parseFloat(obj.mem_perc6) },
+                                { nome: obj.nome7, cpu: parseFloat(obj.cpu_perc7), mem: parseFloat(obj.mem_perc7) },
+                                { nome: obj.nome8, cpu: parseFloat(obj.cpu_perc8), mem: parseFloat(obj.mem_perc8) },
+                                { nome: obj.nome9, cpu: parseFloat(obj.cpu_perc9), mem: parseFloat(obj.mem_perc9) },
+                            ];
+                            processosjson.sort((a, b) => b.mem - a.mem);
+                            processo.innerHTML = ``
+                            processo.innerHTML = `
+            <div class="processobox" id="cabecalho">
+                <h3 class="titulo">Nome do Processo</h3>
+                <h3>CPU</h3>
+                <h3>RAM</h3> 
+                </div>
+                
+                `
+
+                            for (let x = 0; x < 10; x++) {
+
+                                processo.innerHTML += `
+              <div class="processobox">
+                <h3 class="titulo">${processosjson[x].nome}</h3>
+                <h3>${processosjson[x].cpu}%</h3>
+                <h3>${processosjson[x].mem}%</h3> 
+                </div>
+                
+                `;
+                            }
+
+
+
+                            alert(`Você clicou em ${label}: ${value}% ${realIndex} `);
+
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
         function listaprocesso() {
+            //método aciona quando for a priemira vez que carrega o script
             let valor = dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
 
             document.getElementById("graficoValor").textContent = valor + "%";
@@ -878,12 +920,29 @@
               `;
             }
 
+
         }
 
-        function atribuirvalor(realIndex) {
-            let valor = dadosfiltrados[dadosfiltrados.length + realIndex].uso_cpu_total_perc
-
+        function atribuirvalor(realIndex, atributo) {
+            console.log(realIndex)
+            console.log(dadosfiltrados[2])
+            console.log(dadosfiltrados[dadosfiltrados.length + realIndex]) 
+            let valor = dadosfiltrados[dadosfiltrados.length + realIndex][atributo]
+             
             document.getElementById("graficoValor").textContent = valor + "%";
+        }
+
+        function formatarHorario() {
+            dadosfiltrados = dadosfiltrados.map(item => {
+                const horaCompleta = item.timestamp.split(" ")[1];
+                const [h, m] = horaCompleta.split(":");
+
+                return {
+                    ...item,
+                    timestamp: `${h}:${m}`  
+                };
+            });
+            
         }
     </script>
 
