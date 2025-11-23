@@ -230,7 +230,7 @@
 
     <script>
         meugrafico = null
-        
+
         function grafico() {
             if (meugrafico) {
                 meugrafico.destroy();
@@ -264,42 +264,30 @@
                 ],
                 datasets: [{
                     label: 'cputotal',
-                    data: [ 
-                        dadosfiltrados[dadosfiltrados.length - 13].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 12].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 11].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 10].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 9].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 8].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 7].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 6].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 5].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 4].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 3].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 2].uso_cpu_total_perc,
-                        dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
-                    ],
+                    data: 
+                        dadosmovel("uso_cpu_total_perc",13)
+                        
+                        //dadosfiltrados[dadosfiltrados.length - 13].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 12].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 11].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 10].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 9].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 8].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 7].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 6].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 5].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 4].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 3].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 2].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
+                    ,
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.1
                 },
                 {
                     label: dadosfiltrados[dadosfiltrados.length - 1].nome1,
-                    data: [
-                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc1,
-                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc1
-                    ],
+                    data: dadosmovel("cpu_perc1",13),
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
                     tension: 0.1,
@@ -499,9 +487,9 @@
                             const value = data.datasets[0].data[index];
                             const realIndex = index - 13;
                             const atributo = "uso_cpu_total_perc"
-                             
+
                             atribuirvalor(realIndex, atributo)
-                             
+
                             const obj = dadosfiltrados[dadosfiltrados.length + realIndex];
 
                             processosjson = [
@@ -926,9 +914,9 @@
         function atribuirvalor(realIndex, atributo) {
             console.log(realIndex)
             console.log(dadosfiltrados[2])
-            console.log(dadosfiltrados[dadosfiltrados.length + realIndex]) 
+            console.log(dadosfiltrados[dadosfiltrados.length + realIndex])
             let valor = dadosfiltrados[dadosfiltrados.length + realIndex][atributo]
-             
+
             document.getElementById("graficoValor").textContent = valor + "%";
         }
 
@@ -939,10 +927,30 @@
 
                 return {
                     ...item,
-                    timestamp: `${h}:${m}`  
+                    timestamp: `${h}:${m}`
                 };
             });
-            
+
+        }
+         
+        function dadosmovel( coluna, quantidade) {
+            const array = []; 
+
+            for (i = quantidade; i >= 1; i--) { 
+                array.push(dadosfiltrados[dadosfiltrados.length-i][coluna]); 
+            } 
+             
+            return array;
+        }
+
+        function carregarUltimoAlerta() {
+            for (let i = dadosfiltrados.length - 1; i >= 0; i--) {
+                const element = dadosfiltrados[i];
+
+                if (element.uso_cpu_total_perc >= 80) { 
+                    break;  
+                }
+            }
         }
     </script>
 
