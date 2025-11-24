@@ -910,7 +910,7 @@
 
 
         }
-
+        //atualiza o valor azul que representa o total de cpu
         function atribuirvalor(realIndex, atributo) {
             console.log(realIndex)
             console.log(dadosfiltrados[2])
@@ -920,6 +920,7 @@
             document.getElementById("graficoValor").textContent = valor + "%";
         }
 
+        //formata as label do gráfico
         function formatarHorario() {
             dadosfiltrados = dadosfiltrados.map(item => {
                 const horaCompleta = item.timestamp.split(" ")[1];
@@ -932,7 +933,7 @@
             });
 
         }
-         
+        //função para não reescrever. coluna= coluna do csv. quantidade significa quantos registros você quer ver
         function dadosmovel( coluna, quantidade) {
             const array = []; 
 
@@ -943,11 +944,14 @@
             return array;
         }
 
+        //botão para verificar o ultimo alerta
         function carregarUltimoAlerta() {
+
             for (let i = dadosfiltrados.length - 1; i >= 0; i--) {
                 const element = dadosfiltrados[i];
 
                 if (element.uso_cpu_total_perc >= 80) { 
+                    
                     break;  
                 }
             }
