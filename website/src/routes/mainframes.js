@@ -17,11 +17,27 @@ router.post("/", mainframesController.cadastrarMainframe);
 
 router.get("/empresa/:idEmpresa", mainframesController.listarPorEmpresa);
 router.get("/visaoGeral/:idEmpresa", mainframesController.visaoGeralPorEmpresa);
+router.get("/statusComponentes/:fkEmpresa", mainframesController.buscarStatusComponentes);
 
 router.get("/", mainframesController.listarMainframes);
 
 router.get("/alertasPorMainframe/:fkEmpresa", function (req, res) {
     mainframesController.contarAlertasPorMainframe(req, res);
+});
+
+// Rota para buscar o Ranking dos Mainframes com mais alertas (Lista Top 5)
+router.get("/rankingAlertas/:fkEmpresa", function (req, res) {
+    mainframesController.buscarRankingAlertas(req, res);
+});
+
+// Rota para buscar KPIs (Total de Mainframes e Com Alerta)
+router.get("/statusGeralEKPIs/:fkEmpresa", function (req, res) {
+    mainframesController.buscarStatusGeralEKPIs(req, res);
+});
+
+// Rota para buscar detalhes de alertas de um Mainframe específico
+router.get("/detalheAlertas/:idMainframe", function (req, res) {
+    mainframesController.buscarAlertasPorMainframe(req, res);
 });
 
 module.exports = router;

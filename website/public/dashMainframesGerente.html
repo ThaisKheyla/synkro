@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Gerencial - Synkro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashMainframesGerente.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="layout-principal">
+        <!-- ============================
+             BARRA LATERAL (EXATA DO SEU ARQUIVO)
+             ============================ -->
+        <aside class="barra-lateral">
+            <div class="logo">Synkro</div>
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+                <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+                <div class="cargo-usuario">
+                    <i class="ri-shield-user-line"></i>
+                    Gerente de Infra
+                </div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+            </div>
+            <nav>
+                <ul class="menu-links">
+                    <li><a href="dashboardGerente.html"><i class="ri-dashboard-3-line"></i>Visão Geral</a></li>
+                    <li><a href="visaoMainframesGerente.html" class="ativo"><i
+                                class="ri-dashboard-3-line"></i>Mainframes</a></li>
+                    <li><a href="historico.html"><i class="ri-file-add-line icon-cadastro"></i>Logs e Histórico</a></li>
+                    <li><a href="Funcionarios.html"><i class="ri-database-2-line"></i>Funcionários cadastrados</a></li>
+                </ul>
+                <button class="btn-sair" onclick="limparSessao()"><i class="ri-logout-box-r-line"></i>Encerrar
+                    Sessão</button>
+            </nav>
+        </aside>
+
+        <!-- ============================
+             CONTEÚDO DIREITA: DASHBOARD (NOVO)
+             ============================ -->
+        <main class="conteudo-dashboard dashboard-mainframe">
+            <h3 class="titulo-dashboard">
+                VISÃO GERAL DE ALERTAS DA ÚLTIMA SEMANA DO MAINFRAME: Z15
+            </h3>
+            <div class="container-grid">
+
+                <!-- TOP KPIS (ocupa col 1/3) -->
+                <div class="top-kpis">
+                    <div class="kpi-card">
+                        <div class="kpi-title">Total de Alertas</div>
+                        <div id="kpi-total" class="kpi-value" style="color:var(--emergencia);">100</div>
+                        <div class="kpi-sub"><span
+                                style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--emergencia);margin-right:8px;"></span>
+                            Emergência | Média de <strong id="kpi-media">14.2</strong> alertas por dia</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-title">Pico de Alertas</div>
+                        <div id="kpi-pico" class="kpi-value" style="color:var(--emergencia);">Segunda-feira</div>
+                        <div class="kpi-sub"><span
+                                style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--emergencia);margin-right:8px;"></span>
+                            Emergência | 10 alertas</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-title">Horário da semana com mais alertas</div>
+                        <div id="kpi-horario" class="kpi-value" style="color: var(--urgente);">12:00</div>
+                        <div class="kpi-sub"><span
+                                style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--urgente);margin-right:8px;"></span>
+                            Urgente | 6 alertas</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-title">Componente com mais alerta</div>
+                        <div id="kpi-componente" class="kpi-value" style="color: var(--muito-urgente);">CPU</div>
+                        <div class="kpi-sub"><span
+                                style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--muito-urgente);margin-right:8px;"></span>
+                            Muito urgente | 20 alertas</div>
+                    </div>
+                </div>
+
+                <!-- MIDDLE: Charts (componentes e hora do dia) -->
+                <div class="card chart-left card">
+                    <div class="chart-title">Componentes com mais alertas</div>
+                    <canvas id="componentsBar"></canvas>
+                </div>
+
+                <div class="card chart-right card">
+                    <div class="chart-title">Horários com mais alertas na semana</div>
+                    <canvas id="hourlyBar"></canvas>
+                </div>
+
+                <!-- LOWER: Histórico com abas -->
+                <div class="history-card card">
+                    <div class="history-tabs">
+                        <button class="tab-btn active" data-filter="todos">TODOS</button>
+                        <button class="tab-btn" data-filter="urgente">Urgente</button>
+                        <button class="tab-btn" data-filter="muitoUrgente">Muito Urgente</button>
+                        <button class="tab-btn" data-filter="emergencia">Emergência</button>
+                    </div>
+
+                    <div class="history-graph">
+                        <div class="chart-title" style="margin-bottom:6px;">Histórico de todos os alertas na última
+                            semana</div>
+                        <div class="trend-badge" id="trendBadge" style="color:var(--emergencia);">▲ +2% na comparação
+                            com semana anterior</div>
+                        <canvas id="historyLine" style="height: 230px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ============= SCRIPTS: MOCK DATA + CHARTS ============= -->
+    <script>
+        // ---------- MOCK DATA (substitua por fetch() para integrar com backend) ----------
+        // Horas do dia para o gráfico de barras (0h - 23h)
+        const hoursLabels = Array.from({ length: 24 }, (_, i) => (i).toString().padStart(2, '0') + ":00");
+
+        // Mock: Alertas por hora (valores totais)
+        const mockHourly = [6, 11, 8, 5, 4, 3, 6, 9, 7, 5, 8, 20, 18, 16, 13, 11, 9, 7, 5, 6, 4, 3, 2, 4];
+
+        // Componentes com mais alertas
+        const componentsLabels = ['CPU', 'RAM', 'Disco'];
+        const mockComponents = [19, 12, 8];
+
+        // Histórico 7 dias (cada "filtro" terá seus próprios valores por componente):
+        // Dias (labels)
+        const daysLabels = ['20/10', '21/10', '22/10', '23/10', '24/10', '25/10', '26/10'];
+
+        // Dados por categoria (cada array contém três séries: CPU,RAM,Disco)
+        const historyData = {
+            todos: {
+                CPU: [3, 5, 4, 2, 4, 2, 3],
+                RAM: [1, 3, 2, 3, 4, 2, 1],
+                Disco: [1, 2, 1, 1, 2, 1, 1]
+            },
+            urgente: {
+                CPU: [2, 4, 3, 1, 3, 1, 2],
+                RAM: [1, 2, 1, 2, 3, 1, 1],
+                Disco: [1, 1, 1, 1, 1, 0, 0]
+            },
+            muitoUrgente: {
+                CPU: [0, 1, 0, 1, 1, 1, 0],
+                RAM: [0, 0, 1, 0, 1, 0, 0],
+                Disco: [0, 0, 0, 0, 0, 0, 0]
+            },
+            emergencia: {
+                CPU: [1, 0, 1, 0, 0, 1, 1],
+                RAM: [0, 1, 0, 1, 0, 1, 0],
+                Disco: [0, 1, 0, 0, 1, 0, 1]
+            }
+        };
+
+        // ---------- Helper: color palette ----------
+        const palette = {
+            cpu: 'rgba(99,102,241,0.95)', // roxo
+            ram: 'rgba(56,189,248,0.95)', // azul claro
+            disco: 'rgba(34,197,94,0.95)' // verde
+        };
+
+        // ---------- Charts instances ----------
+        let componentsChart = null;
+        let hourlyChart = null;
+        let historyChart = null;
+
+        // ---------- Create Components horizontal bar chart ----------
+        function createComponentsChart() {
+            const ctx = document.getElementById('componentsBar').getContext('2d');
+            if (componentsChart) componentsChart.destroy();
+
+            componentsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: componentsLabels,
+                    datasets: [{
+                        label: 'Alertas',
+                        data: mockComponents,
+                        backgroundColor: [palette.cpu, palette.ram, palette.disco],
+                        borderRadius: 8,
+                        barThickness: 18
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#ffffff', maxRotation: 45, minRotation: 0 }
+                        },
+                        y: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255,255,255,0.03)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ---------- Create Hourly Bar Chart ----------
+        function createHourlyChart() {
+            const ctx = document.getElementById('hourlyBar').getContext('2d');
+            if (hourlyChart) hourlyChart.destroy();
+
+            hourlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: hoursLabels,
+                    datasets: [{
+                        label: 'Alertas por hora',
+                        data: mockHourly,
+                        backgroundColor: 'rgba(56,189,248,0.85)',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255,255,255,0.03)' },
+                            ticks: { color: '#ffffff' }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: '#ffffff', font: { weight: 700 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ---------- Create History Line Chart (multi-series) ----------
+        function createHistoryChart(filter = 'todos') {
+            const ctx = document.getElementById('historyLine').getContext('2d');
+            if (historyChart) historyChart.destroy();
+
+            // build datasets from historyData[filter]
+            const seriesCPU = historyData[filter].CPU;
+            const seriesRAM = historyData[filter].RAM;
+            const seriesDisco = historyData[filter].Disco;
+
+            historyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: daysLabels,
+                    datasets: [
+                        {
+                            label: 'CPU',
+                            data: seriesCPU,
+                            borderColor: palette.cpu,
+                            backgroundColor: hexToRgba(palette.cpu, 0.06),
+                            tension: 0.35,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'RAM',
+                            data: seriesRAM,
+                            borderColor: palette.ram,
+                            backgroundColor: hexToRgba(palette.ram, 0.06),
+                            tension: 0.35,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Disco',
+                            data: seriesDisco,
+                            borderColor: palette.disco,
+                            backgroundColor: hexToRgba(palette.disco, 0.06),
+                            tension: 0.35,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#ffffff' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: (ctx) => ctx[0].label,
+                                label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255,255,255,0.02)' }
+                        },
+                        y: {
+                            ticks: { color: '#ffffff', stepSize: 1, beginAtZero: true },
+                            grid: { color: 'rgba(255,255,255,0.02)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ---------- Utility: convert rgba-like string if needed ----------
+        function hexToRgba(rgbStr, alpha) {
+            // rgbStr like 'rgba(99,102,241,0.95)' or hex not used here.
+            // We'll return a low-alpha variant for area fills.
+            // Extract numbers
+            const m = rgbStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([0-9.]*)?\)/);
+            if (!m) return 'rgba(0,0,0,' + alpha + ')';
+            const r = m[1], g = m[2], b = m[3];
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        // ---------- Tabs behavior (filter history) ----------
+        function initTabs() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.getAttribute('data-filter');
+
+                    const canvas = document.getElementById("historyLine");
+                    canvas.style.height = "auto";
+                    canvas.style.maxHeight = "260px";
+                    canvas.style.display = "block";
+
+                    createHistoryChart(filter);
+                    // update trend badge mock (simple example)
+                    const badge = document.getElementById('trendBadge');
+                    if (filter === 'todos') {
+                        badge.innerText = '▲ +2% na comparação com semana anterior';
+                        badge.style.background = 'rgba(220,38,38,0.08)';
+                        badge.style.color = 'var(--emergencia)';
+                    } else if (filter === 'urgente') {
+                        badge.innerText = '▲ +8% (urgente)';
+                        badge.style.background = 'rgba(220,38,38,0.08)';
+                        badge.style.color = 'var(--emergencia)';
+                    } else if (filter === 'muitoUrgente') {
+                        badge.innerText = '▼ -6% (muito urgente)';
+                        badge.style.background = 'rgba(16,185,129,0.06)';
+                        badge.style.color = 'var(--sucesso)';
+                    } else if (filter === 'emergencia') {
+                        badge.innerText = '▲ +12% (emergência)';
+                        badge.style.background = 'rgba(220,38,38,0.08)';
+                        badge.style.color = 'var(--emergencia)';
+                    }
+                });
+            });
+        }
+
+        // ---------- Initialize everything on load ----------
+        window.addEventListener('load', () => {
+            createComponentsChart();
+            createHourlyChart();
+            createHistoryChart('todos');
+            initTabs();
+
+            // OPTIONAL: update KPI values dynamically (mock)
+            document.getElementById('kpi-total').innerText = 100;
+            document.getElementById('kpi-media').innerText = 14.2;
+            document.getElementById('kpi-pico').innerText = 'Segunda-feira';
+            document.getElementById('kpi-horario').innerText = '12:00';
+            document.getElementById('kpi-componente').innerText = 'CPU';
+        });
+
+
+
+        // ---------- If you want to connect to real API:
+        // Replace the mock constants and call your endpoints (fetch) to get:
+        // - mockHourly -> from /mainframes/alertasPorHora/:idMainframe
+        // - mockComponents -> from /mainframes/componentesComMaisAlertas/:idMainframe
+        // - historyData -> from /mainframes/historico7dias/:idMainframe?gravidade=...
+        // After fetch, call chart.update() or re-create charts as needed.
+    </script>
+</body>
+
+</html>

@@ -8,250 +8,831 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="./js/sessao.js"></script>
   <script>
-    var datares = []
-    var processosjson = []
-    async function carregar() {
-      try {
-        const res = await fetch('http://localhost:8080/csv/processo');
-        if (!res.ok) throw new Error('Erro ao buscar dados');
-        datares = await res.json();
-        grafico()
+        var dadosfiltrados = []
+        var dadoscru = []
+        var processosjson = []
+        var horarioformatado = []
+        async function carregar() {
+            try {
+                const res = await fetch('http://localhost:8080/csv/processo');
+                if (!res.ok) throw new Error('Erro ao buscar dados');
+                dadosfiltrados = await res.json();
+                //datares=filtrardados(dadoscru);
+                formatarHorario();
+                grafico();
+                listaprocesso();
 
-      } catch (erro) {
-        console.error('Erro ao buscar todas as empresas:', erro);
-      }
-    }
+            } catch (erro) {
+                console.error(erro);
+            }
+        }
 
-    window.addEventListener('load', () => {
-      // validarSessaoSynkro();
-      carregar();
-      document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
-    });
-  </script>
+
+        window.addEventListener('load', () => {
+            // validarSessaoSynkro();
+            carregar();
+            document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
+        });
+
+        function filtrardados(dados) {
+            // data = dados[dados.length - 1].timestamp;
+            // const dateObj = new Date(data.replace(" ", "T"));
+
+            // const hora = String(dateObj.getHours()).padStart(2, "0");
+            // const minuto = String(dateObj.getMinutes()).padStart(2, "0");
+
+            //horaminuto = hora + ":" + minuto
+            const dadofiltrado = dados.filter(item => {
+                const dateObj = new Date(item.timestamp.replace(" ", "T"));
+
+                const hora = String(dateObj.getHours()).padStart(2, "0");
+                const minuto = String(dateObj.getMinutes()).padStart(2, "0");
+
+                return minuto % 5 === 0;
+            });
+            return dadofiltrado
+        }
+
+    </script>
 </head>
 
+
 <body onload="carregar()">
-  <canvas id="myChart" style="max-width: 800px; max-height: 500px;"></canvas>
+   <div class="col">
 
-  <div id="processo">
+                <div class="graficos">
+                    <div class="grafico-box" aria-label="Gráfico Histórico de Métricas do Mainframe">
+                        <p class="legenda-graficos"
+                            style="font-style: italic; color: #6c757d; margin-bottom: 2px; font-size: 12px;">
+                            Selecione uma métrica abaixo para visualizar o histórico de uso detalhado e a evolução do
+                            desempenho.
+                        </p>
 
-  </div>
+                        <div class="grupo-botoes" role="tablist" aria-label="Seleção de Gráfico">
+                            <button class="botao-nav ativo" id="btnCPU" onclick="grafico()"
+                                title="Visualizar o gráfico de uso da CPU ao longo do tempo" role="tab"
+                                aria-selected="true">CPU</button>
+                            <button class="botao-nav" id="btnRAM" onclick="grafico2()"
+                                title="Visualizar o gráfico de consumo de memória RAM ao longo do tempo" role="tab"
+                                aria-selected="false">RAM</button>
+
+                        </div>
+
+                        <h4 id="titulo-grafico" title="Métrica atualmente exibida no gráfico"><i
+                                class="ri-cpu-line"></i>
+                            CPU - Uso em Tempo Real (Gráfico Histórico)</h4>
+
+                        <div class="grafico-info" id="graficoInfo"
+                            title="Métrica atual e variação em relação ao dia anterior">
+                            <div class="grafico-metrica">
+                                <span class="value" id="graficoValor" aria-live="polite"></span>
+                                <span class="label" id="graficoTexto">Captura Atual</span>
+                            </div>
+                        </div>
+                        <p class="legenda-grafico-container"
+                            style="font-size: 0.85rem; color: #adb5bd; margin-top: 10px;">
+                            O gráfico apresenta dados coletados a cada 5 minutos, cobrindo o período das últimas 24
+                            horas.
+                        </p>
+                        <div class="grafico-container">
+                            <canvas id="myChart" aria-label="Gráfico de linha Histórico da Métrica Selecionada"
+                                style="display: block; box-sizing: border-box; max-height: 300px; min-width: 100%;"></canvas>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="direita">
+
+                    <div id="processo"></div>
+                    <button onclick="carregarUltimoAlerta()">ultimo alerta</button>
+                </div>
+            </div>
 </body>
 <script>
-  function grafico() {
-    const ctx = document.getElementById('myChart');
-    data = {
-      labels: ['tempo1', 'tempo2', 'tempo3', 'tempo4', 'tempo5', 'tempo6'],
-      datasets: [{
-        label: 'cputotal',
-        data: [
-          datares[datares.length - 6].uso_cpu_total_perc,
-          datares[datares.length - 5].uso_cpu_total_perc,
-          datares[datares.length - 4].uso_cpu_total_perc,
-          datares[datares.length - 3].uso_cpu_total_perc,
-          datares[datares.length - 2].uso_cpu_total_perc,
-          datares[datares.length - 1].uso_cpu_total_perc
-        ],
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
-      }, 
-      {
-        label: 'processo1',
-        data: [
-          datares[datares.length - 6].cpu_perc1,
-          datares[datares.length - 5].cpu_perc1,
-          datares[datares.length - 4].cpu_perc1,
-          datares[datares.length - 3].cpu_perc1,
-          datares[datares.length - 2].cpu_perc1,
-          datares[datares.length - 1].cpu_perc1
-        ],
-        fill: false,
-        borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1,
-        hidden: true
-      },
-      {
-        label: 'processo2',
-        data: [
-          datares[datares.length - 6].cpu_perc2,
-          datares[datares.length - 5].cpu_perc2,
-          datares[datares.length - 4].cpu_perc2,
-          datares[datares.length - 3].cpu_perc2,
-          datares[datares.length - 2].cpu_perc2,
-          datares[datares.length - 1].cpu_perc2
-        ],
-        fill: false,
-        borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1,
-        hidden: true
-        
-      },
-      {
-        label: 'processo3',
-        data: [
-          datares[datares.length - 6].cpu_perc3,
-          datares[datares.length - 5].cpu_perc3,
-          datares[datares.length - 4].cpu_perc3,
-          datares[datares.length - 3].cpu_perc3,
-          datares[datares.length - 2].cpu_perc3,
-          datares[datares.length - 1].cpu_perc3
-        ],
-        fill: false,
-        borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1,
-        hidden: true
-      },
-      {
-        label: 'processo4',
-        data: [
-          datares[datares.length - 6].cpu_perc4,
-          datares[datares.length - 5].cpu_perc4,
-          datares[datares.length - 4].cpu_perc4,
-          datares[datares.length - 3].cpu_perc4,
-          datares[datares.length - 2].cpu_perc4,
-          datares[datares.length - 1].cpu_perc4
-        ],
-        fill: false,
-        borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1,
-        hidden: true
-      },
-      {
-        label: 'processo5',
-        data: [
-          datares[datares.length - 6].cpu_perc5,
-          datares[datares.length - 5].cpu_perc5,
-          datares[datares.length - 4].cpu_perc5,
-          datares[datares.length - 3].cpu_perc5,
-          datares[datares.length - 2].cpu_perc5,
-          datares[datares.length - 1].cpu_perc5
-        ],
-        fill: false,
-        borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1,
-        hidden: true
-      },
-      {
-        label: 'processo6',
-        data: [
-          datares[datares.length - 6].cpu_perc6,
-          datares[datares.length - 5].cpu_perc6,
-          datares[datares.length - 4].cpu_perc6,
-          datares[datares.length - 3].cpu_perc6,
-          datares[datares.length - 2].cpu_perc6,
-          datares[datares.length - 1].cpu_perc6
-        ],
-        fill: false,
-        borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1,
-        hidden: true
-      },
-       {
-        label: 'processo7',
-        data: [
-          datares[datares.length - 6].cpu_perc7,
-          datares[datares.length - 5].cpu_perc7,
-          datares[datares.length - 4].cpu_perc7,
-          datares[datares.length - 3].cpu_perc7,
-          datares[datares.length - 2].cpu_perc7,
-          datares[datares.length - 1].cpu_perc7
-        ],
-        fill: false,
-        borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1,
-        hidden: true
-      },
-      {
-        label: 'processo8',
-        data: [
-          datares[datares.length - 6].cpu_perc8,
-          datares[datares.length - 5].cpu_perc8,
-          datares[datares.length - 4].cpu_perc8,
-          datares[datares.length - 3].cpu_perc8,
-          datares[datares.length - 2].cpu_perc8,
-          datares[datares.length - 1].cpu_perc8
-        ],
-        fill: false,
-        borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1,
-        hidden: true
-      },
-      {
-        label: 'processo9',
-        data: [
-          datares[datares.length - 6].cpu_perc9,
-          datares[datares.length - 5].cpu_perc9,
-          datares[datares.length - 4].cpu_perc9,
-          datares[datares.length - 3].cpu_perc9,
-          datares[datares.length - 2].cpu_perc9,
-          datares[datares.length - 1].cpu_perc9
-        ],
-        fill: false,
-        borderColor: 'rgb(4, 192, 255)',
-        tension: 0.1,
-        hidden: true
-      },
-      ]
-    }
+        meugrafico = null
 
-    new Chart(ctx, {
-      type: 'line',
-      data: data,
-      options: {
-        onClick: (event, elements) => {
-          if (elements.length > 0) {
-            // Pega o índice do ponto clicado
-            const index = elements[0].index;
-            const label = data.labels[index];
-            const value = data.datasets[0].data[index];
-            const realIndex = index - 6;
+        function grafico() {
+            if (meugrafico) {
+                meugrafico.destroy();
+                document.querySelectorAll('.botao-nav').forEach(btn => btn.classList.remove('ativo'));
+                elemento = document.getElementById('btnCPU');
+                elemento.classList.add('ativo')
+                let valor = dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
+                document.getElementById("graficoValor").textContent = valor + "%";
 
-            const obj = datares[datares.length + realIndex];
+            }
+
+
+
+
+            const ctx = document.getElementById('myChart');
+            data = {
+                labels: [
+                    dadosfiltrados[dadosfiltrados.length - 13].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 12].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 11].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 10].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 9].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 8].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 7].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 6].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 5].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 4].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 3].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 2].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 1].timestamp
+                ],
+                datasets: [{
+                    label: 'cputotal',
+                    data: 
+                        dadosmovel("uso_cpu_total_perc",13)
+                        
+                        //dadosfiltrados[dadosfiltrados.length - 13].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 12].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 11].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 10].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 9].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 8].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 7].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 6].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 5].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 4].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 3].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 2].uso_cpu_total_perc,
+                        //dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
+                    ,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome1,
+                    data: dadosmovel("cpu_perc1",13),
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: false
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome2,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc2
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: false
+
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome3,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc3
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome4,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc4
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome5,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc5
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome6,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc6
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome7,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc7
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome8,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc8
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome9,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 12].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 11].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 10].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 9].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 8].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 7].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 6].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 5].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 4].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 3].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 2].cpu_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 1].cpu_perc9
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                ]
+
+
+            }
+            meugrafico = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+
+                            // Pega o índice do ponto clicado
+                            const index = elements[0].index;
+                            const label = data.labels[index];
+                            const value = data.datasets[0].data[index];
+                            const realIndex = index - 13;
+                            const atributo = "uso_cpu_total_perc"
+
+                            atribuirvalor(realIndex, atributo)
+
+                            const obj = dadosfiltrados[dadosfiltrados.length + realIndex];
+
+                            processosjson = [
+                                { nome: obj.nome1, cpu: parseFloat(obj.cpu_perc1), mem: parseFloat(obj.mem_perc1) },
+                                { nome: obj.nome2, cpu: parseFloat(obj.cpu_perc2), mem: parseFloat(obj.mem_perc2) },
+                                { nome: obj.nome3, cpu: parseFloat(obj.cpu_perc3), mem: parseFloat(obj.mem_perc3) },
+                                { nome: obj.nome4, cpu: parseFloat(obj.cpu_perc4), mem: parseFloat(obj.mem_perc4) },
+                                { nome: obj.nome5, cpu: parseFloat(obj.cpu_perc5), mem: parseFloat(obj.mem_perc5) },
+                                { nome: obj.nome6, cpu: parseFloat(obj.cpu_perc6), mem: parseFloat(obj.mem_perc6) },
+                                { nome: obj.nome7, cpu: parseFloat(obj.cpu_perc7), mem: parseFloat(obj.mem_perc7) },
+                                { nome: obj.nome8, cpu: parseFloat(obj.cpu_perc8), mem: parseFloat(obj.mem_perc8) },
+                                { nome: obj.nome9, cpu: parseFloat(obj.cpu_perc9), mem: parseFloat(obj.mem_perc9) },
+                            ];
+                            processosjson.sort((a, b) => b.cpu - a.cpu);
+                            processo.innerHTML = ``
+                            processo.innerHTML = `
+            <div class="processobox" id="cabecalho">
+                <h3 class="titulo">Nome do Processo</h3>
+                <h3>CPU</h3>
+                <h3>RAM</h3> 
+                </div>
+                
+                `
+
+                            for (let x = 0; x < 10; x++) {
+
+                                processo.innerHTML += `
+              <div class="processobox">
+                <h3 class="titulo">${processosjson[x].nome}</h3>
+                <h3>${processosjson[x].cpu}%</h3>
+                <h3>${processosjson[x].mem}%</h3> 
+                </div>
+                
+                `;
+                            }
+
+
+
+                            alert(`Você clicou em ${label}: ${value}% ${realIndex} `);
+
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function grafico2() {
+            if (meugrafico) {
+                meugrafico.destroy();
+                document.querySelectorAll('.botao-nav').forEach(btn => btn.classList.remove('ativo'));
+                elemento = document.getElementById('btnRAM');
+                elemento.classList.add('ativo')
+                let valor = dadosfiltrados[dadosfiltrados.length - 1].uso_ram_total_perc
+                document.getElementById("graficoValor").textContent = valor + "%";
+            }
+
+            const ctx = document.getElementById('myChart');
+            data = {
+                labels: [
+                    dadosfiltrados[dadosfiltrados.length - 13].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 12].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 11].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 10].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 9].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 8].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 7].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 6].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 5].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 4].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 3].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 2].timestamp,
+                    dadosfiltrados[dadosfiltrados.length - 1].timestamp
+                ],
+                datasets: [{
+                    label: 'ramtotal',
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 12].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 11].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 10].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 9].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 8].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 7].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 6].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 5].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 4].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 3].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 2].uso_ram_total_perc,
+                        dadosfiltrados[dadosfiltrados.length - 1].uso_ram_total_perc
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome1,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc1,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc1
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: false
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome2,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc2,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc2
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: false
+
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome3,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc3,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc3
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome4,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc4,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc4
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome5,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc5,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc5
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome6,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc6,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc6
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome7,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc7,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc7
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome8,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc8,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc8
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                {
+                    label: dadosfiltrados[dadosfiltrados.length - 1].nome9,
+                    data: [
+                        dadosfiltrados[dadosfiltrados.length - 13].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 12].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 11].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 10].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 9].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 8].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 7].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 6].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 5].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 4].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 3].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 2].mem_perc9,
+                        dadosfiltrados[dadosfiltrados.length - 1].mem_perc9
+                    ],
+                    fill: false,
+                    borderColor: 'rgb(4, 192, 255)',
+                    tension: 0.1,
+                    hidden: true
+                },
+                ]
+
+            }
+            meugrafico = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+
+                            // Pega o índice do ponto clicado
+                            const index = elements[0].index;
+                            const label = data.labels[index];
+                            const value = data.datasets[0].data[index];
+                            const realIndex = index - 13;
+                            const atributo = "uso_ram_total_perc"
+                            atribuirvalor(realIndex, atributo)
+
+                            const obj = dadosfiltrados[dadosfiltrados.length + realIndex];
+
+                            processosjson = [
+                                { nome: obj.nome1, cpu: parseFloat(obj.cpu_perc1), mem: parseFloat(obj.mem_perc1) },
+                                { nome: obj.nome2, cpu: parseFloat(obj.cpu_perc2), mem: parseFloat(obj.mem_perc2) },
+                                { nome: obj.nome3, cpu: parseFloat(obj.cpu_perc3), mem: parseFloat(obj.mem_perc3) },
+                                { nome: obj.nome4, cpu: parseFloat(obj.cpu_perc4), mem: parseFloat(obj.mem_perc4) },
+                                { nome: obj.nome5, cpu: parseFloat(obj.cpu_perc5), mem: parseFloat(obj.mem_perc5) },
+                                { nome: obj.nome6, cpu: parseFloat(obj.cpu_perc6), mem: parseFloat(obj.mem_perc6) },
+                                { nome: obj.nome7, cpu: parseFloat(obj.cpu_perc7), mem: parseFloat(obj.mem_perc7) },
+                                { nome: obj.nome8, cpu: parseFloat(obj.cpu_perc8), mem: parseFloat(obj.mem_perc8) },
+                                { nome: obj.nome9, cpu: parseFloat(obj.cpu_perc9), mem: parseFloat(obj.mem_perc9) },
+                            ];
+                            processosjson.sort((a, b) => b.mem - a.mem);
+                            processo.innerHTML = ``
+                            processo.innerHTML = `
+            <div class="processobox" id="cabecalho">
+                <h3 class="titulo">Nome do Processo</h3>
+                <h3>CPU</h3>
+                <h3>RAM</h3> 
+                </div>
+                
+                `
+
+                            for (let x = 0; x < 10; x++) {
+
+                                processo.innerHTML += `
+              <div class="processobox">
+                <h3 class="titulo">${processosjson[x].nome}</h3>
+                <h3>${processosjson[x].cpu}%</h3>
+                <h3>${processosjson[x].mem}%</h3> 
+                </div>
+                
+                `;
+                            }
+
+
+
+                            alert(`Você clicou em ${label}: ${value}% ${realIndex} `);
+
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function listaprocesso() {
+            //método aciona quando for a priemira vez que carrega o script
+            let valor = dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
+
+            document.getElementById("graficoValor").textContent = valor + "%";
+            const obj1 = dadosfiltrados[dadosfiltrados.length - 1];
 
             processosjson = [
-              { nome: obj.nome1, cpu: parseFloat(obj.cpu_perc1) },
-              { nome: obj.nome2, cpu: parseFloat(obj.cpu_perc2) },
-              { nome: obj.nome3, cpu: parseFloat(obj.cpu_perc3) },
-              { nome: obj.nome4, cpu: parseFloat(obj.cpu_perc4) },
-              { nome: obj.nome5, cpu: parseFloat(obj.cpu_perc5) },
-              { nome: obj.nome6, cpu: parseFloat(obj.cpu_perc6) },
-              { nome: obj.nome7, cpu: parseFloat(obj.cpu_perc7) },
-              { nome: obj.nome8, cpu: parseFloat(obj.cpu_perc8) },
-              { nome: obj.nome9, cpu: parseFloat(obj.cpu_perc9) },
+                { nome: obj1.nome1, cpu: parseFloat(obj1.cpu_perc1), mem: parseFloat(obj1.mem_perc1) },
+                { nome: obj1.nome2, cpu: parseFloat(obj1.cpu_perc2), mem: parseFloat(obj1.mem_perc2) },
+                { nome: obj1.nome3, cpu: parseFloat(obj1.cpu_perc3), mem: parseFloat(obj1.mem_perc3) },
+                { nome: obj1.nome4, cpu: parseFloat(obj1.cpu_perc4), mem: parseFloat(obj1.mem_perc4) },
+                { nome: obj1.nome5, cpu: parseFloat(obj1.cpu_perc5), mem: parseFloat(obj1.mem_perc5) },
+                { nome: obj1.nome6, cpu: parseFloat(obj1.cpu_perc6), mem: parseFloat(obj1.mem_perc6) },
+                { nome: obj1.nome7, cpu: parseFloat(obj1.cpu_perc7), mem: parseFloat(obj1.mem_perc7) },
+                { nome: obj1.nome8, cpu: parseFloat(obj1.cpu_perc8), mem: parseFloat(obj1.mem_perc8) },
+                { nome: obj1.nome9, cpu: parseFloat(obj1.cpu_perc9), mem: parseFloat(obj1.mem_perc9) },
             ];
             processosjson.sort((a, b) => b.cpu - a.cpu);
-            console.log(processosjson)
-            processo.innerHTML =``
+            processo.innerHTML = ``
+            processo.innerHTML = `
+            <div class="processobox" id="cabecalho">
+                <h3 class="titulo">Nome do Processo</h3>
+                <h3>CPU</h3>
+                <h3>RAM</h3> 
+                </div>
+                `
+
             for (let x = 0; x < 10; x++) {
-              processo.innerHTML += `
-                <h1>${processosjson[x].cpu}%</h1>
-                <h1>${processosjson[x].nome}</h1>
-                <hr>
+
+                processo.innerHTML += `
+              <div class="processobox">
+                <h3 class="titulo">${processosjson[x].nome}</h3>
+                <h3>${processosjson[x].cpu}%</h3>
+                <h3>${processosjson[x].mem}%</h3> 
+                </div>
+                
               `;
             }
 
-            // Ação JavaScript customizada
-            alert(`Você clicou em ${label}: ${value}% ${realIndex} `);
 
-            // Aqui você pode chamar qualquer função JS
-            // exemplo: mostrarDetalhes(label, value);
-          }
-        },
-        plugins: {
-          tooltip: {
-            enabled: true
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
         }
-      }
-    });
-  }
- 
-</script>
+
+        function atribuirvalor(realIndex, atributo) {
+            console.log(realIndex)
+            console.log(dadosfiltrados[2])
+            console.log(dadosfiltrados[dadosfiltrados.length + realIndex])
+            let valor = dadosfiltrados[dadosfiltrados.length + realIndex][atributo]
+
+            document.getElementById("graficoValor").textContent = valor + "%";
+        }
+
+        function formatarHorario() {
+            dadosfiltrados = dadosfiltrados.map(item => {
+                const horaCompleta = item.timestamp.split(" ")[1];
+                const [h, m] = horaCompleta.split(":");
+
+                return {
+                    ...item,
+                    timestamp: `${h}:${m}`
+                };
+            });
+
+        }
+         
+        function dadosmovel( coluna, quantidade) {
+            const array = []; 
+
+            for (i = quantidade; i >= 1; i--) { 
+                array.push(dadosfiltrados[dadosfiltrados.length-i][coluna]); 
+            } 
+             
+            return array;
+        }
+
+        function carregarUltimoAlerta() {
+            for (let i = dadosfiltrados.length - 1; i >= 0; i--) {
+                const element = dadosfiltrados[i];
+
+                if (element.uso_cpu_total_perc >= 80) { 
+                    break;  
+                }
+            }
+        }
+    </script>
+
 
 </html>
