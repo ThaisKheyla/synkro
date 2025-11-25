@@ -590,11 +590,10 @@ body {
     min-height: 0;
 }
 
-/* KPI de Pico */
 .kpi-pico {
     background: var(--fundo-card);
     border-radius: 12px;
-    padding: 20px 16px;
+    padding: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -663,3 +662,40 @@ body {
     flex-grow: 1;
     min-height: 0;
 }
+
+.kpi-principal .kpi-breakdown {
+            margin-top: 8px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .kpi-breakdown span {
+             opacity: 0.95; 
+            }
+
+        .kpi-mainframe-details {
+             font-size: 0.95rem;
+              color: #cbd5e1; 
+              margin-top: 6px;
+             }
+
+        .kpi-disponibilidade-contrato { 
+            font-size: 0.95rem;
+             margin-top: 6px; 
+        }
+
+        .dropdown-periodo {
+             min-width: 180px; 
+            }
+
+        .badge-sla {
+            display:inline-block;
+            padding:4px 8px;
+            border-radius:12px;
+            font-weight:700;
+            font-size:0.9rem;
+            margin-left:8px;
+        }

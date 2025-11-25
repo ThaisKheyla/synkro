@@ -2,12 +2,12 @@
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Gerencial - Synkro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/dashGerente.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/dashGerente.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/sessao.js"></script>
 </head>
@@ -21,7 +21,7 @@
                 Synkro
             </div>
             <div class="perfil-usuario">
-                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão" />
                 <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
                 <div class="cargo-usuario">
                     <i class="ri-shield-user-line"></i>
@@ -39,7 +39,7 @@
                     </li>
                     <li>
                         <a href="visaoMainframesGerente.html">
-                            <i class="ri-dashboard-3-line"></i>
+                            <i class="ri-server-line"></i>
                             Mainframes
                         </a>
                     </li>
@@ -63,43 +63,53 @@
             </nav>
         </aside>
 
-        <!--conteudo principal-->
+
         <div class="conteudo-principal dashboard">
 
             <div class="btn-periodo-container">
                 <button class="btn-periodo" id="btnPeriodo">
                     Última Semana <i class="ri-arrow-down-s-line"></i>
                 </button>
-                <ul class="dropdown-periodo" id="dropdownPeriodo">
-                    <li data-periodo="hoje">Última semana</li>
-                    <li data-periodo="semana">Último mês</li>
-                    <li data-periodo="mes">Último Semestre</li>
+                <ul class="dropdown-periodo" id="dropdownPeriodo" role="menu" aria-labelledby="btnPeriodo">
+
+
+                    <li data-periodo="semana">Última Semana</li>
+                    <li data-periodo="mes">Último Mês</li>
+                    <li data-periodo="semestre">Último Semestre</li>
                     <li data-periodo="ano">Último Ano</li>
                 </ul>
             </div>
 
-            <!-- KPIs Principais -->
+
             <section class="painel-kpis-principal">
-                <div class="kpi-principal">
+                <div class="kpi-principal" id="kpiTotalAlertasCard">
                     <span class="kpi-label">Total de Alertas</span>
                     <span class="kpi-value azul" id="kpiTotalAlertas">46</span>
-                    <p class="kpi-descricao">Número total de alertas detectados</p>
+                    <div class="kpi-breakdown" id="kpiBreakdown">
+
+                    </div>
+                
                 </div>
-                <div class="kpi-principal">
+                <div class="kpi-principal" id="kpiMainframeCriticoCard">
                     <span class="kpi-label">Mainframe Crítico</span>
                     <span class="kpi-value alerta" id="kpiMainframesCritico">MF-2</span>
-                    <p class="kpi-descricao" id="kpiComponenteCritico">CPU com 25 alertas</p>
+                    <div class="kpi-mainframe-details" id="kpiComponenteCritico">CPU com 25 alertas</div>
+                    
                 </div>
-                <div class="kpi-principal">
+                <div class="kpi-principal" id="kpiDisponibilidadeCard">
                     <span class="kpi-label">Taxa de Disponibilidade</span>
-                    <span class="kpi-value verde" id="kpiDisponibilidade">98.5%</span>
-                    <p class="kpi-descricao">Uptime da infraestrutura</p>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span class="kpi-value verde" id="kpiDisponibilidade">98.5%</span>
+                        <span id="kpiSlaBadge" class="badge-sla" style="display:none"></span>
+                    </div>
+                    <div class="kpi-disponibilidade-contrato" id="kpiDisponibilidadeDescricao">Uptime da infraestrutura
+                    </div>
                 </div>
             </section>
 
-            <!-- Gráficos em duas colunas -->
+
             <section class="painel-graficos-novo">
-                <!-- Coluna esquerda: Gráfico de Mainframes -->
+
                 <div class="coluna-esquerda">
                     <div class="grafico grafico-mainframes">
                         <h3>Mainframes com Mais Alertas</h3>
@@ -107,12 +117,12 @@
                     </div>
                 </div>
 
-                <!-- Coluna direita: KPI de Pico + Gráfico Rosquinha -->
+
                 <div class="coluna-direita">
                     <div class="kpi-pico">
                         <span class="kpi-label">Pico de Alertas</span>
                         <span class="kpi-value azul" id="kpiPico">Seg - 15 alertas</span>
-                        <p class="kpi-descricao">Período com maior concentração</p>
+                       
                     </div>
                     <div class="grafico grafico-componentes">
                         <h3>Distribuição por Componente</h3>
@@ -124,168 +134,256 @@
     </div>
 
     <script>
+
+        const SLA_CONTRATADO = 99.9;
+
+        const dashboardData = {
+            semana: {
+                kpis: { total: 46, disponibilidade: 98.5, critical: 12, medium: 20, low: 14 },
+                mainframes: [
+                    { nome: 'MF-2', alertas: 20 },
+                    { nome: 'MF-7', alertas: 12 },
+                    { nome: 'MF-3', alertas: 7 },
+                    { nome: 'MF-1', alertas: 5 },
+                    { nome: 'MF-5', alertas: 2 }
+                ],
+                pico: { periodo: 'Dia', pico: 'Seg - 15 alertas' },
+                componentes: { cpu: 25, ram: 10, disco: 11 }
+            },
+            mes: {
+                kpis: { total: 177, disponibilidade: 97.8, critical: 45, medium: 80, low: 52 },
+                mainframes: [
+                    { nome: 'MF-2', alertas: 60 },
+                    { nome: 'MF-7', alertas: 50 },
+                    { nome: 'MF-3', alertas: 40 },
+                    { nome: 'MF-1', alertas: 15 },
+                    { nome: 'MF-5', alertas: 12 }
+                ],
+                pico: { periodo: 'Semana', pico: 'Semana 2 - 52 alertas' },
+                componentes: { cpu: 96, ram: 36, disco: 45 }
+            },
+            semestre: {
+                kpis: { total: 507, disponibilidade: 99.2, critical: 180, medium: 220, low: 107 },
+                mainframes: [
+                    { nome: 'MF-2', alertas: 200 },
+                    { nome: 'MF-7', alertas: 150 },
+                    { nome: 'MF-3', alertas: 120 },
+                    { nome: 'MF-1', alertas: 60 },
+                    { nome: 'MF-5', alertas: 40 }
+                ],
+                pico: { periodo: 'Mês', pico: 'Mar - 180 alertas' },
+                componentes: { cpu: 301, ram: 86, disco: 120 }
+            },
+            ano: {
+                kpis: { total: 1900, disponibilidade: 96.5, critical: 800, medium: 700, low: 400 },
+                mainframes: [
+                    { nome: 'MF-2', alertas: 600 },
+                    { nome: 'MF-7', alertas: 550 },
+                    { nome: 'MF-3', alertas: 450 },
+                    { nome: 'MF-1', alertas: 180 },
+                    { nome: 'MF-5', alertas: 120 }
+                ],
+                pico: { periodo: 'Mês', pico: 'Nov - 248 alertas' },
+                componentes: { cpu: 1026, ram: 324, disco: 550 }
+            }
+        };
+
         window.chartMainframes = null;
         window.chartComponentes = null;
         let periodoAtual = 'semana';
 
-        // Dados dos períodos
-        const dadosKPIs = {
-            semana: { total: 46, cpu: 25, ram: 10, disco: 11, disponibilidade: 98.5 },
-            mes: { total: 177, cpu: 96, ram: 36, disco: 45, disponibilidade: 97.8 },
-            semestre: { total: 507, cpu: 301, ram: 86, disco: 120, disponibilidade: 99.2 },
-            ano: { total: 1900, cpu: 1026, ram: 324, disco: 550, disponibilidade: 96.5 }
-        };
 
-        const dadosMainframes = {
-            semana: [
-                { nome: 'MF-2', alertas: 20 },
-                { nome: 'MF-7', alertas: 12 },
-                { nome: 'MF-3', alertas: 7 },
-                { nome: 'MF-1', alertas: 5 },
-                { nome: 'MF-5', alertas: 2 }
-            ],
-            mes: [
-                { nome: 'MF-2', alertas: 60 },
-                { nome: 'MF-7', alertas: 50 },
-                { nome: 'MF-3', alertas: 40 },
-                { nome: 'MF-1', alertas: 15 },
-                { nome: 'MF-5', alertas: 12 }
-            ],
-            semestre: [
-                { nome: 'MF-2', alertas: 200 },
-                { nome: 'MF-7', alertas: 150 },
-                { nome: 'MF-3', alertas: 120 },
-                { nome: 'MF-1', alertas: 60 },
-                { nome: 'MF-5', alertas: 40 }
-            ],
-            ano: [
-                { nome: 'MF-2', alertas: 600 },
-                { nome: 'MF-7', alertas: 550 },
-                { nome: 'MF-3', alertas: 450 },
-                { nome: 'MF-1', alertas: 180 },
-                { nome: 'MF-5', alertas: 120 }
-            ]
-        };
+        function formatPercent(n, decimals = 1) {
+            return Number(n).toFixed(decimals) + '%';
+        }
 
-        const dadosPico = {
-            semana: { periodo: 'Dia', pico: 'Seg - 15 alertas' },
-            mes: { periodo: 'Semana', pico: 'Semana 2 - 52 alertas' },
-            semestre: { periodo: 'Mês', pico: 'Mar - 180 alertas' },
-            ano: { periodo: 'Mês', pico: 'Nov - 248 alertas' }
-        };
+        function calcularImpactoSLA(alertasMf, kpisTotal) {
 
-        const dadosComponentes = {
-            semana: { cpu: 25, ram: 10, disco: 11 },
-            mes: { cpu: 96, ram: 36, disco: 45 },
-            semestre: { cpu: 301, ram: 86, disco: 120 },
-            ano: { cpu: 1026, ram: 324, disco: 550 }
-        };
+            if (!kpisTotal || kpisTotal === 0) return '0%';
+            const impacto = (alertasMf / kpisTotal) * 1.0;
+            return formatPercent(impacto, 2);
+        }
 
         function atualizarKPIsPrincipais(periodo) {
-            const kpis = dadosKPIs[periodo];
-            const mainframes = dadosMainframes[periodo];
-            const componenteAlerts = dadosComponentes[periodo];
+            const data = dashboardData[periodo];
+            const kpis = data.kpis;
+            const mainframes = data.mainframes;
+            const componentes = data.componentes;
 
-            // KPI 1: Total de alertas
             document.getElementById('kpiTotalAlertas').textContent = kpis.total;
 
-            // KPI 2: Mainframe crítico
-            const mainframeCritico = mainframes[0];
-            const componenteMaior = componenteAlerts.cpu > componenteAlerts.ram 
-                ? (componenteAlerts.cpu > componenteAlerts.disco ? 'CPU' : 'DISCO')
-                : (componenteAlerts.ram > componenteAlerts.disco ? 'RAM' : 'DISCO');
-            
+            const breakdownEl = document.getElementById('kpiBreakdown');
+            breakdownEl.innerHTML = `
+                <span style="color:var(--perigo)">Críticos: ${kpis.critical}</span>
+                <span style="color:var(--very-urgent)">Médios: ${kpis.medium}</span>
+                <span style="color:var(--accent-light)">Leves: ${kpis.low}</span>
+            `;
+
+            const mainframeCritico = mainframes[0] || { nome: '-', alertas: 0 };
             document.getElementById('kpiMainframesCritico').textContent = mainframeCritico.nome;
-            document.getElementById('kpiComponenteCritico').textContent = 
-                `${componenteMaior} com ${mainframeCritico.alertas} alertas`;
 
-            // KPI 3: Disponibilidade
-            document.getElementById('kpiDisponibilidade').textContent = kpis.disponibilidade + '%';
+            const componenteMaior = (componentes.cpu >= componentes.ram && componentes.cpu >= componentes.disco)
+                ? 'CPU'
+                : (componentes.ram >= componentes.cpu && componentes.ram >= componentes.disco) ? 'RAM' : 'DISCO';
 
-            // KPI Pico
-            document.getElementById('kpiPico').textContent = dadosPico[periodo].pico;
+            document.getElementById('kpiComponenteCritico').textContent =
+                `${componenteMaior} — ${mainframeCritico.alertas} alertas`;
+
+            const disponibilidade = kpis.disponibilidade;
+            const kpiDisponibilidadeEl = document.getElementById('kpiDisponibilidade');
+            kpiDisponibilidadeEl.textContent = disponibilidade + '%';
+
+            const badgeEl = document.getElementById('kpiSlaBadge');
+            const diff = (disponibilidade - SLA_CONTRATADO);
+            if (diff >= 0) {
+                badgeEl.style.display = 'inline-block';
+                badgeEl.style.background = 'linear-gradient(90deg, var(--sucesso), #0f9d45)';
+                badgeEl.style.color = 'white';
+                badgeEl.textContent = `SLA OK (+${diff.toFixed(2)}%)`;
+            } else {
+                badgeEl.style.display = 'inline-block';
+                badgeEl.style.background = 'linear-gradient(90deg, var(--perigo), var(--very-urgent))';
+                badgeEl.style.color = 'white';
+                badgeEl.textContent = `Fora do SLA (${diff.toFixed(2)}%)`;
+            }
+
+            document.getElementById('kpiPico').textContent = data.pico.pico;
         }
 
         function inicializarGraficoMainframes() {
             const canvas = document.getElementById('graficoMainframes');
             if (!canvas) return;
-
             if (window.chartMainframes) window.chartMainframes.destroy();
 
-            const mainframes = dadosMainframes[periodoAtual];
+            const data = dashboardData[periodoAtual];
+            const mainframes = data.mainframes;
             const labels = mainframes.map(mf => mf.nome);
-            const data = mainframes.map(mf => mf.alertas);
+            const values = mainframes.map(mf => mf.alertas);
+            const totalAlertas = data.kpis.total || values.reduce((a, b) => a + b, 0);
+
+            const colors = values.map(v => {
+                const pct = totalAlertas > 0 ? v / totalAlertas : 0;
+                if (pct >= 0.3) return '#ef4444';
+                if (pct >= 0.12) return '#f97316';
+                if (pct >= 0.06) return '#eab308';
+                return '#22c55e';
+            });
 
             const ctx = canvas.getContext('2d');
+
+            const threshold = Math.max(5, Math.round(Math.max(...values) * 0.6));
+
             window.chartMainframes = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'Quantidade de Alertas',
-                        data: data,
-                        backgroundColor: [
-                            '#ef4444',
-                            '#f97316',
-                            '#eab308',
-                            '#22c55e',
-                            '#06b6d4'
-                        ],
+                        data: values,
+                        backgroundColor: colors,
                         borderRadius: 8,
                         borderSkipped: false
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
-                    indexAxis: 'y',
                     plugins: {
-                        legend: { display: false }
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const idx = context.dataIndex;
+                                    const mf = mainframes[idx];
+                                    const impacto = calcularImpactoSLA(mf.alertas, totalAlertas);
+                                    return ` ${mf.alertas} alertas — Impacto estimado no SLA: ${impacto}`;
+                                }
+                            }
+                        }
                     },
                     scales: {
                         x: {
                             beginAtZero: true,
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#cbd5e1' }
+                            ticks: { color: '#cbd5e1' },
+                            grid: { color: 'rgba(255,255,255,0.03)' }
                         },
                         y: {
-                            grid: { display: false },
-                            ticks: { color: '#cbd5e1' }
+                            ticks: { color: '#cbd5e1' },
+                            grid: { display: false }
                         }
                     }
-                }
+                },
+                plugins: [{
+                    id: 'thresholdLine',
+                    afterDraw: chart => {
+                        const ctx = chart.ctx;
+                        const xScale = chart.scales['x'];
+                        const yScale = chart.scales['y'];
+                        const xValue = threshold;
+                        const xPixel = xScale.getPixelForValue(xValue);
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.moveTo(xPixel, yScale.top);
+                        ctx.lineTo(xPixel, yScale.bottom);
+                        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+                        ctx.setLineDash([6, 6]);
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }]
             });
         }
 
         function inicializarGraficoComponentes() {
             const canvas = document.getElementById('graficoComponentes');
             if (!canvas) return;
-
             if (window.chartComponentes) window.chartComponentes.destroy();
 
-            const componentes = dadosComponentes[periodoAtual];
-            const ctx = canvas.getContext('2d');
+            const componentes = dashboardData[periodoAtual].componentes;
+            const labels = ['CPU', 'RAM', 'DISCO'];
+            const values = [componentes.cpu, componentes.ram, componentes.disco];
 
+            const bg = ['#38bdf8', '#22c55e', 'var(--dasd-cor)'];
+
+            const ctx = canvas.getContext('2d');
             window.chartComponentes = new Chart(ctx, {
-                type: 'doughnut',
+                type: 'bar',
                 data: {
-                    labels: ['CPU', 'RAM', 'DISCO'],
+                    labels: labels,
                     datasets: [{
-                        data: [componentes.cpu, componentes.ram, componentes.disco],
-                        backgroundColor: ['#38bdf8', '#22c55e', '#a855f7'],
-                        borderWidth: 0
+                        label: 'Contagem',
+                        data: values,
+                        backgroundColor: bg,
+                        borderRadius: 8
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { color: '#cbd5e1' }
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.raw} eventos`;
+                                }
+                            }
                         }
                     },
-                    cutout: '70%'
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { color: '#cbd5e1' },
+                            grid: { color: 'rgba(255,255,255,0.03)' }
+                        },
+                        y: {
+                            ticks: { color: '#cbd5e1' },
+                            grid: { display: false }
+                        }
+                    }
                 }
             });
         }
@@ -297,30 +395,36 @@
             inicializarGraficoComponentes();
         }
 
-        // Inicialização
         window.onload = function () {
             if (typeof validarSessaoSynkro === 'function') validarSessaoSynkro();
-            atualizarDashboard('semana');
+            atualizarDashboard(periodoAtual);
         };
 
-        // Dropdown de período
-        const btnPeriodo = document.getElementById('btnPeriodo');
-        const dropdownPeriodo = document.getElementById('dropdownPeriodo');
+        (function setupPeriodoDropdown() {
+            const btnPeriodo = document.getElementById('btnPeriodo');
+            const dropdownPeriodo = document.getElementById('dropdownPeriodo');
 
-        btnPeriodo.addEventListener('click', () => {
-            dropdownPeriodo.style.display = dropdownPeriodo.style.display === 'block' ? 'none' : 'block';
-        });
-
-        dropdownPeriodo.querySelectorAll('li').forEach(item => {
-            item.addEventListener('click', () => {
-                const periodo = item.getAttribute('data-periodo');
-                btnPeriodo.innerHTML = item.innerText + ' <i class="ri-arrow-down-s-line"></i>';
-                dropdownPeriodo.style.display = 'none';
-                atualizarDashboard(periodo);
+            btnPeriodo.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownPeriodo.style.display = dropdownPeriodo.style.display === 'block' ? 'none' : 'block';
             });
-        });
-    </script>
 
+            dropdownPeriodo.querySelectorAll('li').forEach(item => {
+                item.addEventListener('click', () => {
+                    const periodo = item.getAttribute('data-periodo');
+                    btnPeriodo.innerHTML = item.innerText + ' <i class="ri-arrow-down-s-line"></i>';
+                    dropdownPeriodo.style.display = 'none';
+                    atualizarDashboard(periodo);
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!dropdownPeriodo.contains(e.target) && e.target !== btnPeriodo) {
+                    dropdownPeriodo.style.display = 'none';
+                }
+            });
+        })();
+    </script>
 </body>
 
 </html>
