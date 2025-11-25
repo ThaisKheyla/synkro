@@ -409,7 +409,7 @@ body {
 }
 
 .kpi-label {
-    font-size: 0.75rem;
+    font-size: 1rem;
     color: #94a3b8;
     font-weight: 600;
     margin-bottom: 6px;
@@ -424,7 +424,7 @@ body {
 }
 
 .kpi-descricao {
-    font-size: 0.65rem;
+    font-size: 1.2rem;
     color: #94a3b8;
     text-align: center;
     line-height: 1.2;
@@ -528,7 +528,7 @@ body {
 }
 
 .kpi-principal .kpi-label {
-    font-size: 0.8rem;
+    font-size: 1rem;
     color: #94a3b8;
     font-weight: 600;
     margin-bottom: 8px;
@@ -543,7 +543,7 @@ body {
 }
 
 .kpi-principal .kpi-descricao {
-    font-size: 0.75rem;
+    font-size: 1.2rem;
     color: #94a3b8;
     text-align: center;
     line-height: 1.3;
@@ -618,7 +618,7 @@ body {
 }
 
 .kpi-pico .kpi-label {
-    font-size: 0.8rem;
+    font-size: 1rem;
     color: #94a3b8;
     font-weight: 600;
     margin-bottom: 8px;
@@ -634,7 +634,7 @@ body {
 }
 
 .kpi-pico .kpi-descricao {
-    font-size: 0.75rem;
+    font-size: 1.2rem;
     color: #94a3b8;
     text-align: center;
 }
