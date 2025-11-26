@@ -486,7 +486,7 @@ body {
 .kpi-principal {
     background: var(--fundo-card);
     border-radius: 12px;
-    padding: 20px 16px;
+    padding: 15px 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -495,19 +495,7 @@ body {
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-height: 140px;
-}
-
-.kpi-principal::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 6px;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    transition: all 0.3s ease;
+    min-height: 100px;
 }
 
 .kpi-principal:nth-child(1)::before {
@@ -601,23 +589,11 @@ body {
     box-shadow: var(--sombra-card);
     position: relative;
     overflow: hidden;
-    min-height: 120px;
-}
-
-.kpi-pico::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 6px;
-    background: linear-gradient(90deg, var(--accent-light), var(--accent-dark));
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
+    min-height: 100px;
 }
 
 .kpi-pico .kpi-label {
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #94a3b8;
     font-weight: 600;
     margin-bottom: 8px;
@@ -626,7 +602,7 @@ body {
 }
 
 .kpi-pico .kpi-value {
-    font-size: 1.6rem;
+    font-size: 1.2rem;
     font-weight: 700;
     margin-bottom: 8px;
     color: var(--accent-light);
@@ -698,4 +674,22 @@ body {
             font-weight:700;
             font-size:0.9rem;
             margin-left:8px;
+        }
+
+        .filtro-btn {
+            background-color: var(--azul-medio);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--cinza-texto);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .ativo {
+            background-color: var(--accent-light);
+            color: var(--branco);
         }
