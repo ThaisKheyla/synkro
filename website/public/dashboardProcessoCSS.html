@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Synkro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet"> 
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/dashboardProcesso.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- <script src="./js/sessao.js"></script> -->
@@ -14,13 +14,17 @@
         var dadosfiltrados = []
         var dadoscru = []
         var processosjson = []
-        var horarioformatado = []
+        var horarioformatado = [] 
+        let selectedIndex = 0;
+
         async function carregar() {
             try {
                 const res = await fetch('http://localhost:8080/csv/processo');
                 if (!res.ok) throw new Error('Erro ao buscar dados');
                 dadosfiltrados = await res.json();
                 //datares=filtrardados(dadoscru);
+                selectedIndex =dadosfiltrados.length-1
+                
                 formatarHorario();
                 grafico();
                 listaprocesso();
@@ -29,7 +33,8 @@
                 console.error(erro);
             }
         }
-
+        //seleciona o index do gráfico
+        
 
         window.addEventListener('load', () => {
             // validarSessaoSynkro();
@@ -105,8 +110,9 @@
         <main class="conteudo-dashboard-processo" role="main"
             aria-label="Painel Principal de Monitoramento em Tempo Real do Mainframe">
 
-            <h3 class="section-title" title="Visão geral e desempenho do sistema em tempo real.">Monitoramento de recursos e processos</h3>
- 
+            <h3 class="section-title" title="Visão geral e desempenho do sistema em tempo real.">Monitoramento de
+                recursos e processos</h3>
+
 
             <!-- <div class="kpis-linha">
 
@@ -150,7 +156,7 @@
                 </div>
             </div> -->
             <div class="col">
- 
+
                 <div class="grafico-box" aria-label="Gráfico Histórico de Métricas do Mainframe">
                     <p class="legenda-graficos"
                         style="font-style: italic; color: #ffffff; margin-bottom: 2px; font-size: 12px;">
@@ -168,8 +174,7 @@
 
                     </div>
 
-                    <h4 id="titulo-grafico" title="Métrica atualmente exibida no gráfico"><i
-                            class="ri-cpu-line"></i>
+                    <h4 id="titulo-grafico" title="Métrica atualmente exibida no gráfico"><i class="ri-cpu-line"></i>
                         CPU - Uso em Tempo Real (Gráfico Histórico)</h4>
 
                     <div class="grafico-info" id="graficoInfo"
@@ -179,19 +184,18 @@
                             <span class="label" id="graficoTexto">Captura Atual</span>
                         </div>
                     </div>
-                    <p class="legenda-grafico-container"
-                        style="font-size: 0.85rem; color: #adb5bd; margin-top: 10px;">
+                    <p class="legenda-grafico-container" style="font-size: 0.85rem; color: #adb5bd; margin-top: 10px;">
                         O gráfico apresenta dados coletados a cada 5 minutos, cobrindo o período das últimas 24
                         horas.
-                    </p> 
-                        <canvas id="myChart" aria-label="Gráfico de linha Histórico da Métrica Selecionada" ></canvas>
+                    </p>
+                    <canvas id="myChart" aria-label="Gráfico de linha Histórico da Métrica Selecionada"></canvas>
 
-                </div> 
+                </div>
                 <div class="direita">
 
                     <div id="processo"></div>
-                    <button onclick="esquerda()">esquerda</button>
-                    <button onclick="direita()">direita</button>
+                    <button onclick="esquerdamark()">esquerda</button>
+                    <button onclick="direitamark()">direita</button>
                 </div>
             </div>
     </div>
@@ -253,30 +257,34 @@
                 ],
                 datasets: [{
                     label: 'cputotal',
-                    data: 
-                        dadosmovel("uso_cpu_total_perc",13)
-                        
-                        //dadosfiltrados[dadosfiltrados.length - 13].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 12].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 11].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 10].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 9].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 8].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 7].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 6].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 5].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 4].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 3].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 2].uso_cpu_total_perc,
-                        //dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
+                    data:
+                        dadosmovel("uso_cpu_total_perc", 13)
+
+                    //dadosfiltrados[dadosfiltrados.length - 13].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 12].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 11].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 10].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 9].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 8].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 7].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 6].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 5].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 4].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 3].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 2].uso_cpu_total_perc,
+                    //dadosfiltrados[dadosfiltrados.length - 1].uso_cpu_total_perc
                     ,
+                    //pointBackgroundColor: ["blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue","blue","blue","blue","red" ],
+                    //pointRadius: [4, 4, 4, 4,4,4, 4, 4, 4,4,4, 4,8],
+                    pointBackgroundColor: setarCor(),
+                    //pointRadius: setarTamanho(),
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.1
                 },
                 {
                     label: dadosfiltrados[dadosfiltrados.length - 1].nome1,
-                    data: dadosmovel("cpu_perc1",13),
+                    data: dadosmovel("cpu_perc1", 13),
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
                     tension: 0.1,
@@ -457,8 +465,10 @@
                     fill: false,
                     borderColor: 'rgb(4, 192, 255)',
                     tension: 0.1,
-                    hidden: true
+                    hidden: true,
+
                 },
+
                 ]
 
 
@@ -475,8 +485,7 @@
                             const label = data.labels[index];
                             const value = data.datasets[0].data[index];
                             const realIndex = index - 13;
-                            const atributo = "uso_cpu_total_perc"
-
+                            const atributo = "uso_cpu_total_perc" 
                             atribuirvalor(realIndex, atributo)
 
                             const obj = dadosfiltrados[dadosfiltrados.length + realIndex];
@@ -517,7 +526,7 @@
 
 
 
-                            alert(`Você clicou em ${label}: ${value}% ${realIndex} `);
+
 
                         }
                     },
@@ -900,10 +909,7 @@
 
         }
         //atualiza o valor azul que representa o total de cpu
-        function atribuirvalor(realIndex, atributo) {
-            console.log(realIndex)
-            console.log(dadosfiltrados[2])
-            console.log(dadosfiltrados[dadosfiltrados.length + realIndex])
+        function atribuirvalor(realIndex, atributo) { 
             let valor = dadosfiltrados[dadosfiltrados.length + realIndex][atributo]
 
             document.getElementById("graficoValor").textContent = valor + "%";
@@ -923,15 +929,61 @@
 
         }
         //função para não reescrever. coluna= coluna do csv. quantidade significa quantos registros você quer ver
-        function dadosmovel( coluna, quantidade) {
-            const array = []; 
+        function dadosmovel(coluna, quantidade) {
+            const array = [];
 
-            for (i = quantidade; i >= 1; i--) { 
-                array.push(dadosfiltrados[dadosfiltrados.length-i][coluna]); 
-            } 
-             
+            for (i = quantidade; i >= 1; i--) {
+                array.push(dadosfiltrados[dadosfiltrados.length - i][coluna]);
+            }
+
             return array;
         }
+        selectedIndex=dadosfiltrados.length-1
+        function esquerdamark() {
+            //select é o index selecionado  
+            if (selectedIndex > 0) {
+                selectedIndex = selectedIndex - 1;
+
+                // Atualiza o gráfico visualmente
+                atualizarcor();
+            }
+
+        }
+
+        function setarCor() {
+
+
+
+            // Cria um array vazio onde vamos inserir as cores
+            const cores = [];
+
+            // Percorre cada índice do array "data"
+            for (let i = 0; i < dadosfiltrados.length; i++) {
+
+                // Se o índice atual for igual ao índice selecionado, o ponto é destacado
+
+                if (i === selectedIndex) { 
+                    cores.push("red");   // cor do ponto selecionado
+                }
+                else {
+                    cores.push("blue");  // cor dos outros pontos
+                }
+            }
+            console.log(cores)
+            console.log(selectedIndex)
+            // Retorna o array final com as cores de cada ponto
+            return cores;
+        }
+        function atualizarcor() {
+            //pega o array do setarCor e atribui a uma das propriedades do chart 
+            meugrafico.data.datasets[0].pointBackgroundColor = setarCor();
+
+            // Pede para o Chart.js redesenhar tudo com atualizações
+            meugrafico.update();
+        }
+        
+ 
+
 
         //botão para verificar o ultimo alerta
         function carregarUltimoAlerta() {
@@ -939,9 +991,9 @@
             for (let i = dadosfiltrados.length - 1; i >= 0; i--) {
                 const element = dadosfiltrados[i];
 
-                if (element.uso_cpu_total_perc >= 80) { 
-                    
-                    break;  
+                if (element.uso_cpu_total_perc >= 80) {
+
+                    break;
                 }
             }
         }
