@@ -31,8 +31,10 @@
             <nav>
                 <ul class="menu-links">
                     <li><a href="dashboardAnalista.html"><i class="ri-dashboard-3-line"></i>Visão Geral</a></li>
-                    <li><a href="CadastroMainframe.html"><i class="ri-file-add-line icon-cadastro"></i>Cadastrar Mainframes</a></li>
-                    <li><a href="dashMainframes.html" class="ativo"><i class="ri-database-2-line"></i>Mainframes</a></li>
+                    <li><a href="CadastroMainframe.html"><i class="ri-file-add-line icon-cadastro"></i>Cadastrar
+                            Mainframes</a></li>
+                    <li><a href="dashMainframes.html" class="ativo"><i class="ri-database-2-line"></i>Mainframes</a>
+                    </li>
                 </ul>
 
                 <button class="btn-sair" onclick="limparSessao()">
@@ -52,8 +54,11 @@
                         <div class="kpi-card kpi-cpu">
                             <div class="kpi-icone"><i class="ri-cpu-line"></i></div>
                             <div class="kpi-info">
-                                <div class="kpi-titulo">CPU</div>
-                                <div class="kpi-valor"></div>
+                                <div class="subtitleKpi" > 
+                                    <div class="kpi-titulo">CPU</div>
+                                    <div class="kpi-valor"></div>
+                                                                     
+                                </div>
                                 <div class="kpi-desc">Uso atual de Processamento</div>
                             </div>
                         </div>
@@ -61,29 +66,33 @@
                         <div class="kpi-card kpi-ram">
                             <div class="kpi-icone"><i class="ri-database-2-line"></i></div>
                             <div class="kpi-info">
-                                <div class="kpi-titulo">RAM</div>
-                                <div class="kpi-valor"></div>
+                                <div class="subtitleKpi" > 
+                                <div class="kpi-titulo">RAM</div> 
+                                <div class="kpi-valor"></div></div>
                                 <div class="kpi-desc">Memória em Uso</div>
                             </div>
                         </div>
 
                         <div class="kpi-card kpi-disk">
                             <div class="kpi-icone"><i class="ri-hard-drive-2-line"></i></div>
-                            <div class="kpi-info">
+                            <div class="kpi-info">  
+                                <div class="subtitleKpi-disk" > 
                                 <div class="kpi-titulo">DISCO</div>
-                                <div class="kpi-valor"></div>
+                                <div class="kpi-valor"></div></div>
                                 <div class="kpi-desc">Armazenamento Utilizado</div>
                             </div>
+                        </div>
+
+                        <div class="kpi-card kpi-info" id="openModalBtn">
+                            <div class="kpi-icone"><i class="ri-align-left"></i></div>
+                            <div class="kpi-info">Processos</div>
                         </div>
 
                         <div class="kpi-card kpi-info" id="openModalBtn">
                             <div class="kpi-icone"><i class="ri-information-fill"></i></div>
                             <div class="kpi-info">Informações</div>
                         </div>
-                           <div class="kpi-card kpi-info" id="openModalBtn">
-                            <div class="kpi-icone"><i class="ri-align-left"></i></div>
-                            <div class="kpi-info">Processos</div>
-                        </div>
+
 
                     </div>
 
@@ -96,36 +105,36 @@
                     </div>
                     <div class="kpis-linha-2">
 
-            
+
 
                         <div class="kpi-card kpi-cpu">
                             <div class="kpi-icone"><i class="ri-cpu-line"></i></div>
                             <div class="kpi-info">
-                                <div class="kpi-titulo">CPU</div>
-                                <div class="kpi-valor"></div>
-                                <div class="kpi-desc">Uso atual de Processamento</div>
+                                <div class="kpi-titulo">Última Variação da CPU</div>
+                                <div id="cpuValue" class="kpi-valor"></div>
+                                <div class="kpi-desc"></div>
                             </div>
                         </div>
 
                         <div class="kpi-card kpi-ram">
                             <div class="kpi-icone"><i class="ri-database-2-line"></i></div>
                             <div class="kpi-info">
-                                <div class="kpi-titulo">RAM</div>
-                                <div class="kpi-valor"></div>
-                                <div class="kpi-desc">Memória em Uso</div>
+                                <div class="kpi-titulo">Última Variação da RAM</div>
+                                <div id="ramValue" class="kpi-valor"></div>
+                                <div class="kpi-desc"></div>
                             </div>
                         </div>
 
                         <div class="kpi-card kpi-disk">
                             <div class="kpi-icone"><i class="ri-hard-drive-2-line"></i></div>
                             <div class="kpi-info">
-                                <div class="kpi-titulo">DISCO</div>
-                                <div class="kpi-valor"></div>
-                                <div class="kpi-desc">Armazenamento Utilizado</div>
+                                <div class="kpi-titulo">Última Variação da DISCO</div>
+                                <div id="diskValue" class="kpi-valor"></div>
+                                <div class="kpi-desc"></div>
                             </div>
                         </div>
 
-                     
+
 
                     </div>
                 </div>
@@ -161,7 +170,7 @@
                             <span class="mf-card-titulo">Último Evento de Alerta</span>
                             <span class="mf-card-valor" id="mfUltEvento">10 min atrás</span>
                         </div>
-                    
+
                     </div>
 
                     <h4 class="mf-subtitulo">Métricas Operacionais Adicionais e Ambiente</h4>
@@ -190,152 +199,159 @@
         </div>
     </div>
 
-<script>
+    <script>
 
 
-let MAX_DATA_POINTS = 10;
-let currentMainframeId = 1;
-let mainChart;
+        let MAX_DATA_POINTS = 10;
+        let currentMainframeId = 1;
+        let mainChart;
 
-let mainframesData = [
-     {
-        nome: "Mainframe 1",
-        statusClass: "offline",
-        cpu: [90, 92, 95, 91, 93],
-        ram: [30, 32, 31, 33, 35],
-        disk: [67, 66, 68, 69, 70],
-        dias: 113,
-        mac: '22:22:22:22:22',
-        rede: [2.5, "Alto Tráfego"],
-        eventos: 24
-    },
-     {
-        nome: "Mainframe 2",
-        statusClass: "warning",
-        cpu: [55, 53, 57, 60, 58],
-        ram: [70, 69, 72, 71, 70],
-        disk: [80, 79, 82, 81, 83],
-        dias: 101,
-        mac: '11:11:11:11:11',
-        rede: [1.2, "Tráfego moderado"],
-        eventos: 5
-    },
-     {
-        nome: "Mainframe 3",
-        statusClass: "normal",
-        cpu: [20, 25, 23, 22, 24],
-        ram: [45, 47, 48, 46, 44],
-        disk: [50, 52, 49, 51, 53],
-        dias: 98,
-        mac: 'AA:AA:AA:AA:AA',
-        rede: [3.3, "Tráfego Alto"],
-        eventos: 8}
-    ]
-;
-        
+        let mainframesData = [
+            {
+                nome: "Mainframe 1",
+                statusClass: "offline",
+                cpu: [90, 92, 95, 91, 93],
+                ram: [30, 32, 31, 33, 35],
+                disk: [67, 66, 68, 69, 70],
+                dias: 113,
+                mac: '22:22:22:22:22',
+                rede: [2.5, "Alto Tráfego"],
+                eventos: 24
+            },
+            {
+                nome: "Mainframe 2",
+                statusClass: "warning",
+                cpu: [55, 53, 57, 60, 58],
+                ram: [70, 69, 72, 71, 70],
+                disk: [80, 79, 82, 81, 83],
+                dias: 101,
+                mac: '11:11:11:11:11',
+                rede: [1.2, "Tráfego moderado"],
+                eventos: 5
+            },
+            {
+                nome: "Mainframe 3",
+                statusClass: "normal",
+                cpu: [20, 25, 23, 22, 24],
+                ram: [45, 47, 48, 46, 44],
+                disk: [50, 52, 49, 51, 53],
+                dias: 98,
+                mac: 'AA:AA:AA:AA:AA',
+                rede: [3.3, "Tráfego Alto"],
+                eventos: 8
+            }
+        ]
+            ;
 
-function renderMainframesList() {
-    const container = document.getElementById("mainframes-cad");
-    container.innerHTML = "";
 
-    Object.keys(mainframesData).forEach(id => {
-        container.innerHTML += `
+        function renderMainframesList() {
+            const container = document.getElementById("mainframes-cad");
+            container.innerHTML = "";
+
+            Object.keys(mainframesData).forEach(id => {
+                container.innerHTML += `
             <a href="#" onclick="loadMainframeDetails(${id})">
                 <div class="mainframe-evento ${mainframesData[id].statusClass}">
                     <div class="mainframe-numero">${id}</div>
                     <div class="mainframe-desc">${mainframesData[id].nome}</div>
                 </div>
             </a>`;
-    });
-}
+            });
+        }
 
-function updateMainframeDetails(id) {
-    const mf = mainframesData[id];
+        function updateMainframeDetails(id) {
+            const mf = mainframesData[id];
 
-    document.getElementById('mfNome').textContent = mf.nome;
-    document.getElementById('mfStatus').textContent = mf.statusClass.toUpperCase();
+            document.getElementById('mfNome').textContent = mf.nome;
+            document.getElementById('mfStatus').textContent = mf.statusClass.toUpperCase();
 
-    document.getElementById('kpiTempValor').textContent = mf.mac;
-    document.getElementById('kpiTempDesc').textContent = "Identificador Mainframe";
+            document.getElementById('kpiTempValor').textContent = mf.mac;
+            document.getElementById('kpiTempDesc').textContent = "Identificador Mainframe";
 
-    document.getElementById('kpiRedeValor').textContent = mf.rede[0] + " mb/s";
-    document.getElementById('kpiRedeDesc').textContent = mf.rede[1];
+            document.getElementById('kpiRedeValor').textContent = mf.rede[0] + " mb/s";
+            document.getElementById('kpiRedeDesc').textContent = mf.rede[1];
 
-    document.getElementById('kpiEventosValor').textContent = mf.eventos;
-    document.getElementById('kpiEventosDesc').textContent = "Últimas 24h";
-}
+            document.getElementById('kpiEventosValor').textContent = mf.eventos;
+            document.getElementById('kpiEventosDesc').textContent = "Últimas 24h";
 
-function updateMainKpis(id) {
-    const mf = mainframesData[id];
+            document.getElementById('cpuValue').textContent = mf.cpu[4] - mf.cpu[3] + "%";
+            document.getElementById('ramValue').textContent = mf.ram[4] - mf.ram[3] + "%";
+            document.getElementById('diskValue').textContent = mf.disk[4] - mf.disk[3] + "%";
 
-    document.querySelector('.kpi-cpu .kpi-valor').textContent =
-        mf.cpu[mf.cpu.length - 1] + "%";
+        }
 
-    document.querySelector('.kpi-ram .kpi-valor').textContent =
-        mf.ram[mf.ram.length - 1] + "%";
+        function updateMainKpis(id) {
+            const mf = mainframesData[id];
 
-    document.querySelector('.kpi-disk .kpi-valor').textContent =
-        mf.disk[mf.disk.length - 1] + "%";
-}
+            document.querySelector('.kpi-cpu .kpi-valor').textContent =
+                mf.cpu[mf.cpu.length - 1] + "%";
 
-function initMainChart(id) {
-    const ctx = document.getElementById("mainChart").getContext("2d");
-    const mf = mainframesData[id];
+            document.querySelector('.kpi-ram .kpi-valor').textContent =
+                mf.ram[mf.ram.length - 1] + "%";
 
-    if (mainChart) mainChart.destroy();
+            document.querySelector('.kpi-disk .kpi-valor').textContent =
+                mf.disk[mf.disk.length - 1] + "%";
+        }
 
-    mainChart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: mf.cpu.map((_, i) => `${i * 3}s`),
-            datasets: [
-                { label: "CPU", data: mf.cpu, borderColor: "#ef4444", backgroundColor: "rgba(239, 68, 68, 0.25)", fill: true },
-                { label: "RAM", data: mf.ram, borderColor: "#10b981", backgroundColor: "rgba(16, 185, 129, 0.25)", fill: true },
-                { label: "DISCO", data: mf.disk, borderColor: "#f59e0b", backgroundColor: "rgba(245, 158, 11, 0.25)", fill: true }
-            ]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
-}
+        function initMainChart(id) {
+            const ctx = document.getElementById("mainChart").getContext("2d");
+            const mf = mainframesData[id];
 
-function updateChartData() {
-    const mf = mainframesData[currentMainframeId];
+            if (mainChart) mainChart.destroy();
 
-    updateMainKpis(currentMainframeId);
+            mainChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: mf.cpu.map((_, i) => `${i * 3}s`),
+                    datasets: [
+                        { label: "CPU", data: mf.cpu, borderColor: "#ef4444", backgroundColor: "rgba(239, 68, 68, 0.25)", fill: true },
+                        { label: "RAM", data: mf.ram, borderColor: "#10b981", backgroundColor: "rgba(16, 185, 129, 0.25)", fill: true },
+                        { label: "DISCO", data: mf.disk, borderColor: "#f59e0b", backgroundColor: "rgba(245, 158, 11, 0.25)", fill: true }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
 
-    if (mainChart) {
-        mainChart.data.datasets[0].data = mf.cpu;
-        mainChart.data.datasets[1].data = mf.ram;
-        mainChart.data.datasets[2].data = mf.disk;
-        mainChart.update();
-    }
-}
+        function updateChartData() {
+            const mf = mainframesData[currentMainframeId];
 
-function loadMainframeDetails(id) {
-    currentMainframeId = id;
+            updateMainKpis(currentMainframeId);
 
-    updateMainKpis(id);
-    updateMainframeDetails(id);
-    initMainChart(id);
+            if (mainChart) {
+                mainChart.data.datasets[0].data = mf.cpu;
+                mainChart.data.datasets[1].data = mf.ram;
+                mainChart.data.datasets[2].data = mf.disk;
+                mainChart.update();
+            }
+        }
 
-    document.getElementById("mainfrane-title").innerText =
-        mainframesData[id].nome;
-}
+        function loadMainframeDetails(id) {
+            currentMainframeId = id;
 
-const modal = document.getElementById("modalOverlay");
-document.getElementById("openModalBtn").onclick = () => modal.style.display = "flex";
-document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none";
-window.onclick = e => {
-    if (e.target === modal) modal.style.display = "none";
-};
+            updateMainKpis(id);
+            updateMainframeDetails(id);
+            initMainChart(id);
 
-window.onload = () => {
-    renderMainframesList();
-    loadMainframeDetails(currentMainframeId);
+            document.getElementById("mainfrane-title").innerText =
+                mainframesData[id].nome;
+        }
 
-    setInterval(updateChartData, 3000);
-};
+        const modal = document.getElementById("modalOverlay");
+        document.getElementById("openModalBtn").onclick = () => modal.style.display = "flex";
+        document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none";
+        window.onclick = e => {
+            if (e.target === modal) modal.style.display = "none";
+        };
 
-</script>
+        window.onload = () => {
+            renderMainframesList();
+            loadMainframeDetails(currentMainframeId);
+
+            setInterval(updateChartData, 3000);
+        };
+
+    </script>
 </body>
+
 </html>

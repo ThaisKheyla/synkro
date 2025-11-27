@@ -6,10 +6,34 @@
     flex-wrap: wrap;
 }
 
+
+.kpis-linha-2 {
+    display: flex;
+    margin-top: 20px;
+    gap: 52px;
+    margin-bottom: 8px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.subtitleKpi{
+    display: flex;
+    justify-items: auto;
+    justify-content: space-between; 
+    width: 75px;
+}
+
+.subtitleKpi-disk{
+    display: flex;
+    justify-items: auto;
+    justify-content: space-between; 
+    width: 90px;
+}
+
+
 .kpi-card {
     flex: 1;
-    min-width: 110px;
-    max-width: 160px;
+    min-width: 100px;
     padding: 8px 10px;
     border-radius: 8px;
     background: var(--azul-medio);
@@ -32,14 +56,29 @@
     flex-shrink: 0;
 }
 
+
+.kpi-card.kpi-info{
+    background-color: #2563eb;
+    border-color: #38bdf8;
+    text-shadow: black;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.kpi-card.kpi-info:hover{
+    background-color: #38bdf8;
+    border-color: #2563eb;
+    border-radius: 30px;
+}
+
 .kpi-cpu .kpi-icone {
-    background: rgba(37,99,235,0.15);
-    color: #2563eb;
+    background: rgba(235, 37, 37, 0.15);
+    color: #ef4444;
 }
 
 .kpi-ram .kpi-icone {
-    background: rgba(56,189,248,0.15);
-    color: #38bdf8;
+    background: rgba(56, 248, 223, 0.15);
+    color: #46ba82;
 }
 
 .kpi-disk .kpi-icone {
@@ -60,10 +99,11 @@
 .kpi-titulo {
     color: var(--gray-400);
     font-size: 0.7rem;
-    font-weight: 600;
+    font-weight: bold;
     margin-bottom: 2px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    color: #ffffff;
 }
 
 .kpi-valor {
