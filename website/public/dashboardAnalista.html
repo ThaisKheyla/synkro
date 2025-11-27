@@ -176,7 +176,7 @@
 
             // 2. Configuração e Plotagem do Gráfico
             const ctx = document.getElementById('alertasBarChart').getContext('2d');
-            const corGraficoSuave = '#a0aec0'; // Equivalente ao gray-400 do Tailwind, mais suave.
+            const corGraficoSuave = 'white'; // Equivalente ao gray-400 do Tailwind, mais suave.
 
             new Chart(ctx, {
                 type: 'bar',
@@ -264,7 +264,7 @@
 
             container.innerHTML = lista.map(m => {
                 const unidade = obterUnidade(m.tipo_metrica);
-                const alertaDetalhado = `${m.componente} - ${m.valor_coletado}${unidade} (Métrica de alerta: ${m.max_alerta_valor}${unidade})`;
+                const alertaDetalhado = `<b>${m.componente} - ${m.valor_coletado}${unidade}</b> (Métrica de alerta: ${m.max_alerta_valor}${unidade})`;
                 const gravidadeClass = m.gravidade ? m.gravidade.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "-") : 'normal';
 
                 return `
