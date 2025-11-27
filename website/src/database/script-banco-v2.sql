@@ -196,7 +196,9 @@ INSERT INTO setor (nome, localizacao, fkEmpresa) VALUES
 ('Operações', 'Andar 3', 1),
 ('TI', 'Térreo', 2),
 ('Financeiro', 'Andar 2', 3),
-('TI', 'Andar 1', 2);
+('TI', 'Andar 1', 2),
+('TI', 'Térreo', 1),
+('Desenvolvimento', 'Andar 4', 1);
 
 -- Sistemas operacionais
 INSERT INTO sistema_operacional (nome) VALUES 
@@ -343,10 +345,6 @@ DELIMITER ;
 -- =====================================================
 -- INSERT EXTRAS NA EMPRESA 1
 -- =====================================================
-
-INSERT INTO setor (nome, localizacao, fkEmpresa) VALUES
-('TI', 'Térreo', 1),
-('Desenvolvimento', 'Andar 4', 1);
 
 -- Mainframe 1 (Métricas 1, 2, 4)
 INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
