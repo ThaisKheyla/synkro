@@ -228,7 +228,7 @@
         meugrafico = null
         selecionadoindex = dadosfiltrados.length - 1
         definirindex=12
-        pagina=0
+        pagina=1
         parte=12*pagina
 
         function grafico() {
@@ -1035,7 +1035,34 @@
 
         //mever o fluxo para a esquerda
         function esquerdaFluxo() {
-            pagina++ 
+            pagina++;   
+            fluxotabela=12
+             
+            console.log(fluxotabela*pagina)//12
+            console.log(fluxotabela+15) //25
+
+            //pega todos menos os -13 ultimos registros
+            const fatia = dadosfiltrados.slice(dadosfiltrados.length-(15+fluxotabela),-(fluxotabela*pagina));
+            console.log(fatia) 
+
+            // 2. Atualiza o dataset do Chart.js
+            meugrafico.data.labels = fatia.map(x => x.timestamp);  
+            meugrafico.data.datasets[0].data = fatia.map(x => x.uso_cpu_total_perc);
+            meugrafico.data.datasets[1].data = fatia.map(x => x.cpu_perc1);
+            meugrafico.data.datasets[2].data = fatia.map(x => x.cpu_perc2);
+            meugrafico.data.datasets[3].data = fatia.map(x => x.cpu_perc3);
+            meugrafico.data.datasets[4].data = fatia.map(x => x.cpu_perc4);
+            meugrafico.data.datasets[5].data = fatia.map(x => x.cpu_perc5);
+            meugrafico.data.datasets[6].data = fatia.map(x => x.cpu_perc6);
+            meugrafico.data.datasets[7].data = fatia.map(x => x.cpu_perc7);
+            meugrafico.data.datasets[8].data = fatia.map(x => x.cpu_perc8);
+            meugrafico.data.datasets[9].data = fatia.map(x => x.cpu_perc9);
+
+            // 3. Atualiza estilos (se você usa pointRadius/Cor dinâmico)
+            meugrafico.data.datasets[0].pointRadius = setarTamanho();
+            meugrafico.data.datasets[0].pointBackgroundColor = setarCor(); 
+
+            // 4. Redesenha
             meugrafico.update();
         }
     </script>
