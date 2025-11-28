@@ -67,29 +67,11 @@
 
         <main class="conteudo-dashboard">
             <div class="container-grid">
-
                 <div class="card card-topo">
-                    <h2 class="card-titulo-roxo">MAINFRAMES COM MAIS ALERTAS</h2>
+                    <h2 class="card-titulo-roxo">Mainframes Com Mais Alertas</h2>
+                    <p> Vizualize todos os mainframes e a quantidade de alertas que cada um registrou</p>
                     <ol class="lista-alertas" id="lista-mais-alertas">
                     </ol>
-                </div>
-
-                <div class="card card-pizza">
-                    <h3 class="card-titulo-cinza">Status dos mainframes - Alertas (%)</h3>
-                    <div class="grafico-pizza-container">
-                        <canvas id="statusPieChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="card card-kpis">
-                    <div class="kpi-box">
-                        <div class="kpi-titulo">Mainframes no Sistema</div>
-                        <div class="kpi-valor" id="kpi-total-mainframes">0</div>
-                    </div>
-                    <div class="kpi-box">
-                        <div class="kpi-titulo">Mainframes que registraram Alerta</div>
-                        <div class="kpi-valor" id="kpi-alertas-mainframes">0</div>
-                    </div>
                 </div>
 
             </div>
@@ -133,6 +115,7 @@
                                 <span class="nome">${mf.nomeMainframe}</span>
                                 <span class="info">| Alertas: <span class="conta-alerta">${mf.alertas}</span></span>
                                 <span class="info">| Setor: <span class="setor">${mf.setor}</span></span>
+                                <span class="info">| MacAdress: <span class="setor">${mf.macAdress}</span></span>
                             </li>`
                         ).join('');
                     } else {
@@ -148,61 +131,7 @@
                 container.innerHTML = "<li>Ocorreu um erro ao conectar ao servidor.</li>";
             }
         }
-
-
-        // 2. Plota o GRÁFICO DE PIZZA (Função auxiliar)
-        function plotarGraficoStatus(total, comAlerta) {
-            const semAlerta = total - comAlerta;
-
-            // Tratamento para evitar divisão por zero
-            const percComAlerta = total > 0 ? (comAlerta / total) * 100 : 0;
-            const percSemAlerta = total > 0 ? (semAlerta / total) * 100 : 0;
-
-            const cores = ['#7c3aed', '#38bdf8']; // Usando as cores do seu CSS: var(--dasd-cor) e var(--accent-light)
-            const ctx = document.getElementById('statusPieChart').getContext('2d');
-
-            // Destrói o gráfico anterior (se existir) para evitar duplicação
-            if (window.statusPieChartInstance) {
-                window.statusPieChartInstance.destroy();
-            }
-
-            window.statusPieChartInstance = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['Com Alerta', 'Sem Alerta'],
-                    datasets: [{
-                        data: [percComAlerta.toFixed(1), percSemAlerta.toFixed(1)],
-                        backgroundColor: cores,
-                        borderColor: 'transparent',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: 'var(--cinza-texto)', // Cor da variável no CSS
-                                font: {
-                                    family: "'Inter', sans-serif",
-                                    size: 14
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    return `${context.label}: ${context.raw}%`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-
+        
         // 3. Carrega os KPIS e, em seguida, chama o gráfico
         async function carregarKpisEStatus() {
             const fkEmpresa = ID_EMPRESA;
