@@ -47,7 +47,7 @@
 
             <div class="graficos">
                 <div class="grafico-box">
-                    <h3 class="section-title">Métricas gerais do <span id="mainfrane-title"></span></h3>
+                    <h3 class="section-title">Métricas gerais do mainframe  <span id="mainfrane-title"></span></h3>
 
                     <div class="kpis-linha">
 
@@ -159,267 +159,267 @@
 
                     <div class="mf-cards">
                         <div class="mf-card">
-                            <span class="mf-card-titulo">IP de Rede</span>
-                            <span class="mf-card-valor" id="mfIP">192.168.0.101</span>
-                        </div>
-                        <div class="mf-card">
-                            <span class="mf-card-titulo">Status Operacional</span>
-                            <span class="mf-card-valor" id="mfStatus">Online</span>
-                        </div>
-                        <div class="mf-card">
-                            <span class="mf-card-titulo">Último Evento de Alerta</span>
-                            <span class="mf-card-valor" id="mfUltEvento">10 min atrás</span>
-                        </div>
-
-                    </div>
-
-                    <h4 class="mf-subtitulo">Métricas Operacionais Adicionais e Ambiente</h4>
-
-                    <div class="mf-card-extras">
-                        <div class="mf-extra-card">
                             <span class="extra-titulo">MacAdress</span>
                             <span class="extra-valor" id="kpiTempValor">22:22:22:22</span>
                             <span class="extra-desc" id="kpiTempDesc">Idenficador Mainframe</span>
                         </div>
-                        <div class="mf-extra-card">
-                            <span class="extra-titulo">Rede (Throughput)</span>
-                            <span class="extra-valor" id="kpiRedeValor">1.2 Gb/s</span>
-                            <span class="extra-desc" id="kpiRedeDesc">Média de Transferência na Última Hora</span>
+                        <div class="mf-card">
+                            <span class="mf-card-titulo">latência read/Write disco</span>
+                            <span class="mf-card-valor" id="mfLatencia"></span>
                         </div>
-                        <div class="mf-extra-card">
-                            <span class="extra-titulo">Eventos de Log</span>
-                            <span class="extra-valor" id="kpiEventosValor">3</span>
-                            <span class="extra-desc" id="kpiEventosDesc">Alertas Críticos nas Últimas 24h</span>
+                         <div class="mf-card">
+                            <span class="mf-card-titulo"> IOPS disco</span>
+                            <span class="mf-card-valor" id="mfUltIops"></span>
+                        </div>
+                            <div class="mf-card">
+                            <span class="extra-titulo">Throughput Disco</span>
+                            <span class="extra-valor" id="kpiRedeValor"></span>
+                            <span class="extra-desc" id="kpiRedeDesc"></span>
+                        </div>
+                         <div class="mf-card">
+                            <span class="mf-card-titulo">Último Evento de Alerta</span>
+                            <span class="mf-card-valor" id="mfUltIncidencia"></span>
+                        </div>
+                        <div class="mf-card">
+                            <span class="extra-titulo">Incidentes (Últimas 24h)</span>
+                            <span class="extra-valor" id="kpiEventosValor"></span>
+                            <span class="extra-desc" id="kpiEventosDesc">Alertas</span>
                         </div>
                     </div>
-
                     <button id="closeModalBtn" class="close-btn">Fechar</button>
                 </div>
             </div>
         </div>
     </div>
-<script>
-        
-var mainframesData
+    <script>
 
-let MAX_DATA_POINTS = 10;
-let currentMainframeId = 0;
-let mainChart;
+        var mainframesData
 
-let metricaCpu = 50
-let metricaRam = 50
-let metricaDisk = 50
+        let MAX_DATA_POINTS = 10;
+        let currentMainframeId = 0;
+        let mainChart;
+
+        let metricaCpu
+        let metricaRam
+        let metricaDisk
 
 
-function sinal(a, b) {
-    const diferenca = (a - b).toFixed(1);   
-    return (diferenca > 0 ? "+" : "") + diferenca + "%";
-}
+        function sinal(a, b) {
+            const diferenca = (a - b).toFixed(1);
+            return (diferenca > 0 ? "+" : "") + diferenca + "%";
+        }
 
-// ==============================
-//  ALTERAÇÃO AQUI (JSON NOVO)
-// ==============================
-async function buscarJsonS3() {
-    const resposta = await fetch(`/s3Route/dados/detalhesMainframe.json`);
-    const data = await resposta.json();
+        function setMainframe(id){
+            sessionStorage.MAINFRAME = id
+        }
 
-    const empresaId = 1
+        async function buscarJsonS3() {
+            const resposta = await fetch(`/s3Route/dados/detalhesMainframe.json`);
+            const data = await resposta.json();
 
-    const empresa = data.find(item => item.empresa == empresaId);
+            const empresaId = sessionStorage.ID_EMPRESA_USUARIO
 
-    if (!empresa) {
-        console.error("Nenhum mainframe encontrado para esta empresa");
-        return;
-    }
+            const empresa = data.find(item => item.empresa == empresaId);
 
-    mainframesData = {};
+            if (!empresa) {
+                console.error("Nenhum mainframe encontrado para esta empresa");
+                return;
+            }
 
-    empresa.mainframes.forEach((mf, index) => {
+            mainframesData = {};
 
-        // Pegar limites das métricas
-        metricaCpu  = Number(mf.metricas[1]);
-        metricaRam  = Number(mf.metricas[4]);
-        metricaDisk = Number(mf.metricas[7]);
+            empresa.mainframes.forEach((mf, index) => {
 
-        mainframesData[index] = {
-            nome: `${mf.Fabricante} ${mf.modelo}`,
-            statusClass: "online",
-            cpu: mf.cpu,
-            ram: mf.ram,
-            disk: mf.disk,
-            eventos: mf.eventos,
-            mac: mf.mac,
-            rede: [mf.throughput, "throughput"]
-        };
-    });
+                // Pegar limites das métricas
+                metricaCpu = Number(mf.metricas[1]);
+                metricaRam = Number(mf.metricas[4]);
+                metricaDisk = Number(mf.metricas[7]);
 
-    console.log("Convertido:", mainframesData);
-}
+                mainframesData[index] = {
+                    nome: `${mf.Fabricante} ${mf.modelo}`,
+                    cpu: mf.cpu,
+                    ram: mf.ram,
+                    disk: mf.disk,
+                    eventos: mf.eventos,
+                    mac: mf.mac,
+                    rede: [mf.throughput, "throughput"],
+                    tempoAlerta: mf.tempoAlerta,
+                    metricas: mf.metricas,
+                    latencia: mf.latencia,
+                    iops: mf.iops
 
-// ==============================
-// RESTANTE DO SEU CÓDIGO (SEM ALTERAR NADA)
-// ==============================
+                };
+            });
 
-function renderMainframesList() {
-    const container = document.getElementById("mainframes-cad");
-    container.innerHTML = "";
+            console.log("Convertido:", mainframesData);
+        }
 
-    Object.keys(mainframesData).forEach(id => {
-        container.innerHTML += `
+        function renderMainframesList() {
+            const container = document.getElementById("mainframes-cad");
+            container.innerHTML = "";
+
+            Object.keys(mainframesData).forEach(id => {
+                container.innerHTML += `
         <a href="#" onclick="loadMainframeDetails(${id})">
             <div id="mainF${id}" class="mainframe-evento">
                 <div class="mainframe-numero">${(parseInt(id) + 1)}</div>
                 <div class="mainframe-desc">${mainframesData[id].nome}</div>
             </div>
         </a>`;
-    });
-}
+            });
+        }
 
-function updateMainframeDetails(id) {
-    const mf = mainframesData[id];
+        function updateMainframeDetails(id) {
+            const mf = mainframesData[id];
 
-    document.getElementById('mfNome').textContent = mf.nome;
-    document.getElementById('mfStatus').textContent = mf.statusClass.toUpperCase();
+            document.getElementById('mfNome').textContent = mf.nome + `  ( ${id + 1} )`;
 
-    document.getElementById('kpiTempValor').textContent = mf.mac;
-    document.getElementById('kpiTempDesc').textContent = "Identificador Mainframe";
+            document.getElementById('kpiTempValor').textContent = mf.mac;
+            document.getElementById('kpiTempDesc').textContent = "Identificador Mainframe"
+            document.getElementById('kpiRedeValor').textContent = mf.rede[0] + " mb/s"
+            document.getElementById("mfUltIncidencia").textContent = mf.tempoAlerta
+            document.getElementById("mfLatencia").textContent = mf.latencia + " ms"
+            document.getElementById("mfUltIops").textContent = mf.iops
+            metricaCpu = mf.metricas[1]
+            metricaRam = mf.metricas[4]
+            metricaDisk = mf.metricas[7]
 
-    document.getElementById('kpiRedeValor').textContent = mf.rede[0] + " mb/s";
-    document.getElementById('kpiRedeDesc').textContent = mf.rede[1];
 
-    document.getElementById('kpiEventosValor').textContent = mf.eventos;
-    document.getElementById('kpiEventosDesc').textContent = "Últimas 24h";
+            document.getElementById('kpiEventosValor').textContent = mf.eventos;
+            document.getElementById('kpiEventosDesc').textContent = "Últimas 24h"
 
-    document.getElementById('cpuValue').textContent = sinal(mf.cpu[4], mf.cpu[3]);
-    document.getElementById('ramValue').textContent = sinal(mf.ram[4], mf.ram[3]);
-    document.getElementById('diskValue').textContent = sinal(mf.disk[4], mf.disk[3]);
-}
+            document.getElementById('cpuValue').textContent = sinal(mf.cpu[4], mf.cpu[3])
+            document.getElementById('ramValue').textContent = sinal(mf.ram[4], mf.ram[3])
+            document.getElementById('diskValue').textContent = sinal(mf.disk[4], mf.disk[3])
+        }
 
-function resetKpis() {
-    const cpuCard = document.querySelector(".kpi-card.kpi-cpu");
-    cpuCard.classList.remove("border-red", "border-orange", "border-null");
-    document.getElementById('cpuAlert').className = "kpi-valor";
-    document.getElementById('cpuAlertN').className = "kpi-valor";
-    document.getElementById('cpuValue').classList.remove("txt-green", "txt-red");
+        function resetKpis() {
+            const cpuCard = document.querySelector(".kpi-card.kpi-cpu")
+            cpuCard.classList.remove("border-red", "border-orange", "border-null")
+            document.getElementById('cpuAlert').className = "kpi-valor"
+            document.getElementById('cpuAlertN').className = "kpi-valor"
+            document.getElementById('cpuValue').classList.remove("txt-green", "txt-red")
 
-    const ramCard = document.querySelector(".kpi-card.kpi-ram");
-    ramCard.classList.remove("border-red", "border-orange", "border-null");
-    document.getElementById('ramAlert').className = "kpi-valor";
-    document.getElementById('ramAlertN').className = "kpi-valor";
-    document.getElementById('ramValue').classList.remove("txt-green", "txt-red");
+            const ramCard = document.querySelector(".kpi-card.kpi-ram")
+            ramCard.classList.remove("border-red", "border-orange", "border-null")
+            document.getElementById('ramAlert').className = "kpi-valor"
+            document.getElementById('ramAlertN').className = "kpi-valor"
+            document.getElementById('ramValue').classList.remove("txt-green", "txt-red")
 
-    const diskCard = document.querySelector(".kpi-card.kpi-disk");
-    diskCard.classList.remove("border-red", "border-orange", "border-null");
-    document.getElementById('diskAlert').className = "kpi-valor";
-    document.getElementById('diskAlertN').className = "kpi-valor";
-    document.getElementById('diskValue').classList.remove("txt-green", "txt-red");
-}
+            const diskCard = document.querySelector(".kpi-card.kpi-disk");
+            diskCard.classList.remove("border-red", "border-orange", "border-null");
+            document.getElementById('diskAlert').className = "kpi-valor";
+            document.getElementById('diskAlertN').className = "kpi-valor";
+            document.getElementById('diskValue').classList.remove("txt-green", "txt-red");
+        }
 
-function updateMainKpis(id) {
-    resetKpis()
-    const mf = mainframesData[id];
+        function updateMainKpis(id) {
+            resetKpis()
+            const mf = mainframesData[id];
 
-    document.getElementById('cpuAlertN').textContent = mf.cpu[mf.cpu.length - 1] + "%";
-    document.getElementById('ramAlertN').textContent = mf.ram[mf.ram.length - 1] + "%";
-    document.getElementById('diskAlertN').textContent = mf.disk[mf.disk.length - 1] + "%";
+            document.getElementById('cpuAlertN').textContent = mf.cpu[mf.cpu.length - 1] + "%"
+            document.getElementById('ramAlertN').textContent = mf.ram[mf.ram.length - 1] + "%"
+            document.getElementById('diskAlertN').textContent = mf.disk[mf.disk.length - 1] + "%"
 
-    document.getElementById('cpuValue').textContent = sinal(mf.cpu[4], mf.cpu[3]);
-    document.getElementById('cpuValue').classList.add((mf.cpu[4] - mf.cpu[3] <= 0) ? "txt-green" : "txt-red");
-    document.getElementById('ramValue').textContent = sinal(mf.ram[4], mf.ram[3]);
-    document.getElementById('ramValue').classList.add((mf.ram[4] - mf.ram[3] <= 0) ? "txt-green" : "txt-red")
-    document.getElementById('diskValue').textContent = sinal(mf.disk[4], mf.disk[3]);
-    document.getElementById('diskValue').classList.add((mf.disk[4] - mf.disk[3] <= 0) ? "txt-green" : "txt-red");
+            document.getElementById('cpuValue').textContent = sinal(mf.cpu[4], mf.cpu[3])
+            document.getElementById('cpuValue').classList.add((mf.cpu[4] - mf.cpu[3] <= 0) ? "txt-green" : "txt-red")
+            document.getElementById('ramValue').textContent = sinal(mf.ram[4], mf.ram[3])
+            document.getElementById('ramValue').classList.add((mf.ram[4] - mf.ram[3] <= 0) ? "txt-green" : "txt-red")
+            document.getElementById('diskValue').textContent = sinal(mf.disk[4], mf.disk[3])
+            document.getElementById('diskValue').classList.add((mf.disk[4] - mf.disk[3] <= 0) ? "txt-green" : "txt-red")
 
-    if (mf.cpu[4] >= metricaCpu) {
-        document.getElementById('cpuAlert').className = ("kpi-valor-alert-2");
-        document.getElementById('cpuAlertN').className = ("kpi-valor-alert-2");
-        document.querySelector(".kpi-card.kpi-cpu").classList.add("border-red");
-    } else if (mf.cpu[4] >= (metricaCpu * 0.80)) {
-        document.getElementById('cpuAlert').className = ("kpi-valor-alert-1");
-        document.getElementById('cpuAlertN').className = ("kpi-valor-alert-1");
-        document.querySelector(".kpi-card.kpi-cpu").classList.add("border-orange");
-    }
+            if (mf.cpu[4] >= metricaCpu) {
+                document.getElementById('cpuAlert').className = ("kpi-valor-alert-2");
+                document.getElementById('cpuAlertN').className = ("kpi-valor-alert-2");
+                document.querySelector(".kpi-card.kpi-cpu").classList.add("border-red");
+            } else if (mf.cpu[4] >= (metricaCpu * 0.80)) {
+                document.getElementById('cpuAlert').className = ("kpi-valor-alert-1")
+                document.getElementById('cpuAlertN').className = ("kpi-valor-alert-1")
+                document.querySelector(".kpi-card.kpi-cpu").classList.add("border-orange")
+            }
 
-    if (mf.ram[4] >= metricaRam) {
-        document.getElementById('ramAlert').className = ("kpi-valor-alert-2");
-        document.getElementById('ramAlertN').className = ("kpi-valor-alert-2");
-        document.querySelector(".kpi-card.kpi-ram").classList.add("border-red");
-    } else if (mf.ram[4] >= (metricaRam * 0.80)) {
-        document.getElementById('ramAlert').className = ("kpi-valor-alert-1");
-        document.getElementById('ramAlertN').className = ("kpi-valor-alert-1");
-        document.querySelector(".kpi-card.kpi-ram").classList.add("border-orange");
-    }
+            if (mf.ram[4] >= metricaRam) {
+                document.getElementById('ramAlert').className = ("kpi-valor-alert-2")
+                document.getElementById('ramAlertN').className = ("kpi-valor-alert-2")
+                document.querySelector(".kpi-card.kpi-ram").classList.add("border-red")
+            } else if (mf.ram[4] >= (metricaRam * 0.80)) {
+                document.getElementById('ramAlert').className = ("kpi-valor-alert-1")
+                document.getElementById('ramAlertN').className = ("kpi-valor-alert-1")
+                document.querySelector(".kpi-card.kpi-ram").classList.add("border-orange")
+            }
 
-    if (mf.disk[4] >= metricaDisk) {
-        document.getElementById('diskAlert').className = ("kpi-valor-alert-2");
-        document.getElementById('diskAlertN').className = ("kpi-valor-alert-2");
-        document.querySelector(".kpi-card.kpi-disk").classList.add("border-red");
-    } else if (mf.disk[4] >= (metricaDisk * 0.80)) {
-        document.getElementById('diskAlert').className = ("kpi-valor-alert-1");
-        document.getElementById('diskAlertN').className = ("kpi-valor-alert-1");
-        document.querySelector(".kpi-card.kpi-disk").classList.add("border-orange");
-    }
+            if (mf.disk[4] >= metricaDisk) {
+                document.getElementById('diskAlert').className = ("kpi-valor-alert-2");
+                document.getElementById('diskAlertN').className = ("kpi-valor-alert-2");
+                document.querySelector(".kpi-card.kpi-disk").classList.add("border-red");
+            } else if (mf.disk[4] >= (metricaDisk * 0.80)) {
+                document.getElementById('diskAlert').className = ("kpi-valor-alert-1")
+                document.getElementById('diskAlertN').className = ("kpi-valor-alert-1")
+                document.querySelector(".kpi-card.kpi-disk").classList.add("border-orange")
+            }
 
-    document.getElementById(`mainF${id}`).className = "mainframe-evento clicked";
-}
+            document.getElementById(`mainF${id}`).className = "mainframe-evento clicked"
+        }
 
-function initMainChart(id) {
-    const ctx = document.getElementById("mainChart").getContext("2d");
-    const mf = mainframesData[id];
+        function initMainChart(id) {
+            const ctx = document.getElementById("mainChart").getContext("2d")
+            const mf = mainframesData[id];
 
-    if (mainChart) mainChart.destroy();
+            if (mainChart) mainChart.destroy()
 
-    mainChart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: mf.cpu.map((_, i) => `${i * 3}s`),
-            datasets: [
-                { label: "CPU", data: mf.cpu, borderColor: "#ef44d2", backgroundColor: "rgba(235, 37, 225, 0.15)", fill: true },
-                { label: "RAM", data: mf.ram, borderColor: "#46baaa", backgroundColor: "rgba(16, 185, 129, 0.25)", fill: true },
-                { label: "DISCO", data: mf.disk, borderColor: "#C1CF00DA", backgroundColor: "rgba(255,217,0,0.411)", fill: true }
-            ]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
-}
+            mainChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: mf.cpu.map((_, i) => `${i * 3}s`),
+                    datasets: [
+                        { label: "CPU", data: mf.cpu, borderColor: "#ef44d2", backgroundColor: "rgba(235, 37, 225, 0.15)", fill: true },
+                        { label: "RAM", data: mf.ram, borderColor: "#46baaa", backgroundColor: "rgba(16, 185, 129, 0.25)", fill: true },
+                        { label: "DISCO", data: mf.disk, borderColor: "#C1CF00DA", backgroundColor: "rgba(255,217,0,0.411)", fill: true }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            })
+        }
 
-function updateChartData() {
-    const mf = mainframesData[currentMainframeId];
-    updateMainKpis(currentMainframeId);
+        function updateChartData() {
+            const mf = mainframesData[currentMainframeId]
+            updateMainKpis(currentMainframeId)
 
-    if (mainChart) {
-        mainChart.data.datasets[0].data = mf.cpu;
-        mainChart.data.datasets[1].data = mf.ram;
-        mainChart.data.datasets[2].data = mf.disk;
-        mainChart.update();
-    }
-}
+            if (mainChart) {
+                mainChart.data.datasets[0].data = mf.cpu
+                mainChart.data.datasets[1].data = mf.ram
+                mainChart.data.datasets[2].data = mf.disk
+                mainChart.update()
+            }
+        }
 
-function loadMainframeDetails(id) {
-    currentMainframeId = id;
+        function loadMainframeDetails(id) {
+            currentMainframeId = id
 
-    updateMainKpis(id);
-    updateMainframeDetails(id);
-    initMainChart(id);
+            setMainframe(id+1)
+            updateMainKpis(id)
+            updateMainframeDetails(id)
+            initMainChart(id)
 
-    document.getElementById("mainfrane-title").innerText = mainframesData[id].nome;
-}
+            document.getElementById("mainfrane-title").innerText = ` ${id + 1}  ` + mainframesData[id].nome 
+        }
 
-window.onload = () => {
-    validarSessaoSynkro()
-    buscarJsonS3().then(() => {
-        renderMainframesList();
-        loadMainframeDetails(currentMainframeId);
-    });
+        window.onload = () => {
+            
+            validarSessaoSynkro()
+            buscarJsonS3().then(() => {
+                renderMainframesList()
+                loadMainframeDetails(currentMainframeId)
+            })
 
-    setInterval(updateChartData, 3000);
-};
+            setInterval(updateChartData, 3000);
+        }
 
-const modal = document.getElementById("modalOverlay");
-document.getElementById("openModalBtn").onclick = () => modal.style.display = "flex";
-document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none";
+        const modal = document.getElementById("modalOverlay")
+        document.getElementById("openModalBtn").onclick = () => modal.style.display = "flex"
+        document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none"
 
-</script>
+    </script>
 
 </body>
 
