@@ -22,6 +22,8 @@
     --gray-400: #9ca3af;
     --gray-500: #6b7280;
     --gray-300: #d1d5db;
+
+    --sombra-card: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 html,
@@ -49,11 +51,6 @@ body {
     background-color: var(--azul-medio);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
-
-/* ---------------------------------------------------------------------- */
-/* ======== BARRA LATERAL (INTACTA) ===================================== */
-/* ---------------------------------------------------------------------- */
-
 /* -------- Barra Lateral -------- */
 .barra-lateral {
     width: 205px;
@@ -144,7 +141,7 @@ body {
     margin-top: 4px;
 }
 
-/* ======== BOTÃO LINKS (Antigo) ======== */
+/* botão links */
 
 .barra-lateral nav ul {
     list-style: none;
@@ -158,7 +155,7 @@ body {
 
 .barra-lateral nav ul li a {
     text-decoration: none;
-    color: var(--cinza); /* Esta variável não existe, mas mantida como no original */
+    color: var(--cinza);
     font-weight: 500;
     padding: 12px 18px;
     display: block;
@@ -172,7 +169,7 @@ body {
     color: var(--branco);
 }
 
-/* ======== MENU LINKS (Novo) ======== */
+/* menu links */
 .menu-links {
     list-style: none;
     padding: 0;
@@ -251,7 +248,7 @@ body {
     border-radius: 3px;
 }
 
-/* ======== BOTÃO SAIR ======== */
+/* botão sair*/
 .btn-sair {
     margin-top: auto;
     background: transparent;
@@ -296,9 +293,7 @@ body {
 }
 
 
-/* ---------------------------------------------------------------------- */
-/* ======== CONTEÚDO PRINCIPAL (REGRAS MANTIDAS) ========================= */
-/* ---------------------------------------------------------------------- */
+/* conteúdo dashboard */
 
 .conteudo-dashboard { 
     flex-grow: 1;
@@ -307,34 +302,25 @@ body {
     overflow-y: auto; 
 }
 
-/* Novo Layout Grid para alinhar os cards como no protótipo */
 .container-grid {
-    display: grid;
-    /* Linha 1: Topo (auto), Linha 2: Ocupa o restante (1fr) */
-    grid-template-rows: auto 1fr; 
-    /* Coluna 1: Lista (2/3), Coluna 2: Gráfico/KPIs (1/3) */
-    grid-template-columns: 2fr 1fr; 
+    display:flex;
     gap: 20px;
     height: 100%;
 }
 
-
-/* ESTILOS BASE DO CARD */
 .card {
     background-color: var(--fundo-card);
     border-radius: 12px;
     padding: 20px 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     min-height: 100px;
+    flex-grow: 1; 
 }
 
 /* 1. MAINFRAMES COM MAIS ALERTAS (Topo e lista) */
-.card-topo {
-    grid-column: 1 / 3; 
-}
 
 .card-titulo-roxo {
-    color: var(--dasd-cor);
+    color: var(--branco);
     font-size: 1.4rem;
     font-weight: 800;
     margin: 0 0 20px 0;
@@ -383,7 +369,7 @@ body {
 .lista-alertas .rank {
     font-size: 1.6rem;
     font-weight: 800;
-    color: var(--accent-light);
+    color: var(--dasd-cor);
     min-width: 40px;
     text-align: right;
     margin-right: 15px;
@@ -409,84 +395,4 @@ body {
 .lista-alertas .setor {
     font-weight: 400;
     color: var(--cinza-texto);
-}
-
-
-/* 3. GRÁFICO DE PIZZA (Coluna 1, Linha 2 do Grid) */
-.card-pizza {
-    grid-column: 1 / 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-.card-titulo-cinza {
-    color: var(--cinza-texto);
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 15px 0;
-    text-align: center;
-}
-
-.grafico-pizza-container {
-    width: 100%;
-    max-width: 300px; 
-    height: 100%;
-    min-height: 250px; 
-}
-
-/* 4. KPIS (Coluna 2, Linha 2 do Grid) */
-.card-kpis {
-    grid-column: 2 / 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    gap: 15px;
-    background-color: transparent;
-    box-shadow: none;
-    padding: 0;
-}
-
-.kpi-box {
-    background-color: var(--branco); 
-    border-radius: 12px;
-    padding: 20px 15px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    height: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.kpi-titulo {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--azul-escuro); 
-}
-
-.kpi-box:nth-child(1) .kpi-titulo {
-    color: var(--azul-primario);
-}
-
-.kpi-box:nth-child(2) .kpi-titulo {
-    color: var(--perigo);
-}
-
-
-.kpi-valor {
-    font-size: 3rem;
-    font-weight: 800;
-    line-height: 1;
-}
-
-.kpi-box:nth-child(1) .kpi-valor {
-    color: var(--azul-primario);
-}
-
-.kpi-box:nth-child(2) .kpi-valor {
-    color: var(--perigo);
 }

@@ -347,7 +347,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto 1fr;
-    gap: 18px;
+    gap: 16px;
     align-items: start;
 }
 
