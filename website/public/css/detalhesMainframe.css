@@ -513,6 +513,7 @@ body {
     overflow-y: auto;
     z-index: 1;
     flex-shrink: 1;
+    text-align: center;
     padding: 0 var(--spacing-md);
 }
 
@@ -537,6 +538,7 @@ body {
 .mainframe-evento {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     background: var(--azul-medio);
     border-radius: 8px;
@@ -550,13 +552,6 @@ body {
     overflow: hidden;
 }
 
-.mainframe-evento.offline {
-    border-left-color: var(--danger);
-}
-
-.mainframe-evento.warning {
-    border-left-color: var(--warning);
-}
 
 .mainframe-evento.online {
     border-left-color: var(--success);
@@ -565,6 +560,16 @@ body {
 .mainframe-evento:hover {
     background: var(--azul-primario);
     border-left-color: var(--accent-light);
+}
+
+
+.mainframe-evento.clicked{
+    background: var(--azul-primario);
+    border-left-color: var(--accent-light); 
+}
+
+a {
+    text-decoration: none;
 }
 
 .mainframe-numero {
@@ -580,6 +585,7 @@ body {
     justify-content: center;
     margin-right: 6px;
     box-shadow: none;
+    text-decoration: none;
 }
 
 .mainframe-desc {

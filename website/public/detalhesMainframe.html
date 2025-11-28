@@ -13,7 +13,7 @@
     <script src="./js/sessao.js"></script>
 </head>
 
-<body>
+<body onload="validarSessaoSynkro()">
     <div class="layout-principal">
         <aside class="barra-lateral">
             <div class="logo">Synkro</div>
@@ -54,10 +54,10 @@
                         <div class="kpi-card kpi-cpu">
                             <div class="kpi-icone"><i class="ri-cpu-line"></i></div>
                             <div class="kpi-info">
-                                <div class="subtitleKpi" > 
-                                    <div class="kpi-titulo">CPU</div>
-                                    <div class="kpi-valor"></div>
-                                                                     
+                                <div class="subtitleKpi">
+                                    <div id="cpuAlert" class="kpi-titulo">CPU</div>
+                                    <div id="cpuAlertN" class="kpi-valor"></div>
+
                                 </div>
                                 <div class="kpi-desc">Uso atual de Processamento</div>
                             </div>
@@ -66,24 +66,26 @@
                         <div class="kpi-card kpi-ram">
                             <div class="kpi-icone"><i class="ri-database-2-line"></i></div>
                             <div class="kpi-info">
-                                <div class="subtitleKpi" > 
-                                <div class="kpi-titulo">RAM</div> 
-                                <div class="kpi-valor"></div></div>
+                                <div class="subtitleKpi">
+                                    <div id="ramAlert" class="kpi-titulo">RAM</div>
+                                    <div id="ramAlertN" class="kpi-valor"></div>
+                                </div>
                                 <div class="kpi-desc">Memória em Uso</div>
                             </div>
                         </div>
 
-                        <div class="kpi-card kpi-disk">
+                        <div class="kpi-card kpi-disk" onclick="window.location.href='dashkeyla.html'">
                             <div class="kpi-icone"><i class="ri-hard-drive-2-line"></i></div>
-                            <div class="kpi-info">  
-                                <div class="subtitleKpi-disk" > 
-                                <div class="kpi-titulo">DISCO</div>
-                                <div class="kpi-valor"></div></div>
+                            <div class="kpi-info">
+                                <div class="subtitleKpi-disk">
+                                    <div id="diskAlert" class="kpi-titulo">DISCO</div>
+                                    <div id="diskAlertN" class="kpi-valor"></div>
+                                </div>
                                 <div class="kpi-desc">Armazenamento Utilizado</div>
                             </div>
                         </div>
 
-                        <div class="kpi-card kpi-info" id="openModalBtn">
+                        <div onclick="window.location.href='dashboardProcessoCSS.html'" class="kpi-card kpi-info">
                             <div class="kpi-icone"><i class="ri-align-left"></i></div>
                             <div class="kpi-info">Processos</div>
                         </div>
@@ -92,8 +94,6 @@
                             <div class="kpi-icone"><i class="ri-information-fill"></i></div>
                             <div class="kpi-info">Informações</div>
                         </div>
-
-
                     </div>
 
                     <p class="legenda-grafico-container">
@@ -125,7 +125,7 @@
                             </div>
                         </div>
 
-                        <div class="kpi-card kpi-disk">
+                        <div class="kpi-card kpi-disk-2">
                             <div class="kpi-icone"><i class="ri-hard-drive-2-line"></i></div>
                             <div class="kpi-info">
                                 <div class="kpi-titulo">Última Variação da DISCO</div>
@@ -203,8 +203,11 @@
 
 
         let MAX_DATA_POINTS = 10;
-        let currentMainframeId = 1;
+        let currentMainframeId = 0;
         let mainChart;
+        let metricaCpu = 50
+        let metricaRam = 50
+        let metricaDisk = 50
 
         let mainframesData = [
             {
@@ -242,7 +245,10 @@
             }
         ]
             ;
-
+        function sinal(a, b) {
+            const diferenca = a - b;
+            return (diferenca > 0 ? "+" : "") + diferenca + "%";
+        }
 
         function renderMainframesList() {
             const container = document.getElementById("mainframes-cad");
@@ -251,8 +257,8 @@
             Object.keys(mainframesData).forEach(id => {
                 container.innerHTML += `
             <a href="#" onclick="loadMainframeDetails(${id})">
-                <div class="mainframe-evento ${mainframesData[id].statusClass}">
-                    <div class="mainframe-numero">${id}</div>
+                <div id="mainF${id}" class="mainframe-evento">
+                    <div class="mainframe-numero">${(parseInt(id) + 1)}</div>
                     <div class="mainframe-desc">${mainframesData[id].nome}</div>
                 </div>
             </a>`;
@@ -274,23 +280,97 @@
             document.getElementById('kpiEventosValor').textContent = mf.eventos;
             document.getElementById('kpiEventosDesc').textContent = "Últimas 24h";
 
-            document.getElementById('cpuValue').textContent = mf.cpu[4] - mf.cpu[3] + "%";
-            document.getElementById('ramValue').textContent = mf.ram[4] - mf.ram[3] + "%";
-            document.getElementById('diskValue').textContent = mf.disk[4] - mf.disk[3] + "%";
+            document.getElementById('cpuValue').textContent = sinal(mf.cpu[4], mf.cpu[3]);
+            document.getElementById('ramValue').textContent = sinal(mf.ram[4], mf.ram[3]);
+            document.getElementById('diskValue').textContent = sinal(mf.disk[4], mf.disk[3]);
 
         }
 
+        function resetKpis() {
+            // CPU
+            const cpuCard = document.querySelector(".kpi-card.kpi-cpu");
+            cpuCard.classList.remove("border-red", "border-orange", "border-null");
+            document.getElementById('cpuAlert').className = "kpi-valor";
+            document.getElementById('cpuAlertN').className = "kpi-valor";
+            document.getElementById('cpuValue').classList.remove("txt-green", "txt-red");
+            //  RAM
+            const ramCard = document.querySelector(".kpi-card.kpi-ram");
+            ramCard.classList.remove("border-red", "border-orange", "border-null");
+            document.getElementById('ramAlert').className = "kpi-valor";
+            document.getElementById('ramAlertN').className = "kpi-valor";
+            document.getElementById('ramValue').classList.remove("txt-green", "txt-red");
+            // DISK
+            const diskCard = document.querySelector(".kpi-card.kpi-disk");
+            diskCard.classList.remove("border-red", "border-orange", "border-null");
+            document.getElementById('diskAlert').className = "kpi-valor";
+            document.getElementById('diskAlertN').className = "kpi-valor";
+            document.getElementById('diskValue').classList.remove("txt-green", "txt-red");
+        }
+
         function updateMainKpis(id) {
+            resetKpis()
             const mf = mainframesData[id];
 
-            document.querySelector('.kpi-cpu .kpi-valor').textContent =
-                mf.cpu[mf.cpu.length - 1] + "%";
+    
+            document.getElementById('cpuAlertN').textContent = mf.cpu[mf.cpu.length - 1] + "%";
+            document.getElementById('ramAlertN').textContent = mf.ram[mf.ram.length - 1] + "%";
+            document.getElementById('diskAlertN').textContent = mf.disk[mf.disk.length - 1] + "%";
 
-            document.querySelector('.kpi-ram .kpi-valor').textContent =
-                mf.ram[mf.ram.length - 1] + "%";
+            document.getElementById('cpuValue').textContent = sinal(mf.cpu[4], mf.cpu[3]);
+            document.getElementById('cpuValue').classList.add((mf.cpu[4] - mf.cpu[3] > 0) ? "txt-green" : "txt-red");
+            document.getElementById('ramValue').textContent = sinal(mf.ram[4], mf.ram[3]);
+            document.getElementById('ramValue').classList.add((mf.ram[4] - mf.ram[3] > 0) ? "txt-green" : "txt-red")
+            document.getElementById('diskValue').textContent = sinal(mf.disk[4], mf.disk[3]);
+            document.getElementById('diskValue').classList.add((mf.disk[4] - mf.disk[3] > 0) ? "txt-green" : "txt-red");
 
-            document.querySelector('.kpi-disk .kpi-valor').textContent =
-                mf.disk[mf.disk.length - 1] + "%";
+
+            if (mf.cpu[4] >= metricaCpu) {
+                document.getElementById('cpuAlert').className = ("kpi-valor-alert-2");
+                document.getElementById('cpuAlertN').className = ("kpi-valor-alert-2");
+                document.querySelector(".kpi-card.kpi-cpu").classList.add("border-red");
+
+            } else if (mf.ram[4] >= (metricaCpu * 0.80)) {
+                document.getElementById('cpuAlert').className = ("kpi-valor-alert-1");
+                document.getElementById('cpuAlertN').className = ("kpi-valor-alert-1");
+                document.querySelector(".kpi-card.kpi-cpu").classList.add("border-orange");
+            } else {
+                document.getElementById('cpuAlert').className = ("kpi-valor");
+                document.getElementById('cpuAlertN').className = ("kpi-valor");
+            }
+
+
+            if (mf.ram[4] >= metricaRam) {
+                document.getElementById('ramAlert').className = ("kpi-valor-alert-2");
+                document.getElementById('ramAlertN').className = ("kpi-valor-alert-2");
+                document.querySelector(".kpi-card.kpi-ram").classList.add("border-red");
+
+            } else if (mf.ram[4] >= (metricaRam * 0.80)) {
+                document.getElementById('ramAlert').className = ("kpi-valor-alert-1");
+                document.getElementById('ramAlertN').className = ("kpi-valor-alert-1");
+                document.querySelector(".kpi-card.kpi-ram").classList.add("border-orange");
+            } else {
+                document.getElementById('ramAlert').className = ("kpi-valor");
+                document.getElementById('ramAlertN').className = ("kpi-valor");
+
+            }
+
+
+            if (mf.disk[4] >= metricaDisk) {
+                document.getElementById('diskAlert').className = ("kpi-valor-alert-2");
+                document.getElementById('diskAlertN').className = ("kpi-valor-alert-2");
+                document.querySelector(".kpi-card.kpi-disk").classList.add("border-red");
+            } else if (mf.disk[4] >= (metricaDisk * 0.80)) {
+                document.getElementById('diskAlert').className = ("kpi-valor-alert-1");
+                document.getElementById('diskAlertN').className = ("kpi-valor-alert-1");
+                document.querySelector(".kpi-card.kpi-disk").classList.add("border-orange");
+            } else {
+                document.getElementById('diskAlert').className = ("kpi-valor");
+                document.getElementById('diskAlertN').className = ("kpi-valor");
+            }
+
+            document.getElementsByClassName("mainframe-evento clicked").cl = "mainframe-evento"
+            document.getElementById(`mainF${id}`).className = "mainframe-evento clicked"
+
         }
 
         function initMainChart(id) {
@@ -304,9 +384,9 @@
                 data: {
                     labels: mf.cpu.map((_, i) => `${i * 3}s`),
                     datasets: [
-                        { label: "CPU", data: mf.cpu, borderColor: "#ef4444", backgroundColor: "rgba(239, 68, 68, 0.25)", fill: true },
-                        { label: "RAM", data: mf.ram, borderColor: "#10b981", backgroundColor: "rgba(16, 185, 129, 0.25)", fill: true },
-                        { label: "DISCO", data: mf.disk, borderColor: "#f59e0b", backgroundColor: "rgba(245, 158, 11, 0.25)", fill: true }
+                        { label: "CPU", data: mf.cpu, borderColor: " #ef44d2", backgroundColor: "rgba(235, 37, 225, 0.15)", fill: true },
+                        { label: "RAM", data: mf.ram, borderColor: "#46baaa", backgroundColor: "rgba(16, 185, 129, 0.25)", fill: true },
+                        { label: "DISCO", data: mf.disk, borderColor: "#C1CF00DA", backgroundColor: " rgba(255, 217, 0, 0.411)", fill: true }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false }
@@ -328,6 +408,11 @@
 
         function loadMainframeDetails(id) {
             currentMainframeId = id;
+            var itens = document.getElementsByClassName("mainframe-evento clicked");
+
+            for (let i of itens) {
+                i.className = "mainframe-evento";
+            }
 
             updateMainKpis(id);
             updateMainframeDetails(id);
@@ -337,19 +422,18 @@
                 mainframesData[id].nome;
         }
 
-        const modal = document.getElementById("modalOverlay");
-        document.getElementById("openModalBtn").onclick = () => modal.style.display = "flex";
-        document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none";
-        window.onclick = e => {
-            if (e.target === modal) modal.style.display = "none";
-        };
-
         window.onload = () => {
+            validarSessaoSynkro()
             renderMainframesList();
             loadMainframeDetails(currentMainframeId);
 
             setInterval(updateChartData, 3000);
         };
+
+        const modal = document.getElementById("modalOverlay");
+        document.getElementById("openModalBtn").onclick = () => modal.style.display = "flex";
+        document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none";
+
 
     </script>
 </body>

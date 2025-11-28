@@ -55,6 +55,12 @@
     font-size: 1.1rem;
     flex-shrink: 0;
 }
+.txt-red{
+    color: red;
+}
+.txt-green{
+    color: green;
+}
 
 
 .kpi-card.kpi-info{
@@ -71,24 +77,39 @@
     border-radius: 30px;
 }
 
+.kpi-card.kpi-disk:hover{
+    background-color: #0070a0;
+    color: white;
+    border-color: #2563eb;
+    cursor: pointer;
+}
+
+
+
 .kpi-cpu .kpi-icone {
-    background: rgba(235, 37, 37, 0.15);
-    color: #ef4444;
+    background: rgba(235, 37, 225, 0.15);
+    color: #ef44d2;
 }
 
 .kpi-ram .kpi-icone {
-    background: rgba(56, 248, 223, 0.15);
-    color: #46ba82;
+    background: rgba(0, 255, 234, 0.13);
+    color: #46baaa;
 }
 
 .kpi-disk .kpi-icone {
-    background: rgba(245,158,11,0.15);
-    color: #f59e0b;
+   background: rgba(255, 217, 0, 0.212);
+    color: #C1CF00DA;
 }
+
+.kpi-disk-2 .kpi-icone {
+   background: rgba(255, 217, 0, 0.212);
+    color: #C1CF00DA;
+}
+
 
 .kpi-tempo .kpi-icone {
     background: rgba(99,102,241,0.15);
-    color: #6366f1;
+    color: #0004ff;
 }
 
 .kpi-info {
@@ -103,17 +124,45 @@
     margin-bottom: 2px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #ffffff;
+   
 }
 
 .kpi-valor {
-    color: var(--branco);
     font-size: 0.95rem;
     font-weight: 700;
     line-height: 1;
     display: flex;
     align-items: baseline;
     gap: 4px;
+}
+
+.kpi-valor-alert-2 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    color: red;
+}
+
+.kpi-valor-alert-1 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    color: orange;
+}
+.border-red{
+    border-color: red;
+}
+.border-orange{
+    border-color: orange;
+}
+.border-orange{
+    border-color: none;
 }
 
 .kpi-gb {
