@@ -13,7 +13,8 @@
     <script src="./js/sessao.js"></script>
 </head>
 
-<body onload="validarSessaoSynkro(); carregarMainframes(); plotarGraficoAlertas(); plotarStatusComponentes();">
+<body
+    onload="validarSessaoSynkro(); carregarMainframes(); plotarGraficoAlertas(); plotarStatusComponentes(); carregarSelect()">
     <div class="layout-principal">
 
         <!-- Barra lateral -->
@@ -103,10 +104,13 @@
 
                 <div class="estatisticas-dashboard">
                     <div class="grafico">
-                        <h3>
-                            <i class="ri-bar-chart-2-line"></i>
-                            Alertas por Mainframe e Gravidade
-                        </h3>
+                        <div class="grafico-select">
+                            <h3>
+                                <i class="ri-bar-chart-2-line"></i>
+                                Alertas por Mainframe e Gravidade
+                            </h3>
+                            <select class="grafico-select-option" id="mainframe" required></select>
+                        </div>
                         <p class="descricao-grafico">
                             Contagem de alertas (Emergência, Muito Urgente, Urgente) por Mainframe.
                         </p>
@@ -128,20 +132,19 @@
 </html>
 
 <script>
+    let chartAlertas = null;
+
     async function plotarGraficoAlertas() {
-        const fkEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
-        if (!fkEmpresa) return;
+        const idMainframe = document.getElementById("mainframe").value;
+        if (!idMainframe) return;
 
         try {
-            const resposta = await fetch(`/mainframes/alertasPorMainframe/${fkEmpresa}`);
-            if (resposta.status === 204) {
-                console.log("Nenhum alerta crítico para exibir.");
-                return;
+            const resposta = await fetch(`/mainframes/alertasPorMainframe/${idMainframe}`);
+            let dados = [];
+            if (resposta.status !== 204) {
+                dados = await resposta.json();
             }
-            const dados = await resposta.json();
 
-            // 1. Processamento dos Dados
-            const mainframes = {};
             const gravidades = ['Urgente', 'Muito Urgente', 'Emergência'];
             const cores = {
                 'Emergência': '#ef4444',
@@ -149,39 +152,39 @@
                 'Urgente': '#f59e0b'
             };
 
-            // Agrupa os dados por Mainframe e inicializa contadores
+            const componentes = {
+                'Processador': { nome: 'Processador', contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } },
+                'RAM': { nome: 'RAM', contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } },
+                'Disco': { nome: 'Disco', contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } }
+            };
+
             dados.forEach(item => {
-                const id = item.idMainframe;
-                // ALTERAÇÃO 1: Usar apenas o ID como rótulo do Mainframe
-                const nome = `MF ${id}`; // Rótulo do Eixo X
-                if (!mainframes[id]) {
-                    mainframes[id] = { nome: nome, contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } };
+                const comp = item.componente;
+                if (componentes[comp]) {
+                    componentes[comp].contagens[item.gravidade] = item.qtdAlertas;
                 }
-                mainframes[id].contagens[item.gravidade] = item.qtdAlertas;
             });
 
-            // Cria as labels (eixo X) e os datasets
-            const labelsMainframes = Object.values(mainframes).map(mf => mf.nome);
+            const labelsComponentes = Object.values(componentes).map(c => c.nome);
             const datasets = gravidades.map(gravidade => {
                 return {
                     label: gravidade,
-                    data: labelsMainframes.map(nomeMF => {
-                        const mainframeId = Object.keys(mainframes).find(key => mainframes[key].nome === nomeMF);
-                        return mainframes[mainframeId].contagens[gravidade];
-                    }),
+                    data: labelsComponentes.map(nomeComp => componentes[nomeComp].contagens[gravidade]),
                     backgroundColor: cores[gravidade],
                     stack: 'Stack 1'
                 };
             });
 
-            // 2. Configuração e Plotagem do Gráfico
             const ctx = document.getElementById('alertasBarChart').getContext('2d');
-            const corGraficoSuave = 'white'; // Equivalente ao gray-400 do Tailwind, mais suave.
 
-            new Chart(ctx, {
+            if (chartAlertas) {
+                chartAlertas.destroy();
+            }
+
+            chartAlertas = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labelsMainframes,
+                    labels: labelsComponentes,
                     datasets: datasets
                 },
                 options: {
@@ -190,32 +193,14 @@
                     scales: {
                         x: {
                             stacked: true,
-                            ticks: {
-                                color: corGraficoSuave // Rótulos do Eixo X
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)' // Linhas de grade mais suaves
-                            },
-                            title: {
-                                display: true,
-                                text: 'Mainframe',
-                                color: corGraficoSuave // Título do Eixo X
-                            }
+                            ticks: { color: '#e2e8f0' },
+                            title: { display: true, text: 'Componente', color: '#e2e8f0' }
                         },
                         y: {
                             stacked: true,
-                            ticks: {
-                                precision: 0,
-                                color: corGraficoSuave // Rótulos do Eixo Y
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)' // Linhas de grade mais suaves
-                            },
-                            title: {
-                                display: true,
-                                text: 'Quantidade de Alertas',
-                                color: corGraficoSuave // Título do Eixo Y
-                            }
+                            ticks: { precision: 0, color: '#e2e8f0' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            title: { display: true, text: 'Quantidade de Alertas', color: '#e2e8f0' }
                         }
                     },
                     plugins: {
@@ -225,11 +210,8 @@
                             labels: {
                                 boxWidth: 10,
                                 padding: 15,
-                                color: corGraficoSuave // Rótulos da Legenda
+                                color: '#e2e8f0'
                             }
-                        },
-                        title: {
-                            display: false
                         }
                     }
                 }
@@ -237,9 +219,9 @@
 
         } catch (err) {
             console.error("Erro ao carregar o gráfico de alertas:", err);
-            // O erro de sintaxe original acontece aqui caso o backend retorne HTML.
         }
     }
+
 
     function obterUnidade(tipoMetrica) {
         if (tipoMetrica === 'Uso') {
@@ -300,7 +282,7 @@
             const resposta = await fetch(`/mainframes/statusComponentes/${fkEmpresa}`);
 
             if (resposta.status === 204) {
-                container.innerHTML = 'Nenhum status de componente encontrado.';
+                container.innerHTML = 'Sem alertas.';
                 return;
             }
 
@@ -357,6 +339,34 @@
         } catch (erro) {
             console.error("Erro ao carregar status dos componentes:", erro);
             container.innerHTML = 'Erro ao carregar os dados dos componentes.';
+        }
+    }
+
+    // Select dos mainframes
+    async function carregarSelect() {
+        const idEmpresa = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+        try {
+            const resposta = await fetch(`/mainframes/carregarSelect/${idEmpresa}`).then(r => r.json());
+            const mainframeSelect = document.getElementById("mainframe");
+
+            if (!resposta || resposta.length === 0) {
+                mainframeSelect.innerHTML = `<p class="sem-dados">Nenhum Mainframe encontrado para esta empresa.</p>`;
+                return;
+            }
+
+            mainframeSelect.innerHTML = resposta.map(m => {
+                return `
+            <option value="${m.id}">Mainframe ${m.id}</option>
+            `;
+            }).join('');
+
+            plotarGraficoAlertas();
+
+            mainframeSelect.addEventListener("change", () => {
+                plotarGraficoAlertas();
+            });
+        } catch (err) {
+            alert("Erro ao carregar dados: " + err.message);
         }
     }
 </script>

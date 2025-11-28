@@ -131,22 +131,21 @@ function listarPorEmpresa(idEmpresa) {
 function visaoGeralPorEmpresa(idEmpresa) {
   const instrucao = `
     SELECT
-m.id,
-se.nome AS setor,
-se.localizacao AS localizacao,
-COALESCE(c.nome, 'N/A') AS componente,
-COALESCE(a.valor_coletado, 0.00) AS valor_coletado,
-COALESCE(g.descricao, 'Normal') AS gravidade,
-COALESCE(t.descricao, 'N/A') AS tipo_metrica,
-COALESCE(me.max, 0.00) AS max_alerta_valor
-FROM mainframe m
-JOIN setor se ON m.fkSetor = se.id
-LEFT JOIN (
+    m.id,
+    se.nome AS setor,
+    se.localizacao AS localizacao,
+    COALESCE(c.nome, 'Sem Alerta') AS componente,
+    COALESCE(a.valor_coletado, 0.00) AS valor_coletado,
+    COALESCE(g.descricao, 'Normal') AS gravidade,
+    COALESCE(t.descricao, 'N/A') AS tipo_metrica,
+    COALESCE(me.max, 0.00) AS max_alerta_valor
+    FROM mainframe m
+    JOIN setor se ON m.fkSetor = se.id
+    LEFT JOIN (
     SELECT
         me_inner.fkMainframe,
         MIN(g_inner.id) AS id_gravidade_maxima,
-        (
-            SELECT a_max.id
+            (SELECT a_max.id
             FROM alerta a_max
             JOIN metrica me_max ON a_max.fkMetrica = me_max.id
             JOIN gravidade g_max ON a_max.fkGravidade = g_max.id
@@ -159,76 +158,89 @@ LEFT JOIN (
     JOIN metrica me_inner ON a_inner.fkMetrica = me_inner.id
     JOIN gravidade g_inner ON a_inner.fkGravidade = g_inner.id
     GROUP BY me_inner.fkMainframe
-) AS alerta_critico ON m.id = alerta_critico.fkMainframe
-LEFT JOIN alerta a ON a.id = alerta_critico.max_alerta_id
-LEFT JOIN metrica me ON a.fkMetrica = me.id
-LEFT JOIN componente c ON me.fkComponente = c.id
-LEFT JOIN gravidade g ON a.fkGravidade = g.id
-LEFT JOIN tipo t ON me.fkTipo = t.id
-WHERE se.fkEmpresa = 1
-ORDER BY m.id;
+    ) AS alerta_critico ON m.id = alerta_critico.fkMainframe
+    LEFT JOIN alerta a ON a.id = alerta_critico.max_alerta_id
+    LEFT JOIN metrica me ON a.fkMetrica = me.id
+    LEFT JOIN componente c ON me.fkComponente = c.id
+    LEFT JOIN gravidade g ON a.fkGravidade = g.id
+    LEFT JOIN tipo t ON me.fkTipo = t.id
+    WHERE se.fkEmpresa = ${idEmpresa}
+    ORDER BY m.id;
   `;
   return database.executar(instrucao);
 }
 
-function contarAlertasPorMainframe(idEmpresa) {
+function contarAlertasPorMainframe(idMainframe) {
   const instrucao = `
-        SELECT
-            m.id AS idMainframe,
-            m.modelo AS nomeMainframe,
-            g.descricao AS gravidade,
-            COUNT(a.id) AS qtdAlertas
-        FROM alerta a
-        JOIN metrica me ON a.fkMetrica = me.id
-        JOIN mainframe m ON me.fkMainframe = m.id
-        JOIN gravidade g ON a.fkGravidade = g.id
-        JOIN setor se ON m.fkSetor = se.id
-        WHERE se.fkEmpresa = ${idEmpresa}
-          AND g.descricao IN ('Emergência', 'Muito Urgente', 'Urgente')
-        GROUP BY m.id, m.modelo, g.descricao
-        ORDER BY m.id, FIELD(g.descricao, 'Emergência', 'Muito Urgente', 'Urgente');
+    SELECT
+    m.id AS idMainframe,
+    CASE 
+        WHEN c.nome IN ('CPU') THEN 'Processador'
+        WHEN c.nome IN ('Memória RAM', 'RAM') THEN 'RAM'
+        WHEN c.nome IN ('Disco Rígido', 'Disco') THEN 'Disco'
+        ELSE c.nome
+    END AS componente,
+    g.descricao AS gravidade,
+    COUNT(a.id) AS qtdAlertas
+FROM alerta a
+JOIN metrica me ON a.fkMetrica = me.id
+JOIN mainframe m ON me.fkMainframe = m.id
+JOIN gravidade g ON a.fkGravidade = g.id
+JOIN componente c ON me.fkComponente = c.id
+WHERE m.id = ${idMainframe}
+  AND g.descricao IN ('Emergência', 'Muito Urgente', 'Urgente')
+GROUP BY m.id, componente, g.descricao
+ORDER BY FIELD(g.descricao, 'Emergência', 'Muito Urgente', 'Urgente');
     `;
   return database.executar(instrucao);
 }
 
-function buscarStatusComponentes(fkEmpresa) {
-  console.log("ACESSEI O MAINFRAME MODEL \n \n Executando a função buscarStatusComponentes()...", fkEmpresa);
-
+function carregarSelectMainframe(fkEmpresa) {
   var instrucaoSql = `
-        SELECT
-            m.id AS idMainframe,
-            comp.nome AS nomeComponente,
-            COALESCE(a.valor_coletado, me.min) AS valor,
-            COALESCE(g.descricao, 'Normal') AS status
-        FROM mainframe m
-        JOIN setor s ON m.fkSetor = s.id
-        JOIN metrica me ON m.id = me.fkMainframe
-        JOIN componente comp ON me.fkComponente = comp.id
-        LEFT JOIN alerta a ON me.id = a.fkMetrica 
-        LEFT JOIN gravidade g ON a.fkGravidade = g.id
-        WHERE s.fkEmpresa = ${fkEmpresa}
-        AND
-            (a.id IS NULL OR a.id = (
-                SELECT a2.id
-                FROM alerta a2
-                JOIN metrica me2 ON a2.fkMetrica = me2.id
-                JOIN gravidade g2 ON a2.fkGravidade = g2.id
-                WHERE me2.fkMainframe = m.id 
-                AND me2.fkComponente = comp.id
-                ORDER BY g2.id ASC, a2.id DESC -- Prioriza g2.id ASC (Emergência=1) e depois a2.id DESC
-                LIMIT 1
-            ))
-        AND m.id IN (
-            SELECT DISTINCT m3.id
-            FROM mainframe m3
-            JOIN metrica me3 ON m3.id = me3.fkMainframe
-            JOIN alerta a3 ON me3.id = a3.fkMetrica
-            JOIN gravidade g3 ON a3.fkGravidade = g3.id
-            WHERE m3.fkSetor IN (SELECT id FROM setor WHERE fkEmpresa = ${fkEmpresa})
-            AND g3.descricao IN ('Urgente', 'Muito Urgente', 'Emergência')
-        )
-        ORDER BY
-            m.id, comp.nome DESC;
+    SELECT DISTINCT mf.id
+    FROM mainframe mf
+    JOIN setor s ON mf.fkSetor = s.id
+    WHERE fkEmpresa = ${fkEmpresa}
+    ORDER BY mf.id;
+    `;
+  return database.executar(instrucaoSql);
+}
+
+function buscarStatusComponentes(fkEmpresa) {
+  var instrucaoSql = `
+    SELECT
+        m.id AS idMainframe,
+        comp.nome AS nomeComponente,
+        COALESCE(a.valor_coletado, me.min) AS valor,
+        COALESCE(g.descricao, 'Normal') AS status
+    FROM mainframe m
+    JOIN setor s ON m.fkSetor = s.id
+    JOIN metrica me ON m.id = me.fkMainframe
+    JOIN componente comp ON me.fkComponente = comp.id
+    LEFT JOIN alerta a ON me.id = a.fkMetrica 
+    LEFT JOIN gravidade g ON a.fkGravidade = g.id
+    WHERE s.fkEmpresa = ${fkEmpresa}
+    AND
+        (a.id IS NULL OR a.id = (
+            SELECT a2.id
+            FROM alerta a2
+            JOIN metrica me2 ON a2.fkMetrica = me2.id
+            JOIN gravidade g2 ON a2.fkGravidade = g2.id
+            WHERE me2.fkMainframe = m.id 
+            AND me2.fkComponente = comp.id
+            ORDER BY g2.id ASC, a2.id DESC
+            LIMIT 1
+        ))
+    AND m.id IN (
+        SELECT DISTINCT m3.id
+        FROM mainframe m3
+        JOIN metrica me3 ON m3.id = me3.fkMainframe
+        JOIN alerta a3 ON me3.id = a3.fkMetrica
+        JOIN gravidade g3 ON a3.fkGravidade = g3.id
+        WHERE m3.fkSetor IN (SELECT id FROM setor WHERE fkEmpresa = ${fkEmpresa})
+        AND g3.descricao IN ('Urgente', 'Muito Urgente', 'Emergência')
+    )
+    ORDER BY m.id, comp.nome DESC;
     `;
 
   return database.executar(instrucaoSql);
@@ -330,6 +342,7 @@ module.exports = {
   visaoGeralPorEmpresa,
   listarPorEmpresa,
   buscarStatusComponentes,
+  carregarSelectMainframe,
   contarAlertasPorMainframe,
   buscarRankingAlertas,
   buscarStatusGeralEKPIs,

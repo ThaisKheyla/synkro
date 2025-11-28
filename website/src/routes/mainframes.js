@@ -18,10 +18,11 @@ router.post("/", mainframesController.cadastrarMainframe);
 router.get("/empresa/:idEmpresa", mainframesController.listarPorEmpresa);
 router.get("/visaoGeral/:idEmpresa", mainframesController.visaoGeralPorEmpresa);
 router.get("/statusComponentes/:fkEmpresa", mainframesController.buscarStatusComponentes);
+router.get("/carregarSelect/:fkEmpresa", mainframesController.carregarSelectMainframe);
 
 router.get("/", mainframesController.listarMainframes);
 
-router.get("/alertasPorMainframe/:fkEmpresa", function (req, res) {
+router.get("/alertasPorMainframe/:idMainframe", function (req, res) {
     mainframesController.contarAlertasPorMainframe(req, res);
 });
 

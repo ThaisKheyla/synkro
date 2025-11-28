@@ -159,15 +159,15 @@ async function visaoGeralPorEmpresa(req, res) {
 }
 
 function contarAlertasPorMainframe(req, res) {
-    const fkEmpresa = req.params.fkEmpresa;
+    const idMainframe = req.params.idMainframe;
 
-    if (fkEmpresa == undefined) {
+    if (idMainframe == undefined) {
         res.status(400).send("O ID da empresa está indefinido!");
         return;
     }
 
     // Chama a função SQL
-    mainframesModel.contarAlertasPorMainframe(fkEmpresa)
+    mainframesModel.contarAlertasPorMainframe(idMainframe)
         .then(function (resultado) {
             if (resultado.length > 0) {
                 res.status(200).json(resultado);
@@ -180,6 +180,7 @@ function contarAlertasPorMainframe(req, res) {
             res.status(500).json(erro.sqlMessage);
         });
 }
+
 function buscarStatusComponentes(req, res) {
     var fkEmpresa = req.params.fkEmpresa;
 
@@ -197,6 +198,27 @@ function buscarStatusComponentes(req, res) {
     }).catch(function (erro) {
         console.log(erro);
         console.log("Houve um erro ao buscar o status dos componentes: ", erro.sqlMessage);
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function carregarSelectMainframe(req, res) {
+    var fkEmpresa = req.params.fkEmpresa;
+
+    if (fkEmpresa == undefined) {
+        res.status(400).send("A fkEmpresa está indefinida!");
+        return;
+    }
+
+    mainframesModel.carregarSelectMainframe(fkEmpresa).then(function (resultado) {
+        if (resultado.length > 0) {
+            res.status(200).json(resultado);
+        } else {
+            res.status(204).send("Nenhum mainframe encontrado!");
+        }
+    }).catch(function (erro) {
+        console.log(erro);
+        console.log("Houve um erro ao buscar o mainframe: ", erro.sqlMessage);
         res.status(500).json(erro.sqlMessage);
     });
 }
@@ -275,6 +297,7 @@ module.exports = {
   listarMainframes,
   visaoGeralPorEmpresa,
   buscarStatusComponentes,
+  carregarSelectMainframe,
   listarPorEmpresa,
   contarAlertasPorMainframe,
   buscarRankingAlertas, 
