@@ -25,6 +25,10 @@ const funcionariosRouter = require("./src/routes/funcionarios");
 const empresaDetalhadaRouter = require("./src/routes/empresaDetalhada");
 const csvRouter = require("./src/routes/csv");
 
+const s3Router = require('./src/routes/s3Route');
+app.use('/s3Route', s3Router);
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
