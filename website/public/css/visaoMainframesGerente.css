@@ -396,3 +396,37 @@ body {
     font-weight: 400;
     color: var(--cinza-texto);
 }
+.mainframe-item {
+    display: flex;
+    justify-content: space-between;  /* Apenas 2 blocos: esquerda | direita */
+    align-items: center;
+    padding: 10px 0;
+    gap: 20px;
+}
+
+/* Bloco esquerdo com rank + nome + infos */
+.left-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Botão elegante tipo Synkro */
+.btn-detalhes {
+    padding: 6px 14px;
+    background: linear-gradient(90deg, rgba(99,102,241,0.2), rgba(56,189,248,0.15));
+    border: 1px solid rgba(99,102,241,0.3);
+    color: var(--accent-light);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: 0.2s ease;
+}
+
+.btn-detalhes:hover {
+    background: linear-gradient(90deg, rgba(99,102,241,0.35), rgba(56,189,248,0.25));
+    transform: translateX(3px);
+    color: white;
+}
+

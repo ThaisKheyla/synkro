@@ -79,103 +79,115 @@
     </div>
 
     <script>
-    // Configuração do arquivo no S3
-    const ARQUIVO_ALERTA_S3 = "alertas.json"; 
-    // Usamos o MAC Address como o ID único
-    const ID_SESSAO_MAINFRAME = 'ID_MAINFRAME_SELECIONADO';
+        // Configuração do arquivo no S3
+        const ARQUIVO_ALERTA_S3 = "alertas.json";
+        // Usamos o MAC Address como o ID único
+        const ID_SESSAO_MAINFRAME = 'ID_MAINFRAME_SELECIONADO';
 
-    window.onload = function () {
-        // Chamada de validação de sessão (manter)
-        if (typeof validarSessaoSynkro === 'function') validarSessaoSynkro();
-        carregarDashboardGerente();
-    };
+        window.onload = function () {
+            // Chamada de validação de sessão (manter)
+            if (typeof validarSessaoSynkro === 'function') validarSessaoSynkro();
+            carregarDashboardGerente();
+        };
 
-    function carregarDashboardGerente() {
-        // Agora, em vez de carregar KPIs e lista separadamente, carregamos os dados do S3 uma única vez
-        carregarDadosDoS3();
-    }
-
-    async function carregarDadosDoS3() {
-        const container = document.getElementById("lista-mais-alertas");
-        container.innerHTML = "<li><i class='ri-loader-4-line ri-spin'></i> Carregando dados do S3...</li>";
-
-        try {
-            // 1. Busca o JSON bruto do endpoint S3: /dados/alertas.json
-            const resposta = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`);
-            
-            if (!resposta.ok) {
-                // Se a resposta.ok for false, houve um erro no backend (404, 500, etc.)
-                throw new Error(`Erro ao baixar arquivo do S3. Status: ${resposta.status}`);
-            }
-
-            const todosAlertas = await resposta.json();
-
-            // 2. Processamento dos dados no Front-end (Agrupamento por MAC Address)
-            const ranking = processarRanking(todosAlertas);
-
-            // 3. Renderiza a lista
-            renderizarLista(ranking, container);
-
-        } catch (error) {
-            console.error("❌ Erro ao carregar dados do S3:", error);
-            container.innerHTML = `<li>Erro ao carregar dados. Verifique o console ou a rota /dados/${ARQUIVO_ALERTA_S3}.</li>`;
-        }
-    }
-
-    function processarRanking(alertas) {
-        // Cria um mapa para agrupar alertas pelo macAdress
-        const mapa = {};
-
-        alertas.forEach(item => {
-            // Usa macAdress como chave única
-            const id = item.macAdress;
-            
-            if (!mapa[id]) {
-                mapa[id] = {
-                    macAdress: id, // ID para linkar com a outra página
-                    nome: item.identificacaoMainframe || "Desconhecido",
-                    alertas: 0
-                };
-            }
-            mapa[id].alertas += 1;
-        });
-
-        // Transforma em array e ordena do maior para o menor número de alertas
-        return Object.values(mapa).sort((a, b) => b.alertas - a.alertas);
-    }
-
-    function renderizarLista(lista, container) {
-        if (lista.length === 0) {
-            container.innerHTML = "<li>Nenhum alerta encontrado no arquivo.</li>";
-            return;
+        function carregarDashboardGerente() {
+            // Agora, em vez de carregar KPIs e lista separadamente, carregamos os dados do S3 uma única vez
+            carregarDadosDoS3();
         }
 
-        container.innerHTML = lista.map((mf, index) => `
-            <li class="mainframe-item" data-id="${mf.macAdress}" style="cursor: pointer;">
-                <span class="rank">${index + 1}</span>
-                <span class="nome">${mf.nome}</span>
-                <span class="info">| Alertas: <span class="conta-alerta">${mf.alertas}</span></span>
-                <span class="info" style="font-size: 0.8rem; opacity: 0.7;">| MAC: ${mf.macAdress.slice(-8)}</span>
-            </li>
-        `).join('');
+        async function carregarDadosDoS3() {
+            const container = document.getElementById("lista-mais-alertas");
+            container.innerHTML = "<li><i class='ri-loader-4-line ri-spin'></i> Carregando dados do S3...</li>";
 
-        // Adiciona o evento de clique para ir aos detalhes
-        adicionarListenersDeClique(container);
-    }
+            try {
+                // 1. Busca o JSON bruto do endpoint S3: /dados/alertas.json
+                const resposta = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`);
 
-    function adicionarListenersDeClique(container) {
-        container.querySelectorAll('.mainframe-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const macAdress = item.getAttribute('data-id');
-                // Salva o MAC na sessão para a próxima página ler
-                sessionStorage.setItem(ID_SESSAO_MAINFRAME, macAdress);
-                window.location.href = 'dashMainframesGerente.html';
+                if (!resposta.ok) {
+                    // Se a resposta.ok for false, houve um erro no backend (404, 500, etc.)
+                    throw new Error(`Erro ao baixar arquivo do S3. Status: ${resposta.status}`);
+                }
+
+                const todosAlertas = await resposta.json();
+
+                // 2. Processamento dos dados no Front-end (Agrupamento por MAC Address)
+                const ranking = processarRanking(todosAlertas);
+
+                // 3. Renderiza a lista
+                renderizarLista(ranking, container);
+
+            } catch (error) {
+                console.error("❌ Erro ao carregar dados do S3:", error);
+                container.innerHTML = `<li>Erro ao carregar dados. Verifique o console ou a rota /dados/${ARQUIVO_ALERTA_S3}.</li>`;
+            }
+        }
+
+        function processarRanking(alertas) {
+            // Cria um mapa para agrupar alertas pelo macAdress
+            const mapa = {};
+
+            alertas.forEach(item => {
+                // Usa macAdress como chave única
+                const id = item.macAdress;
+
+                if (!mapa[id]) {
+                    mapa[id] = {
+                        macAdress: id, // ID para linkar com a outra página
+                        nome: item.identificacaoMainframe || "Desconhecido",
+                        alertas: 0
+                    };
+                }
+                mapa[id].alertas += 1;
             });
-        });
-    }
 
-    // Funções antigas de KPI e status (carregarKpisEStatus) não são mais necessárias e foram removidas.
-</script>
+            // Transforma em array e ordena do maior para o menor número de alertas
+            return Object.values(mapa).sort((a, b) => b.alertas - a.alertas);
+        }
+
+        function renderizarLista(lista, container) {
+            
+            if (lista.length === 0) {
+                container.innerHTML = "<li>Nenhum alerta encontrado no arquivo.</li>";
+                return;
+            }
+
+            container.innerHTML = lista.map((mf, index) => `
+    <li class="mainframe-item" data-id="${mf.macAdress}">
+        <div class="left-info">
+            <span class="rank">${index + 1}</span>
+            <span class="nome">${mf.nome}</span>
+            <span class="info">| Alertas: <span class="conta-alerta">${mf.alertas}</span></span>
+            <span class="info" style="font-size: 0.8rem; opacity: 1;">| MacAdress: ${mf.macAdress}</span>
+        </div>
+
+        <button class="btn-detalhes" data-id="${mf.macAdress}">
+            Ver detalhes
+        </button>
+    </li>
+`).join('');
+
+            // Adiciona o evento de clique para ir aos detalhes
+            adicionarListenersDeClique(container);
+            
+        }
+
+        function adicionarListenersDeClique(container) {
+    // listener do botão
+    container.querySelectorAll('.btn-detalhes').forEach(botao => {
+        botao.addEventListener('click', (e) => {
+            e.stopPropagation(); // impede que clique no LI inteiro dispare algo
+
+            const macAdress = botao.getAttribute('data-id');
+
+            sessionStorage.setItem(ID_SESSAO_MAINFRAME, macAdress);
+            window.location.href = 'dashMainframesGerente.html';
+        });
+    });
+}
+        
+
+        // Funções antigas de KPI e status (carregarKpisEStatus) não são mais necessárias e foram removidas.
+    </script>
 </body>
 
 </html>
