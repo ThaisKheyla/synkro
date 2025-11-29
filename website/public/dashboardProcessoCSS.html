@@ -225,11 +225,12 @@
 
 
     <script>
+        idmainframe=sessionStorage.getItem('MAINFRAME')
         meugrafico = null
         selecionadoindex = dadosfiltrados.length - 1
-        definirindex=12
-        pagina=1
-        parte=12*pagina
+        definirindex = 12
+        pagina = 0
+        parte = 12 * pagina
 
         function grafico() {
             if (meugrafico) {
@@ -494,12 +495,26 @@
                         }
                     },
                     plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        },
                         tooltip: {
                             enabled: true
-                        }
+                        },
+
                     },
                     scales: {
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            }
+                        },
                         y: {
+                            ticks: {
+                                color: 'white'
+                            },
                             beginAtZero: true
                         }
                     }
@@ -878,11 +893,12 @@
             document.getElementById("graficoValor").textContent = valor + "%";
         }
 
+        //função receber o valor atual da bola vermelha
         function definirMark(index) { 
             const label = data.labels[index];
             const value = data.datasets[0].data[index];
             const realIndex = index - 13;
-            const atributo = "uso_cpu_total_perc" 
+            const atributo = "uso_cpu_total_perc"
             atribuirvalor(realIndex, atributo)
 
             const obj = dadosfiltrados[dadosfiltrados.length + realIndex];
@@ -939,11 +955,9 @@
         //função para não reescrever. coluna= coluna do csv. quantidade significa quantos registros você quer ver
         function dadosmovel(coluna, quantidade) {
             const array = [];
-            console.log(parte)
             for (i = quantidade; i >= 1; i--) {
-                array.push(dadosfiltrados[dadosfiltrados.length - (i+parte)][coluna]);
+                array.push(dadosfiltrados[dadosfiltrados.length - (i + parte)][coluna]);
             }
-            console.log(array)
 
             return array;
         }
@@ -952,9 +966,11 @@
             if (selecionadoindex > 0) {
                 selecionadoindex--;
                 definirindex--;
- 
-                // atualiza o gráfico 
+
+                // muda o ponto do gráfico
                 atualizarPonto();
+
+                //
                 definirMark(definirindex);
             }
 
@@ -965,7 +981,7 @@
             if (selecionadoindex < dadosfiltrados.length - 1) {
                 selecionadoindex++;
                 definirindex++;
- 
+
                 // atualiza o gráfico 
                 atualizarPonto();
                 definirMark(definirindex);
@@ -1032,22 +1048,29 @@
                 }
             }
         }
-
-        //mever o fluxo para a esquerda
+        let fatia
+        //mover o fluxo para a esquerda
         function esquerdaFluxo() {
-            pagina++;   
-            fluxotabela=12
-             
-            console.log(fluxotabela*pagina)//12
-            console.log(fluxotabela+15) //25
+            pagina++;
+            fluxotabela = 12 //x linhas
 
-            //pega todos menos os -13 ultimos registros
-            const fatia = dadosfiltrados.slice(dadosfiltrados.length-(15+fluxotabela),-(fluxotabela*pagina));
-            console.log(fatia) 
+            console.log(fluxotabela*pagina)//12
+            console.log(fluxotabela+13) //25
+
+            //pega 13 registros para colocar no dataset
+            //inicio e o fim
+            iniciofatia=fluxotabela * pagina + 13
+            fimfatia=fluxotabela * pagina
+            fatia = dadosfiltrados.slice((dadosfiltrados.length - (iniciofatia)), -(fimfatia));
+            console.log(fatia)
 
             // 2. Atualiza o dataset do Chart.js
             meugrafico.data.labels = fatia.map(x => x.timestamp);  
-            meugrafico.data.datasets[0].data = fatia.map(x => x.uso_cpu_total_perc);
+            fatia2=[]
+            for (let x = 0; x < fatia.length; x++) {
+                fatia2.push(fatia[x].uso_cpu_total_perc);
+            } 
+            meugrafico.data.datasets[0].data = fatia2
             meugrafico.data.datasets[1].data = fatia.map(x => x.cpu_perc1);
             meugrafico.data.datasets[2].data = fatia.map(x => x.cpu_perc2);
             meugrafico.data.datasets[3].data = fatia.map(x => x.cpu_perc3);
@@ -1062,8 +1085,53 @@
             meugrafico.data.datasets[0].pointRadius = setarTamanho();
             meugrafico.data.datasets[0].pointBackgroundColor = setarCor(); 
 
+
             // 4. Redesenha
             meugrafico.update();
+            if (selecionadoindex > 12) { 
+                definirindex -= 12; 
+                definirMark(definirindex);
+            }
+        }
+
+        function direitaFluxo() {
+            pagina++;
+            fluxotabela = 12
+
+            console.log(fluxotabela*pagina)//12
+            console.log(fluxotabela+13) //25
+
+            //pega 13 registros para colocar no dataset
+            fatia = dadosfiltrados.slice(dadosfiltrados.length - (fluxotabela * pagina + 13), -(fluxotabela * pagina)); 
+
+            // 2. Atualiza o dataset do Chart.js
+            meugrafico.data.labels = fatia.map(x => x.timestamp);
+            meugrafico.data.datasets[0].data = fatia.map(x => x.uso_cpu_total_perc);
+            meugrafico.data.datasets[1].data = fatia.map(x => x.cpu_perc1);
+            meugrafico.data.datasets[2].data = fatia.map(x => x.cpu_perc2);
+            meugrafico.data.datasets[3].data = fatia.map(x => x.cpu_perc3);
+            meugrafico.data.datasets[4].data = fatia.map(x => x.cpu_perc4);
+            meugrafico.data.datasets[5].data = fatia.map(x => x.cpu_perc5);
+            meugrafico.data.datasets[6].data = fatia.map(x => x.cpu_perc6);
+            meugrafico.data.datasets[7].data = fatia.map(x => x.cpu_perc7);
+            meugrafico.data.datasets[8].data = fatia.map(x => x.cpu_perc8);
+            meugrafico.data.datasets[9].data = fatia.map(x => x.cpu_perc9);
+
+            // 3. Atualiza estilos (se você usa pointRadius/Cor dinâmico)
+            meugrafico.data.datasets[0].pointRadius = setarTamanho();
+            meugrafico.data.datasets[0].pointBackgroundColor = setarCor();
+
+
+
+            // 4. Redesenha
+            meugrafico.update(); 
+            // if (condition) {
+                
+            //     definirindex += 12; 
+            //     definirMark(definirindex); 
+            // }
+
+
         }
     </script>
 
