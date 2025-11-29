@@ -26,7 +26,7 @@ const empresaDetalhadaRouter = require("./src/routes/empresaDetalhada");
 const csvRouter = require("./src/routes/csv");
 
 const s3Router = require('./src/routes/s3Route');
-app.use('/s3Route', s3Router);
+app.use('/', s3Router);
 
 
 app.use(express.json());

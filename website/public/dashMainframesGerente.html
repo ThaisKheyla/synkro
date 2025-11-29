@@ -109,227 +109,332 @@
         </main>
     </div>
 
-    <!-- ============= SCRIPTS: MOCK DATA + CHARTS ============= -->
-    <script>
-        // ---------- MOCK DATA (substitua por fetch() para integrar com backend) ----------
-        // Horas do dia para o gráfico de barras (0h - 23h)
-        const hoursLabels = Array.from({ length: 24 }, (_, i) => (i).toString().padStart(2, '0') + ":00");
+   <script>
+    // --- CONFIGURAÇÃO ---
+    const ARQUIVO_ALERTA_S3 = "alertas.json"; // Nome do arquivo no bucket
+    const ID_SESSAO_MAINFRAME = 'ID_MAINFRAME_SELECIONADO';
+    
+    // Cores para os gráficos (padrão mantido: CPU, RAM, Disco)
+    const palette = {
+        cpu: 'rgba(99,102,241,0.95)',   // Roxo 
+        ram: 'rgba(56,189,248,0.95)',   // Azul 
+        disco: 'rgba(34,197,94,0.95)',  // Verde 
+        padrao: 'rgba(156, 163, 175, 0.9)' 
+    };
 
-        // Mock: Alertas por hora (valores totais)
-        const mockHourly = [6, 11, 8, 5, 4, 3, 6, 9, 7, 5, 8, 20, 18, 16, 13, 11, 9, 7, 5, 6, 4, 3, 2, 4];
+    // Variáveis Globais de Gráficos e Dados
+    let componentsChart = null;
+    let hourlyChart = null;
+    let historyChart = null;
+    let dadosProcessadosGlobal = {};
 
-        // Componentes com mais alertas
-        const componentsLabels = ['CPU', 'RAM', 'Disco'];
-        const mockComponents = [19, 12, 8];
+    window.onload = async function () {
+        // Recupera o MAC Address salvo na tela anterior
+        const macSelecionado = sessionStorage.getItem(ID_SESSAO_MAINFRAME);
+        
+        if (!macSelecionado) {
+            alert("Nenhum mainframe selecionado. Redirecionando...");
+            window.location.href = "visaoMainframesGerente.html";
+            return;
+        }
 
-        // Histórico 7 dias (cada "filtro" terá seus próprios valores por componente):
-        // Dias (labels)
-        const daysLabels = ['20/10', '21/10', '22/10', '23/10', '24/10', '25/10', '26/10'];
+        await carregarDadosDetalhados(macSelecionado);
+        initTabs(); 
+    };
 
-        // Dados por categoria (cada array contém três séries: CPU,RAM,Disco)
-        const historyData = {
-            todos: {
-                CPU: [3, 5, 4, 2, 4, 2, 3],
-                RAM: [1, 3, 2, 3, 4, 2, 1],
-                Disco: [1, 2, 1, 1, 2, 1, 1]
-            },
-            urgente: {
-                CPU: [2, 4, 3, 1, 3, 1, 2],
-                RAM: [1, 2, 1, 2, 3, 1, 1],
-                Disco: [1, 1, 1, 1, 1, 0, 0]
-            },
-            muitoUrgente: {
-                CPU: [0, 1, 0, 1, 1, 1, 0],
-                RAM: [0, 0, 1, 0, 1, 0, 0],
-                Disco: [0, 0, 0, 0, 0, 0, 0]
-            },
-            emergencia: {
-                CPU: [1, 0, 1, 0, 0, 1, 1],
-                RAM: [0, 1, 0, 1, 0, 1, 0],
-                Disco: [0, 1, 0, 0, 1, 0, 1]
+    async function carregarDadosDetalhados(macAlvo) {
+        try {
+            const resposta = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`);
+            if (!resposta.ok) throw new Error("Erro ao buscar dados S3");
+            
+            const todosAlertas = await resposta.json();
+
+            // 1. FILTRAGEM: Apenas itens com o macAdress selecionado
+            const alertasMainframe = todosAlertas.filter(a => String(a.macAdress) === String(macAlvo));
+
+            if (alertasMainframe.length === 0) {
+                const nomeMf = sessionStorage.getItem('NOME_MAINFRAME') || macAlvo;
+                document.querySelector('.titulo-dashboard').innerText = `Mainframe: ${nomeMf} (Sem dados recentes)`;
+                return; 
             }
+
+            // Atualiza Título
+            const nomeMf = alertasMainframe[0].identificacaoMainframe || macAlvo;
+            document.querySelector('.titulo-dashboard').innerText = `Visão dos Alertas da Última Semana: ${nomeMf}`;
+            // Salva nome para usar se o mac for o ID
+            sessionStorage.setItem('NOME_MAINFRAME', nomeMf);
+
+            // 2. PROCESSAMENTO
+            processarKPIs(alertasMainframe);
+            processarGraficoHoras(alertasMainframe);
+            processarGraficoComponentes(alertasMainframe);
+            
+            dadosProcessadosGlobal = processarDadosHistorico(alertasMainframe);
+            
+            // Renderiza gráfico inicial (Todos)
+            createHistoryChart(dadosProcessadosGlobal.labels, dadosProcessadosGlobal.todos);
+
+        } catch (erro) {
+            console.error("❌ Erro na dashboard:", erro);
+        }
+    }
+
+    // --- FUNÇÕES AUXILIARES DE TRATAMENTO ---
+    
+    // Converte datas "2025-11-21 12:45:00" para Objeto Date JS
+    function parseDate(dataString) {
+        // Substitui espaço por T para garantir compatibilidade ISO
+        return new Date(dataString.replace(' ', 'T'));
+    }
+
+    // Padroniza nomes para agrupar nos gráficos (Ex: Processador -> CPU)
+    function normalizarComponente(nome) {
+        if (!nome) return "Outros";
+        const n = nome.toLowerCase();
+        if (n.includes('processador') || n.includes('cpu')) return 'CPU';
+        if (n.includes('memoria') || n.includes('ram')) return 'RAM';
+        if (n.includes('disco') || n.includes('disk')) return 'Disco';
+        return 'Outros'; 
+    }
+
+    // --- KPIS ---
+    function processarKPIs(alertas) {
+        document.getElementById('kpi-total').innerText = alertas.length;
+        document.getElementById('kpi-media').innerText = (alertas.length / 7).toFixed(1);
+
+        const contagemDias = {};
+        const contagemHoras = {};
+        const contagemComp = {};
+
+        alertas.forEach(a => {
+            const data = parseDate(a.dtHora);
+            
+            // Dia
+            const diaSemana = data.toLocaleDateString('pt-BR', { weekday: 'long' });
+            contagemDias[diaSemana] = (contagemDias[diaSemana] || 0) + 1;
+
+            // Hora
+            const hora = data.getHours() + ":00";
+            contagemHoras[hora] = (contagemHoras[hora] || 0) + 1;
+
+            // Componente (Normalizado)
+            const comp = normalizarComponente(a.componente);
+            contagemComp[comp] = (contagemComp[comp] || 0) + 1;
+        });
+
+        // Atualiza os KPIs
+        const totalTopDia = contagemDias[getKeyComMaiorValor(contagemDias)] || 0;
+        const totalTopHora = contagemHoras[getKeyComMaiorValor(contagemHoras)] || 0;
+        const totalTopComp = contagemComp[getKeyComMaiorValor(contagemComp)] || 0;
+        
+        document.getElementById('kpi-pico').innerText = getKeyComMaiorValor(contagemDias) || "-";
+        document.querySelector('#kpi-pico').nextElementSibling.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--emergencia);margin-right:8px;"></span> Emergência | ${totalTopDia} alertas`;
+
+        document.getElementById('kpi-horario').innerText = getKeyComMaiorValor(contagemHoras) || "-";
+        document.querySelector('#kpi-horario').nextElementSibling.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--urgente);margin-right:8px;"></span> Urgente | ${totalTopHora} alertas`;
+
+        document.getElementById('kpi-componente').innerText = getKeyComMaiorValor(contagemComp) || "-";
+        document.querySelector('#kpi-componente').nextElementSibling.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--muito-urgente);margin-right:8px;"></span> Muito urgente | ${totalTopComp} alertas`;
+    }
+
+    function getKeyComMaiorValor(obj) {
+        return Object.keys(obj).reduce((a, b) => (obj[a] > obj[b] ? a : b), "");
+    }
+
+    // --- GRÁFICO 1: COMPONENTES ---
+    function processarGraficoComponentes(alertas) {
+        const contagem = {};
+        alertas.forEach(a => {
+            const comp = normalizarComponente(a.componente);
+            contagem[comp] = (contagem[comp] || 0) + 1;
+        });
+
+        // Filtra "Outros" se for 0 e ordena
+        const sorted = Object.entries(contagem).sort(([, a], [, b]) => b - a);
+        const labels = sorted.map(([k]) => k);
+        const data = sorted.map(([, v]) => v);
+        
+        const bgColors = labels.map(l => {
+            if(l === 'CPU') return palette.cpu;
+            if(l === 'RAM') return palette.ram;
+            if(l === 'Disco') return palette.disco;
+            return palette.padrao;
+        });
+
+        const ctx = document.getElementById('componentsBar').getContext('2d');
+        if (componentsChart) componentsChart.destroy();
+
+        componentsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Qtd Alertas',
+                    data: data,
+                    backgroundColor: bgColors,
+                    borderRadius: 8,
+                    barThickness: 20
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: '#ffffff' } },
+                    y: { ticks: { color: '#ffffff' }, grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // --- GRÁFICO 2: HORAS ---
+    function processarGraficoHoras(alertas) {
+        const horasData = Array(24).fill(0);
+        const labels = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0') + ":00");
+
+        alertas.forEach(a => {
+            const h = parseDate(a.dtHora).getHours();
+            if (!isNaN(h)) horasData[h]++;
+        });
+
+        const ctx = document.getElementById('hourlyBar').getContext('2d');
+        if (hourlyChart) hourlyChart.destroy();
+
+        hourlyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Alertas',
+                    data: horasData,
+                    backgroundColor: 'rgba(56,189,248,0.85)',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#ffffff', font: {size: 10} } },
+                    y: { display: false }
+                }
+            }
+        });
+    }
+    
+    // --- GRÁFICO 3: HISTÓRICO (Linha) ---
+    function normalizarTipo(tipoString) {
+        if (!tipoString) return 'todos';
+        const t = tipoString.toLowerCase();
+        if (t.includes('muito')) return 'muitoUrgente';
+        if (t.includes('emerg')) return 'emergencia';
+        if (t.includes('urgent')) return 'urgente';
+        return 'todos';
+    }
+
+    function processarDadosHistorico(alertas) {
+        const hoje = new Date(); 
+        const diasLabels = [];
+        const mapaDataIndex = {}; 
+
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(hoje.getDate() - i);
+            const label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+            diasLabels.push(label);
+            mapaDataIndex[label] = 6 - i; 
+        }
+
+        const criarSeries = () => ({ CPU: Array(7).fill(0), RAM: Array(7).fill(0), Disco: Array(7).fill(0) });
+        
+        const dados = {
+            labels: diasLabels,
+            todos: criarSeries(),
+            urgente: criarSeries(),
+            muitoUrgente: criarSeries(),
+            emergencia: criarSeries()
         };
 
-        // ---------- Helper: color palette ----------
-        const palette = {
-            cpu: 'rgba(99,102,241,0.95)', // roxo
-            ram: 'rgba(56,189,248,0.95)', // azul claro
-            disco: 'rgba(34,197,94,0.95)' // verde
-        };
+        alertas.forEach(a => {
+            const dataObj = parseDate(a.dtHora);
+            const label = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+            
+            if (mapaDataIndex.hasOwnProperty(label)) {
+                const idx = mapaDataIndex[label];
+                const comp = normalizarComponente(a.componente); 
+                const tipo = normalizarTipo(a.gravidade);
+                
+                if (dados.todos[comp]) {
+                    dados.todos[comp][idx]++;
+                    if (tipo !== 'todos' && dados[tipo]) {
+                        dados[tipo][comp][idx]++;
+                    }
+                }
+            }
+        });
 
-        // ---------- Charts instances ----------
-        let componentsChart = null;
-        let hourlyChart = null;
-        let historyChart = null;
+        return dados;
+    }
 
-        // ---------- Create Components horizontal bar chart ----------
-        function createComponentsChart() {
-            const ctx = document.getElementById('componentsBar').getContext('2d');
-            if (componentsChart) componentsChart.destroy();
+    function createHistoryChart(labels, datasetGroup) {
+        const ctx = document.getElementById('historyLine').getContext('2d');
+        if (historyChart) historyChart.destroy();
 
-            componentsChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: componentsLabels,
-                    datasets: [{
-                        label: 'Alertas',
-                        data: mockComponents,
-                        backgroundColor: [palette.cpu, palette.ram, palette.disco],
-                        borderRadius: 8,
-                        barThickness: 18
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false }
+        historyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'CPU',
+                        data: datasetGroup.CPU,
+                        borderColor: palette.cpu,
+                        backgroundColor: palette.cpu.replace('0.95', '0.1'),
+                        tension: 0.4, pointRadius: 3, fill: true
                     },
-                    scales: {
-                        x: {
-                            ticks: { color: '#ffffff', maxRotation: 45, minRotation: 0 }
-                        },
-                        y: {
-                            ticks: { color: '#ffffff' },
-                            grid: { color: 'rgba(255,255,255,0.03)' }
-                        }
-                    }
-                }
-            });
-        }
-
-        // ---------- Create Hourly Bar Chart ----------
-        function createHourlyChart() {
-            const ctx = document.getElementById('hourlyBar').getContext('2d');
-            if (hourlyChart) hourlyChart.destroy();
-
-            hourlyChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: hoursLabels,
-                    datasets: [{
-                        label: 'Alertas por hora',
-                        data: mockHourly,
-                        backgroundColor: 'rgba(56,189,248,0.85)',
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: {
-                            grid: { color: 'rgba(255,255,255,0.03)' },
-                            ticks: { color: '#ffffff' }
-                        },
-                        y: {
-                            grid: { display: false },
-                            ticks: { color: '#ffffff', font: { weight: 700 } }
-                        }
-                    }
-                }
-            });
-        }
-
-        // ---------- Create History Line Chart (multi-series) ----------
-        function createHistoryChart(filter = 'todos') {
-            const ctx = document.getElementById('historyLine').getContext('2d');
-            if (historyChart) historyChart.destroy();
-
-            // build datasets from historyData[filter]
-            const seriesCPU = historyData[filter].CPU;
-            const seriesRAM = historyData[filter].RAM;
-            const seriesDisco = historyData[filter].Disco;
-
-            historyChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: daysLabels,
-                    datasets: [
-                        {
-                            label: 'CPU',
-                            data: seriesCPU,
-                            borderColor: palette.cpu,
-                            backgroundColor: hexToRgba(palette.cpu, 0.06),
-                            tension: 0.35,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-                        },
-                        {
-                            label: 'RAM',
-                            data: seriesRAM,
-                            borderColor: palette.ram,
-                            backgroundColor: hexToRgba(palette.ram, 0.06),
-                            tension: 0.35,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-                        },
-                        {
-                            label: 'Disco',
-                            data: seriesDisco,
-                            borderColor: palette.disco,
-                            backgroundColor: hexToRgba(palette.disco, 0.06),
-                            tension: 0.35,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            labels: { color: '#ffffff' }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: (ctx) => ctx[0].label,
-                                label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}`
-                            }
-                        }
+                    {
+                        label: 'RAM',
+                        data: datasetGroup.RAM,
+                        borderColor: palette.ram,
+                        backgroundColor: palette.ram.replace('0.95', '0.1'),
+                        tension: 0.4, pointRadius: 3, fill: true
                     },
-                    scales: {
-                        x: {
-                            ticks: { color: '#ffffff' },
-                            grid: { color: 'rgba(255,255,255,0.02)' }
-                        },
-                        y: {
-                            ticks: { color: '#ffffff', stepSize: 1, beginAtZero: true },
-                            grid: { color: 'rgba(255,255,255,0.02)' }
-                        }
+                    {
+                        label: 'Disco',
+                        data: datasetGroup.Disco,
+                        borderColor: palette.disco,
+                        backgroundColor: palette.disco.replace('0.95', '0.1'),
+                        tension: 0.4, pointRadius: 3, fill: true
                     }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: '#ccc', font: {size: 11} } }
+                },
+                scales: {
+                    x: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.02)' } },
+                    y: { ticks: { color: '#aaa', precision:0, beginAtZero: true }, grid: { color: 'rgba(255,255,255,0.02)' } }
                 }
-            });
-        }
+            }
+        });
+    }
 
-        // ---------- Utility: convert rgba-like string if needed ----------
-        function hexToRgba(rgbStr, alpha) {
-            // rgbStr like 'rgba(99,102,241,0.95)' or hex not used here.
-            // We'll return a low-alpha variant for area fills.
-            // Extract numbers
-            const m = rgbStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([0-9.]*)?\)/);
-            if (!m) return 'rgba(0,0,0,' + alpha + ')';
-            const r = m[1], g = m[2], b = m[3];
-            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-        }
+    // --- Tabs behavior (filter history) ---
+    function initTabs() {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
 
-        // ---------- Tabs behavior (filter history) ----------
-        function initTabs() {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-
-                    const filter = btn.getAttribute('data-filter');
-
-                    const canvas = document.getElementById("historyLine");
-                    canvas.style.height = "auto";
-                    canvas.style.maxHeight = "260px";
-                    canvas.style.display = "block";
-
-                    createHistoryChart(filter);
-                    // update trend badge mock (simple example)
-                    const badge = document.getElementById('trendBadge');
+                const filter = btn.getAttribute('data-filter');
+                const dadosParaPlotar = dadosProcessadosGlobal[filter] || dadosProcessadosGlobal.todos;
+                
+                createHistoryChart(dadosProcessadosGlobal.labels, dadosParaPlotar);
+                // Lógica de atualização do trendBadge (mantida do seu original)
+                const badge = document.getElementById('trendBadge');
                     if (filter === 'todos') {
                         badge.innerText = '▲ +2% na comparação com semana anterior';
                         badge.style.background = 'rgba(220,38,38,0.08)';
@@ -347,34 +452,10 @@
                         badge.style.background = 'rgba(220,38,38,0.08)';
                         badge.style.color = 'var(--emergencia)';
                     }
-                });
             });
-        }
-
-        // ---------- Initialize everything on load ----------
-        window.addEventListener('load', () => {
-            createComponentsChart();
-            createHourlyChart();
-            createHistoryChart('todos');
-            initTabs();
-
-            // OPTIONAL: update KPI values dynamically (mock)
-            document.getElementById('kpi-total').innerText = 100;
-            document.getElementById('kpi-media').innerText = 14.2;
-            document.getElementById('kpi-pico').innerText = 'Segunda-feira';
-            document.getElementById('kpi-horario').innerText = '12:00';
-            document.getElementById('kpi-componente').innerText = 'CPU';
         });
-
-
-
-        // ---------- If you want to connect to real API:
-        // Replace the mock constants and call your endpoints (fetch) to get:
-        // - mockHourly -> from /mainframes/alertasPorHora/:idMainframe
-        // - mockComponents -> from /mainframes/componentesComMaisAlertas/:idMainframe
-        // - historyData -> from /mainframes/historico7dias/:idMainframe?gravidade=...
-        // After fetch, call chart.update() or re-create charts as needed.
-    </script>
+    }
+</script>
 </body>
 
 </html>

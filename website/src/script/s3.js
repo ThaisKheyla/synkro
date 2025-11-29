@@ -13,7 +13,7 @@ async function lerArquivo(req, res) {
     }
 
     const params = {
-      Bucket: "synkro-client-1",
+      Bucket: process.env.S3_BUCKET, 
       Key: fileKey
     };
 
