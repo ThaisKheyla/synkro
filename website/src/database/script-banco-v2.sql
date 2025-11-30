@@ -138,7 +138,7 @@ CREATE TABLE status (
 CREATE TABLE alerta (
    id INT NOT NULL AUTO_INCREMENT,
    dt_hora DATETIME,
-   valor_coletado DECIMAL(5,2),
+   valor_coletado DECIMAL(6,2),
    fkGravidade INT NOT NULL,
    fkMetrica INT NOT NULL,
    fkStatus INT NOT NULL DEFAULT 1,
@@ -151,9 +151,6 @@ CREATE TABLE alerta (
 -- =====================================================
 -- INSERTS DE EXEMPLO
 -- =====================================================
-
-USE synkro;
-
 
 -- Acesso
 INSERT INTO status_acesso (id, descricao) VALUES
@@ -199,7 +196,9 @@ INSERT INTO setor (nome, localizacao, fkEmpresa) VALUES
 ('Operações', 'Andar 3', 1),
 ('TI', 'Térreo', 2),
 ('Financeiro', 'Andar 2', 3),
-('TI', 'Andar 1', 2);
+('TI', 'Andar 1', 2),
+('TI', 'Térreo', 1),
+('Desenvolvimento', 'Andar 4', 1);
 
 -- Sistemas operacionais
 INSERT INTO sistema_operacional (nome) VALUES 
@@ -208,7 +207,7 @@ INSERT INTO sistema_operacional (nome) VALUES
 
 -- Mainframes
 INSERT INTO mainframe (fabricante, modelo, macAdress, fkSetor, fkSistemaOperacional) VALUES
-('IBM', 'Z15', '269058769682378', 1, 1),
+('IBM', 'Z15', '166250251803552', 1, 1),
 ('IBM', 'Z16', '269058910482378', 2, 2),
 ('IBM', 'Z14', '269058765243378', 3, 1),
 ('IBM', 'Z15', '269058769680975', 4, 2),
@@ -218,7 +217,13 @@ INSERT INTO mainframe (fabricante, modelo, macAdress, fkSetor, fkSistemaOperacio
 -- Tipo
 INSERT INTO tipo (descricao) VALUES 
 ('Uso'),
-('Temperatura');
+('Temperatura'),
+('IO Wait'),
+('Throughput'),
+('IOPS'),
+('Read'),
+('Write'),
+('Latência');
 
 -- Componentes
 INSERT INTO componente (nome) VALUES
@@ -228,9 +233,24 @@ INSERT INTO componente (nome) VALUES
 
 -- Métricas
 INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
-(1, 1, 1, 1, 5.0, 90.0),
-(2, 1, 2, 1, 5.0, 90.0),
-(3, 1, 3, 2, 0.0, 75.0);
+(1, 1, 1, 1, 0.0, 95.0), -- Mainframe 1 | Processador
+(2, 1, 2, 1, 0.0, 95.0), -- Mainframe 1 | RAM
+(3, 1, 3, 1, 0.0, 99.0); -- Mainframe 1 | Disco
+
+INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES 
+(5, 1, 1, 2, 0.0, 95.0), -- Mainframe 2 | Processador
+(6, 1, 2, 2, 0.0, 95.0), -- Mainframe 2 | RAM
+(4, 1, 3, 2, 0.0, 80.0); -- Mainframe 2 | Disco
+
+INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
+(7, 1, 1, 3, 0.0, 95.0), -- Mainframe 3 | Processador
+(8, 1, 2, 3, 0.0, 95.0), -- Mainframe 3 | RAM
+(9, 1, 3, 3, 0.0, 95.0); -- Mainframe 3 | Disco
+
+INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
+(10, 1, 1, 6, 0.0, 95.0), -- Mainframe 6 | Processador
+(11, 1, 2, 6, 0.0, 95.0), -- Mainframe 6 | RAM
+(12, 1, 3, 6, 0.0, 95.0); -- Mainframe 6 | Disco
 
 -- Gravidades
 INSERT INTO gravidade (descricao) VALUES 
@@ -244,17 +264,6 @@ INSERT INTO status (descricao) VALUES
 ('Aberto'),
 ('Em andamento'),
 ('Resolvido');
-
--- Alertas (com fkComponente e fkMetrica)
-INSERT INTO alerta (dt_hora, valor_coletado, fkGravidade, fkMetrica, fkStatus) VALUES
-(NOW(), 75.5, 4, 1, 2),
-(NOW(), 85.0, 4, 2, 1),
-(NOW(), 20.0, 4, 1, 3),
-(NOW(), 90.0, 3, 1, 2),
-(NOW(), 98.0, 2, 1, 1),
-(NOW(), 92.0, 3, 2, 2),
-(NOW(), 95.0, 2, 1, 1),
-(NOW(), 100.0, 1, 1, 2);
 
 -- =====================================================
 -- TRIGGER PARA CRIAR GERENTE AUTOMATICAMENTE
@@ -339,6 +348,120 @@ END$$
 DELIMITER ;
 
 -- =====================================================
+-- INSERT EXTRAS NA EMPRESA 1
+-- =====================================================
+
+-- Mainframe 1 (Métricas 1, 2, 4)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 10 MINUTE, 100.0, 1, 1),
+(NOW() - INTERVAL 9 MINUTE, 90.0, 2, 1),
+(NOW() - INTERVAL 8 MINUTE, 85.2, 4, 1),
+(NOW() - INTERVAL 7 MINUTE, 91.0, 1, 1); 
+
+-- Mainframe 2 (Métricas 3, 5, 6)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 6 MINUTE, 80.5, 5, 1), -- Proc: Urgente
+(NOW() - INTERVAL 5 MINUTE, 88.0, 6, 1), -- RAM: Urgente
+(NOW() - INTERVAL 4 MINUTE, 91.0, 3, 1), -- Disco: Muito Urgente
+(NOW() - INTERVAL 3 MINUTE, 85.0, 5, 1); -- Proc: Urgente
+
+-- Mainframe 3 (Métricas 7, 8, 9)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 2 MINUTE, 65.0, 7, 1), -- Proc: Normal
+(NOW() - INTERVAL 1 MINUTE, 70.0, 8, 1), -- RAM: Normal
+(NOW(), 75.0, 9, 1), -- Disco: Normal
+(NOW(), 81.0, 7, 1); -- Proc: Urgente
+
+-- Mainframe 6 (Métricas 10, 11, 12)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+-- Emergência
+(NOW(), 97.0, 10, 1),
+(NOW(), 95.5, 11, 1),
+(NOW(), 98.0, 12, 1),
+-- Muito Urgente
+(NOW() - INTERVAL 1 HOUR, 92.0, 10, 1),
+(NOW() - INTERVAL 1 HOUR, 90.0, 11, 1),
+(NOW() - INTERVAL 1 HOUR, 93.0, 12, 1),
+-- Urgente
+(NOW() - INTERVAL 2 HOUR, 85.0, 10, 1),
+(NOW() - INTERVAL 2 HOUR, 86.0, 11, 1),
+(NOW() - INTERVAL 2 HOUR, 87.0, 12, 1);
+
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 5 MINUTE, 99.0, 4, 1),  -- Mainframe 1 Disco: Emergência
+(NOW() - INTERVAL 10 MINUTE, 96.0, 1, 1), -- Mainframe 1 Processador: Emergência
+(NOW() - INTERVAL 15 MINUTE, 92.5, 6, 1), -- Mainframe 2 RAM: Muito Urgente
+(NOW() - INTERVAL 20 MINUTE, 88.0, 5, 1), -- Mainframe 2 Processador: Urgente
+(NOW() - INTERVAL 25 MINUTE, 81.0, 9, 1), -- Mainframe 3 Disco: Urgente
+(NOW() - INTERVAL 30 MINUTE, 75.0, 7, 1), -- Mainframe 3 Processador: Normal
+(NOW() - INTERVAL 35 MINUTE, 94.0, 10, 1), -- Mainframe 6 Processador: Emergência
+(NOW() - INTERVAL 40 MINUTE, 60.0, 11, 1), -- Mainframe 6 RAM: Normal
+(NOW() - INTERVAL 45 MINUTE, 85.0, 12, 1); -- Mainframe 6 Disco: Muito Urgente
+
+
+-- =====================================================
+-- INSERTS EXTRAS NA EMPRESA 2 E 3
+-- =====================================================
+INSERT INTO mainframe (fabricante, modelo, macAdress, fkSetor, fkSistemaOperacional) VALUES
+('IBM', 'Z12', '112233445566771', 6, 1), -- Empresa 2 | Setor TI Andar 1
+('IBM', 'Z11', '112233445566772', 4, 2), -- Empresa 2 | Setor TI Térreo
+('IBM', 'Z10', '112233445566773', 5, 1); -- Empresa 3 | Setor Financeiro Andar 2
+
+-- Métricas para Mainframe 7 (Empresa 2 | TI Andar 1)
+INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
+(13, 1, 1, 7, 0.0, 95.0), -- Processador
+(14, 1, 2, 7, 0.0, 95.0), -- RAM
+(15, 1, 3, 7, 0.0, 95.0); -- Disco
+
+-- Métricas para Mainframe 8 (Empresa 2 | TI Térreo)
+INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
+(16, 1, 1, 8, 0.0, 95.0),
+(17, 1, 2, 8, 0.0, 95.0),
+(18, 1, 3, 8, 0.0, 95.0);
+
+-- Métricas para Mainframe 9 (Empresa 3 | Financeiro Andar 2)
+INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
+(19, 1, 1, 9, 0.0, 95.0),
+(20, 1, 2, 9, 0.0, 95.0),
+(21, 1, 3, 9, 0.0, 99.0);
+
+-- Alertas para Mainframe 7
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 5 MINUTE, 90.0, 13, 1),
+(NOW() - INTERVAL 10 MINUTE, 100.0, 14, 2),
+(NOW() - INTERVAL 15 MINUTE, 95.0, 15, 3);
+
+-- Alertas para Mainframe 8
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 20 MINUTE, 85.0, 16, 1),
+(NOW() - INTERVAL 25 MINUTE, 90.0, 17, 2),
+(NOW() - INTERVAL 30 MINUTE, 97.0, 18, 3);
+
+-- Alertas para Mainframe 9
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 35 MINUTE, 70.0, 19, 1),
+(NOW() - INTERVAL 40 MINUTE, 95.0, 20, 2),
+(NOW() - INTERVAL 45 MINUTE, 88.0, 21, 3);
+
+-- Alertas para Mainframe 7 (Empresa 2 | TI Andar 1)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 5 MINUTE, 88.0, 13, 1),  -- Processador
+(NOW() - INTERVAL 10 MINUTE, 90.0, 14, 2), -- RAM
+(NOW() - INTERVAL 15 MINUTE, 95.0, 15, 3); -- Disco
+
+-- Alertas para Mainframe 8 (Empresa 2 | TI Térreo)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 20 MINUTE, 75.0, 16, 1),  -- Processador
+(NOW() - INTERVAL 25 MINUTE, 95.0, 17, 2),  -- RAM
+(NOW() - INTERVAL 30 MINUTE, 87.0, 18, 3); -- Disco
+
+-- Alertas para Mainframe 9 (Empresa 3 | Financeiro Andar 2)
+INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
+(NOW() - INTERVAL 35 MINUTE, 92.0, 19, 1),  -- Processador
+(NOW() - INTERVAL 40 MINUTE, 65.0, 20, 2), -- RAM
+(NOW() - INTERVAL 45 MINUTE, 98.0, 21, 3); -- Disco
+
+-- =====================================================
 -- SELECTS
 -- =====================================================
 SELECT e.id, e.nomeEmpresarial, sa.descricao AS statusAcesso, so.descricao AS statusOperacao
@@ -409,78 +532,6 @@ JOIN empresa e ON s.fkEmpresa = e.id
 WHERE fkEmpresa = 1 AND fkMainframe = 2
 ORDER BY descricao;
 
--- =====================================================
--- INSERT EXTRAS NA EMPRESA 1
--- =====================================================
-
-INSERT INTO setor (nome, localizacao, fkEmpresa) VALUES
-('TI', 'Térreo', 1),
-('Desenvolvimento', 'Andar 4', 1);
-
-INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES 
-(4, 1, 3, 1, 5.0, 95.0); 
-
--- Mainframe 2
-INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES 
-(5, 1, 1, 2, 5.0, 95.0),
-(6, 1, 2, 2, 5.0, 95.0);
-
--- Mainframe 3
-INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
-(7, 1, 1, 3, 5.0, 95.0),
-(8, 1, 2, 3, 5.0, 95.0),
-(9, 1, 3, 3, 5.0, 95.0);
-
--- Mainframe 6
-INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
-(10, 1, 1, 6, 5.0, 95.0),
-(11, 1, 2, 6, 5.0, 95.0),
-(12, 1, 3, 6, 5.0, 95.0);
-
--- Mainframe 1 (Métricas 1, 2, 4)
-INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
-(NOW() - INTERVAL 10 MINUTE, 94.5, 1, 1), -- Proc: Emergência
-(NOW() - INTERVAL 9 MINUTE, 90.0, 2, 1), -- RAM: Muito Urgente
-(NOW() - INTERVAL 8 MINUTE, 85.2, 4, 1), -- Disco: Urgente
-(NOW() - INTERVAL 7 MINUTE, 96.1, 1, 1); -- Proc: Emergência
-
--- Mainframe 2 (Métricas 3, 5, 6)
-INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
-(NOW() - INTERVAL 6 MINUTE, 80.5, 5, 1), -- Proc: Urgente
-(NOW() - INTERVAL 5 MINUTE, 88.0, 6, 1), -- RAM: Urgente
-(NOW() - INTERVAL 4 MINUTE, 91.0, 3, 1), -- Disco: Muito Urgente
-(NOW() - INTERVAL 3 MINUTE, 85.0, 5, 1); -- Proc: Urgente
-
--- Mainframe 3 (Métricas 7, 8, 9)
-INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
-(NOW() - INTERVAL 2 MINUTE, 65.0, 7, 1), -- Proc: Normal
-(NOW() - INTERVAL 1 MINUTE, 70.0, 8, 1), -- RAM: Normal
-(NOW(), 75.0, 9, 1), -- Disco: Normal
-(NOW(), 81.0, 7, 1); -- Proc: Urgente
-
--- Mainframe 6 (Métricas 10, 11, 12)
-INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
--- Emergência
-(NOW(), 97.0, 10, 1),
-(NOW(), 95.5, 11, 1),
-(NOW(), 98.0, 12, 1),
--- Muito Urgente
-(NOW() - INTERVAL 1 HOUR, 92.0, 10, 1),
-(NOW() - INTERVAL 1 HOUR, 90.0, 11, 1),
-(NOW() - INTERVAL 1 HOUR, 93.0, 12, 1),
--- Urgente
-(NOW() - INTERVAL 2 HOUR, 85.0, 10, 1),
-(NOW() - INTERVAL 2 HOUR, 86.0, 11, 1),
-(NOW() - INTERVAL 2 HOUR, 87.0, 12, 1);
-
-INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
-(NOW(), 99.0, 4, 1), -- Mainframe 1 Disco: Emergência
-(NOW(), 92.5, 6, 1), -- Mainframe 2 RAM: Muito Urgente
-(NOW(), 81.0, 9, 1), -- Mainframe 3 Disco: Urgente
-(NOW(), 94.0, 10, 1), -- Mainframe 6 Processador: Emergência
-(NOW(), 60.0, 11, 1), -- Mainframe 6 RAM: Normal
-(NOW(), 96.0, 1, 1); -- Mainframe 1 Processador: Emergência
-
 SELECT
     m.id,
     se.nome AS setor,
@@ -528,3 +579,69 @@ JOIN setor s ON ma.fkSetor = s.id
 JOIN empresa e ON s.fkEmpresa = e.id
 WHERE fkEmpresa = 1 AND descricao IN ('Urgente', 'Muito Urgente', 'Emergência')
 ORDER BY descricao;
+
+
+SELECT fkEmpresa, 
+       fkMainframe, 
+       macAdress, 
+       dt_hora, 
+       c.nome, 
+       valor_coletado, 
+       min, 
+       max, 
+       descricao, 
+       s.nome, 
+       s.localizacao 
+FROM alerta a
+JOIN gravidade g ON a.fkGravidade = g.id
+JOIN metrica m ON a.fkMetrica = m.id
+JOIN componente c ON m.fkComponente = c.id
+JOIN mainframe ma ON m.fkMainframe = ma.id
+JOIN setor s ON ma.fkSetor = s.id
+JOIN empresa e ON s.fkEmpresa = e.id
+WHERE descricao IN ('Urgente', 'Muito Urgente', 'Emergência')
+ORDER BY descricao;
+
+SELECT
+        m.id AS idMainframe,
+        g.descricao AS gravidade,
+        COUNT(a.id) AS qtdAlertas,
+        c.nome AS componente
+    FROM alerta a
+    JOIN metrica me ON a.fkMetrica = me.id
+    JOIN mainframe m ON me.fkMainframe = m.id
+    JOIN gravidade g ON a.fkGravidade = g.id
+    JOIN setor se ON m.fkSetor = se.id
+    JOIN componente c ON me.fkComponente = c.id
+    WHERE se.fkEmpresa = 1
+	AND g.descricao IN ('Emergência', 'Muito Urgente', 'Urgente')
+    GROUP BY m.id, g.descricao, fkComponente
+    ORDER BY m.id, FIELD(g.descricao, 'Emergência', 'Muito Urgente', 'Urgente');
+SELECT DISTINCT mf.id
+    FROM mainframe mf
+    JOIN setor s ON mf.fkSetor = s.id
+    WHERE fkEmpresa = 1
+    ORDER BY mf.id;
+
+SELECT * FROM funcionario;
+
+SELECT * FROM metrica m
+JOIN mainframe mf ON m.fkMainframe = mf.id
+JOIN setor s ON mf.fkSetor = s.id
+WHERE fkEmpresa = 2;
+
+SELECT
+        m.id AS idMainframe,
+        c.nome AS componente,
+        g.descricao AS gravidade,
+        COUNT(a.id) AS qtdAlertas
+    FROM alerta a
+    JOIN metrica me ON a.fkMetrica = me.id
+    JOIN mainframe m ON me.fkMainframe = m.id
+    JOIN gravidade g ON a.fkGravidade = g.id
+    JOIN setor se ON m.fkSetor = se.id
+    JOIN componente c ON me.fkComponente = c.id
+    WHERE se.fkEmpresa = 1
+    AND g.descricao IN ('Emergência', 'Muito Urgente', 'Urgente')
+    GROUP BY m.id, g.descricao, c.nome
+    ORDER BY m.id, FIELD(g.descricao, 'Emergência', 'Muito Urgente', 'Urgente');

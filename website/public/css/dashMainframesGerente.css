@@ -45,7 +45,7 @@ body {
     display: flex;
     width: 98%;
     max-width: 1500px;
-    height: 96%;
+    height: 100vh;
     border-radius: 16px;
     overflow: hidden;
     background-color: var(--azul-medio);
@@ -54,7 +54,7 @@ body {
 
 /* -------- Barra Lateral -------- */
 .barra-lateral {
-    width: 232px;
+    width: 205px;
     background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
     padding: 24px 16px;
     display: flex;
@@ -331,214 +331,145 @@ body {
     min-height: 100px;
 }
 
-/* =============================
-   DASHBOARD PRINCIPAL À DIREITA
-   ============================= */
-
-.conteudo-dashboard {
-    padding: 26px;
-    box-sizing: border-box;
-    flex-grow: 1;
-    background-color: var(--azul-escuro);
+.conteudo-dashboard{
+    flex-grow:1;
+    padding:26px;
+    overflow-y:auto;
+    background: linear-gradient(180deg, rgba(6,12,20,0.2), rgba(3,8,14,0.2));
 }
 
-/* GRID PRINCIPAL */
-.container-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto 1fr;
-    gap: 18px;
-    align-items: start;
+/* header */
+.dashboard-header{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.titulo-principal{font-size:28px;margin:0;color:#fff;font-weight:800}
+.header-sep{height:3px;background:linear-gradient(90deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));flex:1;border-radius:2px}
+
+/* TOP KPIS grid */
+.top-row{margin-top:12px;margin-bottom:18px}
+.kpi-grid{
+    display:grid;
+    grid-template-columns: 1fr 1.2fr 1fr ;
+    gap:16px;
+    align-items:stretch;
 }
 
-/* =============================
-   TOP KPIs
-   ============================= */
-.top-kpis {
-    grid-column: 1 / 3;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-}
-
-.kpi-card {
+/* base card */
+.card{
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius: 10px;
-    padding: 14px;
-    border: 2px solid rgba(0,0,0,0.35);
-    box-shadow: var(--sombra-card);
-    min-height: 90px;
-    color: var(--cinza-texto);
+    border-radius:12px;
+    padding:16px;
+    border:2px solid rgba(0,0,0,0.35);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
 }
 
-.kpi-card .kpi-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--cinza-texto);
+/* KPI specifics */
+.kpi-card {
+    padding: 12px 16px;
+    min-height: 95px;
+}
+.kpi-title{ color:var(--muted); font-weight:700; font-size:0.95rem; margin-bottom:6px; }
+.kpi-value{ font-size:40px; font-weight:800; color:#fff; }
+.kpi-value-large{ font-size:56px; font-weight:900; color:#fff; letter-spacing:1px; }
+.kpi-sub{ color:var(--muted); font-size:0.9rem; margin-top:6px; }
+
+/* kpi critical layout: large text + donut */
+.kpi-critical-main{ display:flex; align-items:center; justify-content:space-between; gap:12px }
+.donut-wrap{ width:120px; height:120px; display:flex; align-items:center; justify-content:center }
+
+/* blue peak card */
+.kpi-blue{ background:linear-gradient(180deg,#2f99c2,#2b97c6); color:#fff; border-radius:14px; display:flex; flex-direction:column; justify-content:center; }
+.kpi-blue .kpi-title{ color:#e8f8ff; }
+.kpi-peak-content{ font-size:18px; margin-top:6px; }
+.kpi-peak-content .peak-line{ margin:6px 0; font-size:18px; }
+.kpi-peak-content strong{ font-size:20px; color:#fff; }
+
+/* filter spot (rightmost small card) */
+.period-btn{
+    background:#efecec; color:#111827; padding:10px 14px; border-radius:14px; font-weight:700; border:none; cursor:pointer;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+}
+
+/* ===== ANALYSIS ===== */
+.analysis{ margin-top:8px; }
+.analysis-title{ font-size:26px; margin: 6px 0 0 0; font-weight:800; color:#fff; }
+.analysis-sep{ height:3px; background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); margin:12px 0 18px 0; border-radius:2px }
+
+/* analysis grid */
+.analysis-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+}
+
+/* history big chart left */
+.history-card{ padding:18px 18px 12px 18px; min-height:420px; display:flex; flex-direction:column; gap:10px; position:relative; }
+.history-header{ display:flex; align-items:center; justify-content:space-between; }
+.chart-title{ font-weight:700; color:var(--muted); font-size:1.05rem }
+
+/* trend badge */
+.trend-badge{
+    background: rgba(220,38,38,0.08);
+    color: var(--danger);
+    padding:8px 12px;
+    border-radius:12px;
+    font-weight:800;
+    border:1px solid rgba(220,38,38,0.14);
+}
+
+/* right column */
+.right-charts{ display:flex; flex-direction:column; gap:16px; }
+.chart-small{ padding:14px; min-height:160px; }
+
+/* lower small */
+.chart-small.lower{ min-height:200px }
+
+/* canvas default sizing */
+canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width:1200px){
+    .kpi-grid{ grid-template-columns: 1fr 1fr; grid-auto-rows: auto; }
+    .kpi-filter{ grid-column: 1 / -1; justify-self:end; }
+    .analysis-grid{ grid-template-columns: 1fr; }
+    .right-charts{ order:2 }
+    .history-card{ order:1 }
+}
+
+@media (max-width:700px){
+    .layout-principal{ flex-direction:column; height:auto; }
+    .barra-lateral{ width:100%; flex-direction:row; gap:12px; padding:12px }
+    .conteudo-dashboard{ padding:12px }
+    .kpi-grid{ grid-template-columns: 1fr; }
+}
+.analysis-header-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 6px;
 }
 
-.kpi-card .kpi-value {
-    font-size: 2.4rem;
-    font-weight: 800;
-    color: var(--branco);
-}
-
-.kpi-sub {
-    margin-top: 6px;
-    font-size: 0.85rem;
-    color: #e2e8f0;
-}
-
-/* =============================
-   CARDS DE GRÁFICOS
-   ============================= */
-
-.chart-left,
-.chart-right {
-    min-height: 220px;
-}
-
-.card .chart-title {
-    font-size: 1.05rem;
-    margin-bottom: 10px;
-    color: var(--cinza-texto);
+.analysis-btn {
+    background: #efecec;
+    color: #111827;
+    padding: 10px 14px;
     font-weight: 700;
-}
-
-/* Ajuste para garantir que os canvas respeitem o tamanho */
-canvas {
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* =============================
-   HISTÓRICO INFERIOR COM ABAS
-   ============================= */
-
-.history-card {
-    grid-column: 1 / 3;
-    min-height: 320px;
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 18px;
-    align-items: start;
-}
-
-/* Aba lateral */
-.history-tabs {
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    border: 1px solid rgba(255,255,255,0.03);
-}
-
-.history-tabs button {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.04);
-    color: var(--cinza-texto);
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-weight: 700;
+    border-radius: 12px;
+    border: none;
     cursor: pointer;
-    text-align: left;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+.chart-small.lower {
+    min-height: 230px;
+    height: 230px;
+}
+#componentsBar {
+    width: 100% !important;
+    height: 180px !important;
 }
 
-.history-tabs button.active {
-    background: linear-gradient(90deg, rgba(99,102,241,0.12), rgba(56,189,248,0.06));
-    color: var(--accent-light);
-    border-color: rgba(99,102,241,0.18);
-    transform: translateX(4px);
+.chart-small {
+    height: 220px !important;
+    min-height: 220px !important;
 }
-
-/* Área do gráfico inferior */
-.history-graph {
-    position: relative;
-    padding: 8px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-    border: 1px solid rgba(255,255,255,0.03);
-    border-radius: 10px;
-}
-
-.trend-badge {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    background: rgba(220,38,38,0.08);
-    color: var(--perigo);
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-weight: 700;
-    border: 1px solid rgba(220,38,38,0.12);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* =============================
-   RESPONSIVIDADE
-   ============================= */
-@media (max-width: 1100px) {
-    .container-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto auto;
-    }
-
-    .top-kpis {
-        grid-column: 1 / 2;
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .chart-left,
-    .chart-right {
-        grid-column: 1 / 2;
-    }
-
-    .history-card {
-        grid-column: 1 / 2;
-        grid-template-columns: 1fr;
-    }
-
-    .history-tabs {
-        flex-direction: row;
-        overflow-x: auto;
-    }
-}
-/* =============================
-   AJUSTE DO GRÁFICO INFERIOR
-   ============================= */
-
-.history-card {
-    grid-column: 1 / 3;
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 18px;
-    align-items: stretch;
-    height: auto;              
-    min-height: unset;        
-    padding-bottom: 12px;
-}
-
-.history-graph {
-    position: relative;
-    padding: 12px 10px 0 10px;
-    overflow: hidden;          
-    height: auto;
-}
-
-.history-graph canvas {
-    height: 260px !important; 
-    max-height: 260px;         
-}
-
-.history-tabs {
-    height: fit-content;
-}
-
-.history-card {
-    margin-top: 80px;
-}
-

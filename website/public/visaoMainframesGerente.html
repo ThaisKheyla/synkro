@@ -67,29 +67,11 @@
 
         <main class="conteudo-dashboard">
             <div class="container-grid">
-
                 <div class="card card-topo">
-                    <h2 class="card-titulo-roxo">MAINFRAMES COM MAIS ALERTAS</h2>
+                    <h2 class="card-titulo-roxo">Mainframes Com Mais Alertas</h2>
+                    <p> Vizualize todos os mainframes e a quantidade de alertas que cada um registrou</p>
                     <ol class="lista-alertas" id="lista-mais-alertas">
                     </ol>
-                </div>
-
-                <div class="card card-pizza">
-                    <h3 class="card-titulo-cinza">Status dos mainframes - Alertas (%)</h3>
-                    <div class="grafico-pizza-container">
-                        <canvas id="statusPieChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="card card-kpis">
-                    <div class="kpi-box">
-                        <div class="kpi-titulo">Mainframes no Sistema</div>
-                        <div class="kpi-valor" id="kpi-total-mainframes">0</div>
-                    </div>
-                    <div class="kpi-box">
-                        <div class="kpi-titulo">Mainframes que registraram Alerta</div>
-                        <div class="kpi-valor" id="kpi-alertas-mainframes">0</div>
-                    </div>
                 </div>
 
             </div>
@@ -97,234 +79,114 @@
     </div>
 
     <script>
-        // Use esta função para garantir que o ID da empresa está na sessão
-        const ID_EMPRESA = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+        // Configuração do arquivo no S3
+        const ARQUIVO_ALERTA_S3 = "alertas.json";
+        // Usamos o MAC Address como o ID único
+        const ID_SESSAO_MAINFRAME = 'ID_MAINFRAME_SELECIONADO';
 
-        function carregarDashboardGerente() {
-            // A ordem é importante: KPIs busca dados e chama o Gráfico de Pizza
-            carregarKpisEStatus();
-            carregarListaAlertas();
-        }
-
-
-        // 1. Carrega a lista de MAINFRAMES COM MAIS ALERTAS (Ranking)
-        async function carregarListaAlertas() {
-            const fkEmpresa = ID_EMPRESA;
-            const container = document.getElementById("lista-mais-alertas");
-
-            if (!fkEmpresa) {
-                container.innerHTML = "<li>Erro: ID da empresa não encontrado na sessão.</li>";
-                return;
-            }
-
-            container.innerHTML = "<li><i class='ri-loader-4-line ri-spin'></i> Carregando ranking...</li>";
-
-            try {
-                // Endpoint: /mainframes/rankingAlertas/:fkEmpresa
-                const resposta = await fetch(`/mainframes/rankingAlertas/${fkEmpresa}`);
-
-                if (resposta.ok) {
-                    const dados = await resposta.json();
-
-                    if (dados.length > 0) {
-                        container.innerHTML = dados.map((mf, index) =>
-                            `<li>
-                                <span class="rank">${index + 1}</span>
-                                <span class="nome">${mf.nomeMainframe}</span>
-                                <span class="info">| Alertas: <span class="conta-alerta">${mf.alertas}</span></span>
-                                <span class="info">| Setor: <span class="setor">${mf.setor}</span></span>
-                            </li>`
-                        ).join('');
-                    } else {
-                        container.innerHTML = "<li>Nenhum mainframe com alertas de alta gravidade encontrado.</li>";
-                    }
-                } else if (resposta.status === 204) {
-                    container.innerHTML = "<li>Nenhum mainframe com alertas de alta gravidade encontrado.</li>";
-                } else {
-                    throw new Error(`Erro ao carregar o ranking: ${resposta.status}`);
-                }
-            } catch (error) {
-                console.error("Erro no fetch de ranking:", error);
-                container.innerHTML = "<li>Ocorreu um erro ao conectar ao servidor.</li>";
-            }
-        }
-
-
-        // 2. Plota o GRÁFICO DE PIZZA (Função auxiliar)
-        function plotarGraficoStatus(total, comAlerta) {
-            const semAlerta = total - comAlerta;
-
-            // Tratamento para evitar divisão por zero
-            const percComAlerta = total > 0 ? (comAlerta / total) * 100 : 0;
-            const percSemAlerta = total > 0 ? (semAlerta / total) * 100 : 0;
-
-            const cores = ['#7c3aed', '#38bdf8']; // Usando as cores do seu CSS: var(--dasd-cor) e var(--accent-light)
-            const ctx = document.getElementById('statusPieChart').getContext('2d');
-
-            // Destrói o gráfico anterior (se existir) para evitar duplicação
-            if (window.statusPieChartInstance) {
-                window.statusPieChartInstance.destroy();
-            }
-
-            window.statusPieChartInstance = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['Com Alerta', 'Sem Alerta'],
-                    datasets: [{
-                        data: [percComAlerta.toFixed(1), percSemAlerta.toFixed(1)],
-                        backgroundColor: cores,
-                        borderColor: 'transparent',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: 'var(--cinza-texto)', // Cor da variável no CSS
-                                font: {
-                                    family: "'Inter', sans-serif",
-                                    size: 14
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    return `${context.label}: ${context.raw}%`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-
-        // 3. Carrega os KPIS e, em seguida, chama o gráfico
-        async function carregarKpisEStatus() {
-            const fkEmpresa = ID_EMPRESA;
-
-            // Exibe o loader nos KPIs
-            document.getElementById("kpi-total-mainframes").innerText = '...';
-            document.getElementById("kpi-alertas-mainframes").innerText = '...';
-
-            if (!fkEmpresa) {
-                document.getElementById("kpi-total-mainframes").innerText = '0';
-                document.getElementById("kpi-alertas-mainframes").innerText = '0';
-                plotarGraficoStatus(0, 0);
-                return;
-            }
-
-            try {
-                // Endpoint: /mainframes/statusGeralEKPIs/:fkEmpresa
-                const resposta = await fetch(`/mainframes/statusGeralEKPIs/${fkEmpresa}`);
-
-                if (resposta.ok) {
-                    // O backend retorna: { totalMainframes: X, mainframesComAlerta: Y }
-                    const dados = await resposta.json();
-
-                    const total = dados.totalMainframes || 0;
-                    const comAlerta = dados.mainframesComAlerta || 0;
-
-                    // Atualiza os KPIs
-                    document.getElementById("kpi-total-mainframes").innerText = total;
-                    document.getElementById("kpi-alertas-mainframes").innerText = comAlerta;
-
-                    // Chama o gráfico de pizza APÓS buscar os dados
-                    plotarGraficoStatus(total, comAlerta);
-
-                } else {
-                    throw new Error(`Erro ao carregar os KPIs: ${resposta.status}`);
-                }
-            } catch (error) {
-                console.error("Erro no fetch de KPIs:", error);
-                document.getElementById("kpi-total-mainframes").innerText = '?';
-                document.getElementById("kpi-alertas-mainframes").innerText = '?';
-                plotarGraficoStatus(0, 0); // Plota gráfico zerado em caso de erro
-            }
-        }
-
-
-        // Chamada principal quando a página carrega
         window.onload = function () {
-            // Chamada de validação de sessão (do seu arquivo sessao.js)
+            // Chamada de validação de sessão (manter)
             if (typeof validarSessaoSynkro === 'function') validarSessaoSynkro();
-
-            // Inicia o carregamento da dashboard
             carregarDashboardGerente();
         };
 
-        // ... Mantenha o restante do seu código JavaScript (Dropdown, etc.)
+        function carregarDashboardGerente() {
+            // Agora, em vez de carregar KPIs e lista separadamente, carregamos os dados do S3 uma única vez
+            carregarDadosDoS3();
+        }
 
-        // 1. Carrega a lista de MAINFRAMES COM MAIS ALERTAS (Ranking)
-        async function carregarListaAlertas() {
-            const fkEmpresa = ID_EMPRESA;
+        async function carregarDadosDoS3() {
             const container = document.getElementById("lista-mais-alertas");
-
-            // ... [código de validação e loading] ...
+            container.innerHTML = "<li><i class='ri-loader-4-line ri-spin'></i> Carregando dados do S3...</li>";
 
             try {
-                const resposta = await fetch(`/mainframes/rankingAlertas/${fkEmpresa}`);
+                // 1. Busca o JSON bruto do endpoint S3: /dados/alertas.json
+                const resposta = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`);
 
-                if (resposta.ok) {
-                    const dados = await resposta.json();
+                if (!resposta.ok) {
+                    // Se a resposta.ok for false, houve um erro no backend (404, 500, etc.)
+                    throw new Error(`Erro ao baixar arquivo do S3. Status: ${resposta.status}`);
+                }
 
-                    if (dados.length > 0) {
-                        container.innerHTML = dados.map((mf, index) =>
-                            // ATENÇÃO À MUDANÇA: Adiciona o atributo data-id e a classe 'mainframe-item'
-                            `<li class="mainframe-item" data-id="${mf.idMainframe}">
-                        <span class="rank">${index + 1}</span>
-                        <span class="nome">${mf.nomeMainframe}</span>
-                        <span class="info">| Alertas: <span class="conta-alerta">${mf.alertas}</span></span>
-                        <span class="info">| Setor: <span class="setor">${mf.setor}</span></span>
-                    </li>`
-                        ).join('');
+                const todosAlertas = await resposta.json();
 
-                        // NOVO: Adiciona o Listener de Clique após montar a lista
-                        adicionarListenersDeClique(container);
+                // 2. Processamento dos dados no Front-end (Agrupamento por MAC Address)
+                const ranking = processarRanking(todosAlertas);
 
-                    } else {
-                        container.innerHTML = "<li>Nenhum mainframe com alertas de alta gravidade encontrado.</li>";
-                    }
-                } // ... [código de erro e 204] ...
+                // 3. Renderiza a lista
+                renderizarLista(ranking, container);
 
             } catch (error) {
-                // ... [código de erro] ...
+                console.error("❌ Erro ao carregar dados do S3:", error);
+                container.innerHTML = `<li>Erro ao carregar dados. Verifique o console ou a rota /dados/${ARQUIVO_ALERTA_S3}.</li>`;
             }
         }
 
-        // NOVA FUNÇÃO: Trata o clique e armazena o ID
-        function adicionarListenersDeClique(container) {
-            container.querySelectorAll('.mainframe-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const idMainframe = item.getAttribute('data-id');
+        function processarRanking(alertas) {
+            // Cria um mapa para agrupar alertas pelo macAdress
+            const mapa = {};
 
-                    // 1. Armazena o ID na sessionStorage para a próxima página ler
-                    sessionStorage.setItem('ID_MAINFRAME_SELECIONADO', idMainframe);
+            alertas.forEach(item => {
+                // Usa macAdress como chave única
+                const id = item.macAdress;
 
-                    // 2. Redireciona para a nova dashboard de detalhes
-                    window.location.href = 'dashMainframesGerente.html';
-                });
+                if (!mapa[id]) {
+                    mapa[id] = {
+                        macAdress: id, // ID para linkar com a outra página
+                        nome: item.identificacaoMainframe || "Desconhecido",
+                        alertas: 0
+                    };
+                }
+                mapa[id].alertas += 1;
             });
+
+            // Transforma em array e ordena do maior para o menor número de alertas
+            return Object.values(mapa).sort((a, b) => b.alertas - a.alertas);
+        }
+
+        function renderizarLista(lista, container) {
+            
+            if (lista.length === 0) {
+                container.innerHTML = "<li>Nenhum alerta encontrado no arquivo.</li>";
+                return;
+            }
+
+            container.innerHTML = lista.map((mf, index) => `
+    <li class="mainframe-item" data-id="${mf.macAdress}">
+        <div class="left-info">
+            <span class="rank">${index + 1}</span>
+            <span class="nome">${mf.nome}</span>
+            <span class="info">| Alertas: <span class="conta-alerta">${mf.alertas}</span></span>
+            <span class="info" style="font-size: 0.8rem; opacity: 1;">| MacAdress: ${mf.macAdress}</span>
+        </div>
+
+        <button class="btn-detalhes" data-id="${mf.macAdress}">
+            Ver detalhes
+        </button>
+    </li>
+`).join('');
+
+            // Adiciona o evento de clique para ir aos detalhes
+            adicionarListenersDeClique(container);
+            
         }
 
         function adicionarListenersDeClique(container) {
-            container.querySelectorAll('.mainframe-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const idMainframe = item.getAttribute('data-id');
+    // listener do botão
+    container.querySelectorAll('.btn-detalhes').forEach(botao => {
+        botao.addEventListener('click', (e) => {
+            e.stopPropagation(); // impede que clique no LI inteiro dispare algo
 
-                    // 1. Armazena o ID na sessionStorage para a próxima página ler
-                    sessionStorage.setItem('ID_MAINFRAME_SELECIONADO', idMainframe);
+            const macAdress = botao.getAttribute('data-id');
 
-                    // 2. Redireciona para a nova dashboard de detalhes
-                    // Mudei o nome do arquivo de destino para o que acabamos de criar
-                    window.location.href = 'dashMainframesGerente.html';
-                });
-            });
-        }
+            sessionStorage.setItem(ID_SESSAO_MAINFRAME, macAdress);
+            window.location.href = 'dashMainframesGerente.html';
+        });
+    });
+}
+        
+
+        // Funções antigas de KPI e status (carregarKpisEStatus) não são mais necessárias e foram removidas.
     </script>
 </body>
 
