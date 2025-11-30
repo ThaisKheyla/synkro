@@ -24,6 +24,7 @@ const mainframesRouter = require("./src/routes/mainframes");
 const funcionariosRouter = require("./src/routes/funcionarios");
 const empresaDetalhadaRouter = require("./src/routes/empresaDetalhada");
 const csvRouter = require("./src/routes/csv");
+const dashboardRouter = require("./src/routes/dashboard");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -39,6 +40,7 @@ app.use("/mainframes", mainframesRouter);
 app.use("/funcionarios", funcionariosRouter);
 app.use("/empresa", empresaDetalhadaRouter);
 app.use("/csv", csvRouter);
+app.use("/dashboard", dashboardRouter);
 
 app.listen(PORTA_APP, () => {
   console.log(`
