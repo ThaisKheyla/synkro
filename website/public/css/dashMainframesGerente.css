@@ -47,7 +47,7 @@ body {
     max-width: 1500px;
     height: 100vh;
     border-radius: 16px;
-    overflow: hidden;
+    overflow:hidden;
     background-color: var(--azul-medio);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
@@ -345,12 +345,14 @@ body {
 
 /* TOP KPIS grid */
 .top-row{margin-top:12px;margin-bottom:18px}
-.kpi-grid{
-    display:grid;
-    grid-template-columns: 1fr 1.2fr 1fr ;
-    gap:16px;
-    align-items:stretch;
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1.5fr;
+    gap: 16px;
+    align-items: stretch;
 }
+
 
 /* base card */
 .card{
@@ -372,7 +374,12 @@ body {
 .kpi-sub{ color:var(--muted); font-size:0.9rem; margin-top:6px; }
 
 /* kpi critical layout: large text + donut */
-.kpi-critical-main{ display:flex; align-items:center; justify-content:space-between; gap:12px }
+.kpi-critical-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Texto na esquerda, Donut na direita */
+    gap: 12px;
+}
 .donut-wrap{ width:120px; height:120px; display:flex; align-items:center; justify-content:center }
 
 /* blue peak card */
@@ -396,7 +403,7 @@ body {
 /* analysis grid */
 .analysis-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
@@ -416,7 +423,11 @@ body {
 }
 
 /* right column */
-.right-charts{ display:flex; flex-direction:column; gap:16px; }
+.right-charts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
 .chart-small{ padding:14px; min-height:160px; }
 
 /* lower small */
@@ -472,4 +483,163 @@ canvas {
 .chart-small {
     height: 220px !important;
     min-height: 220px !important;
+}
+.pico-card {
+    background: #38bdf8;
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.pico-card h4 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.pico-card p {
+    margin: 6px 0;
+    font-size: 1rem;
+}
+/* Novo estilo para agrupar o gráfico de componente e o KPI Pico de Alertas */
+.top-right-group {
+    display: grid;
+    /* Divide o espaço igualmente entre o gráfico (esquerda) e o KPI (direita) */
+    grid-template-columns: 1.5fr 1fr; 
+    gap: 16px;
+    align-items: stretch; /* Garante que os itens tenham a mesma altura */
+}
+
+/* Garante que o gráfico de horas fique abaixo */
+.right-charts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Mantém o espaçamento entre os elementos verticais */
+}
+/* ESTILO PARA O NÍVEL DE CRITICIDADE DENTRO DOS KPIS */
+.kpi-criticidade {
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-right: 8px; /* Espaço entre o badge e o valor principal */
+    white-space: nowrap; /* Não quebrar linha */
+}
+
+/* Cores de Criticidade (Baseado no protótipo) */
+.kpi-criticidade.alto {
+    background: rgba(255, 94, 0, 0.2); /* Cor de Fundo de Muito Urgente/Laranja */
+    color: var(--muito-urgente);
+}
+
+.kpi-criticidade.critico {
+    background: rgba(220, 38, 38, 0.2); /* Cor de Fundo de Emergência/Vermelho */
+    color: var(--emergencia);
+}
+
+.kpi-criticidade.moderado {
+    background: rgba(255, 208, 0, 0.2); /* Cor de Fundo de Urgente/Amarelo */
+    color: var(--urgente);
+}
+
+/* Ajuste no layout dos KPIs de Dia/Horário para alinhar o badge */
+.peak-line {
+    display: flex;
+    align-items: center; /* Alinha o texto forte e o badge */
+}
+
+/* Ajuste no layout do KPI Crítico para o badge aparecer corretamente */
+#kpi-critical-main { 
+    position: relative;
+}
+
+.peak-line {
+    display: flex;
+    align-items: center; /* Centraliza verticalmente o badge com o texto */
+    gap: 12px;           /* Cria o espaço entre o badge e o texto */
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/* Garante que o texto (ex: Sexta-feira) não fique gigante demais se for longo */
+.peak-line strong {
+    font-size: 2rem; /* Ajuste conforme preferir, 1.5rem ou 24px */
+    line-height: 1;
+}
+
+/* 2. Estilo do novo wrapper para alinhar CPU e Badge lado a lado */
+.comp-wrapper {
+    display: flex;
+    align-items: center; /* Centraliza verticalmente o badge com o texto CPU */
+    gap: 12px;           /* Espaço entre "CPU" e o badge "Crítico" */
+}
+
+/* Aumentamos a altura mínima e usamos flex para distribuir melhor o conteúdo */
+.kpi-card {
+    padding: 8px 12px; /* Mais preenchimento interno */
+    min-height: 95px;  /* Altura maior (era 95px) */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Espalha título, valor e subtexto */
+}
+
+/* Ajuste específico para o KPI Crítico (Donut) para centralizar melhor */
+.kpi-critical-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 10px;
+}
+
+/* Estilo para o Select que substituirá o botão */
+.period-select {
+    background: #efecec;
+    color: #111827;
+    padding: 10px 14px;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+}
+
+/* Cores para a tendência */
+.trend-badge.positivo {
+    background: rgba(220, 38, 38, 0.15); /* Vermelho claro */
+    color: #ef4444;
+    border-color: rgba(220, 38, 38, 0.3);
+}
+
+.trend-badge.negativo {
+    background: rgba(22, 163, 74, 0.15); /* Verde claro (menos alertas é bom) */
+    color: #22c55e;
+    border-color: rgba(22, 163, 74, 0.3);
+}
+
+.trend-badge.neutro {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+}
+
+/* Correção para o gráfico não crescer infinitamente */
+.history-card {
+    position: relative; /* Importante para o Chart.js */
+    height: 420px;      /* Altura fixa do container pai */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;   /* Impede vazamento */
+}
+
+/* O canvas deve ocupar o espaço restante, mas respeitar o pai */
+.chart-container-wrapper {
+    position: relative;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    min-height: 0; /* Truque flexbox para permitir encolhimento */
 }
