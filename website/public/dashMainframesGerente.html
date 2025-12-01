@@ -58,6 +58,33 @@
                         <div id="kpi-media" class="kpi-sub">MÉDIA (0.0/DIA)</div>
                     </div>
 
+                    <!-- KPI: Dia da semana -->
+                    <div class="kpi-card card">
+                        <div class="kpi-title">Dia que mais registra alerta</div>
+                        <div class="kpi-peak-content">
+                            <div class="peak-line">
+
+                                <strong id="kpi-pico">-</strong>
+                            </div>
+                        </div>
+
+                        <div id="kpi-dia-quantidade" class="kpi-sub">- 0 alertas</div>
+                        <span id="kpi-dia-criticidade" class="kpi-criticidade"></span>
+                    </div>
+
+                    <div class="kpi-card card">
+                        <div class="kpi-title">Horário que mais registra alerta</div>
+                        <div class="kpi-peak-content">
+                            <div class="peak-line">
+
+                                <strong id="kpi-horario">-</strong>
+                            </div>
+                        </div>
+
+                        <div id="kpi-horario-quantidade" class="kpi-sub">0 alertas</div>
+                        <span id="kpi-horario-criticidade" class="kpi-criticidade"></span>
+                    </div>
+
                     <div class="kpi-card kpi-critical card">
                         <div class="kpi-title">Componente Crítico</div>
                         <div class="kpi-critical-main">
@@ -66,16 +93,12 @@
                                 <canvas id="donutComp" width="140" height="140"></canvas>
                             </div>
                         </div>
-                        <div id="kpi-comp-sub" class="kpi-sub">0 Alertas (Muito Urgente)</div>
-                    </div>
-
-                    <div class="kpi-card kpi-peak card kpi-blue">
-                        <div class="kpi-title white">Pico de alertas</div>
-                        <div class="kpi-peak-content">
-                            <div class="peak-line"><span>Dia: </span><strong id="kpi-pico">-</strong></div>
-                            <div class="peak-line"><span>Horário: </span><strong id="kpi-horario">-</strong></div>
+                        <div id="kpi-comp-sub" class="kpi-sub">
+                            0 Alertas (Muito Urgente)
+                            <span id="kpi-comp-criticidade" class="kpi-criticidade"></span>
                         </div>
                     </div>
+
                 </div>
             </section>
 
@@ -84,29 +107,39 @@
                 <div class="analysis-header-line">
                     <h3 class="analysis-title">Análise</h3>
 
-                    <button id="periodBtn" class="period-btn analysis-btn">
-                        Últimos 7 dias <i class="ri-arrow-down-s-line"></i>
-                    </button>
+                    <select id="periodSelect" class="period-select">
+                        <option value="7">Últimos 7 dias</option>
+                        <option value="30">Últimos 30 dias</option>
+                        <option value="365">Último ano</option>
+                    </select>
                 </div>
                 <div class="analysis-sep"></div>
 
                 <div class="analysis-grid">
                     <!-- Left: Large history line -->
                     <div class="history-card card">
-                        <div class="history-header">
-                            <div class="chart-title">Histórico de todos os Alertas</div>
-                            <div id="trendBadge" class="trend-badge">▲ +2%</div>
-                        </div>
-                        <canvas id="historyLine" height="420"></canvas>
-
-
-                    </div>
+    <div class="history-header">
+        <div class="chart-title">Histórico de todos os Alertas</div>
+        <div id="trendBadge" class="trend-badge">▲ +2%</div>
+    </div>
+    <div class="chart-container-wrapper">
+        <canvas id="historyLine"></canvas>
+    </div>
+</div>
 
                     <!-- Right: two stacked charts -->
                     <div class="right-charts">
-                        <div class="card chart-small">
-                            <div class="chart-title">Alertas por Componente</div>
-                            <canvas id="componentsBar" style="height:160px;"></canvas>
+                        <div class="top-right-group">
+                            <div class="card chart-small">
+                                <div class="chart-title">Alertas por Componente</div>
+                                <canvas id="componentsBar" style="height:160px;"></canvas>
+                            </div>
+                            <div class="pico-card">
+    <h4>Pico de alertas</h4>
+    <p><strong id="blue-label-1">Dia:</strong> <span id="blue-val-1">-</span></p>
+    <p><strong id="blue-label-2">Horário:</strong> <span id="blue-val-2">-</span></p>
+    <p><strong>Componente:</strong> <span id="blue-val-comp">-</span></p>
+</div>
                         </div>
                         <div class="card chart-small lower">
                             <div class="chart-title">Alertas por Horas do Dia</div>
@@ -119,337 +152,459 @@
     </div>
 
     <script>
-        /* =========================
-           CONFIGURAÇÃO / VARIÁVEIS
-           ========================= */
-        const ARQUIVO_ALERTA_S3 = "alertas.json"; // rota relativa - ajuste se necessário
-        const ID_SESSAO_MAINFRAME = 'ID_MAINFRAME_SELECIONADO';
+       /* =========================
+   CONFIGURAÇÃO / VARIÁVEIS
+   ========================= */
+const ARQUIVO_ALERTA_S3 = "alertas.json"; // Ajuste o caminho
+const ID_SESSAO_MAINFRAME = 'ID_MAINFRAME_SELECIONADO';
 
-        const palette = {
-            cpu: 'rgba(64,201,255,0.95)',   // tom claro/azul
-            ram: 'rgba(69,170,242,0.95)',   // azul diferenciado
-            disco: 'rgba(46,172,163,0.95)', // teal/verde
-            padrao: 'rgba(148,163,184,0.9)',
-            bgLight: 'rgba(255,255,255,0.03)'
-        };
+const palette = {
+    cpu: 'rgba(64,201,255,0.95)',
+    ram: 'rgba(69,170,242,0.95)',
+    disco: 'rgba(46,172,163,0.95)',
+    padrao: 'rgba(148,163,184,0.9)'
+};
 
-        let componentsChart = null;
-        let hourlyChart = null;
-        let historyChart = null;
-        let donutChart = null;
-        let dadosProcessadosGlobal = null;
+// Instâncias globais dos gráficos para poder destruir antes de recriar
+let historyChart = null;
+let componentsChart = null;
+let hourlyChart = null;
+let donutChart = null; // Este é estático
 
-        /* =========================
-           ON LOAD
-           ========================= */
-        window.onload = async function () {
-            
-            const macSelecionado = sessionStorage.getItem(ID_SESSAO_MAINFRAME);
-            if (!macSelecionado) {
-                // se não tiver mac, tenta pegar um exemplo (útil para dev local)
-                console.warn('Nenhum mainframe selecionado na sessão. Usando todos os alertas (modo dev).');
-            }
-            await carregarDadosDetalhados(macSelecionado);
-            initTabs();
-        };
+let dadosGlobais = [];
+
+/* =========================
+   ON LOAD
+   ========================= */
+window.onload = async function () {
+    const macSelecionado = sessionStorage.getItem(ID_SESSAO_MAINFRAME);
+    
+    // 1. Carrega dados
+    await carregarDados(macSelecionado);
+
+    // 2. Configura o Select
+    const select = document.getElementById('periodSelect');
+    if (select) {
+        select.addEventListener('change', (e) => {
+            atualizarDashboardAnalise(parseInt(e.target.value));
+        });
+    }
+};
+
+/* =========================
+   CARREGAMENTO E DISTRIBUIÇÃO
+   ========================= */
+async function carregarDados(mac) {
+    try {
+        const res = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`); // Ajuste rota
+        if (!res.ok) throw new Error('Erro ao buscar JSON');
+        const raw = await res.json();
         
+        // Filtra pelo mainframe (se houver)
+        dadosGlobais = mac ? raw.filter(a => String(a.macAdress) === String(mac)) : raw;
 
-        /* =========================
-           BUSCA E PROCESSAMENTO
-           ========================= */
-        async function carregarDadosDetalhados(macAlvo) {
-            try {
-                const res = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`);
-                if (!res.ok) throw new Error('Erro ao buscar dados S3: ' + res.status);
-                const todosAlertas = await res.json();
-
-                // se macAlvo definido, filtra, caso contrário usa todos
-                const alertasMainframe = macAlvo ? todosAlertas.filter(a => String(a.macAdress) === String(macAlvo)) : todosAlertas;
-
-                if (!alertasMainframe || alertasMainframe.length === 0) {
-                    document.querySelector('.titulo-principal').innerText = 'Visão Geral dos Alertas (Sem dados)';
-                    return;
-                }
-
-                // Título com identificação
-                const nomeMf = alertasMainframe[0].identificacaoMainframe || (macAlvo || 'Mainframe');
-                document.querySelector('.titulo-principal').innerText = `Histórico Total`;
-
-                // KPIs e gráficos
-                processarKPIs(alertasMainframe);
-                processarGraficoHoras(alertasMainframe);
-                processarGraficoComponentes(alertasMainframe);
-                dadosProcessadosGlobal = processarDadosHistorico(alertasMainframe);
-                createHistoryChart(dadosProcessadosGlobal.labels, dadosProcessadosGlobal.todos);
-                createDonut(alertasMainframe);
-            } catch (err) {
-                console.error('Erro ao carregar dados:', err);
-            }
+        if (dadosGlobais.length === 0) {
+            console.warn("Sem dados.");
+            return;
         }
 
-        /* =========================
-           UTILITÁRIOS
-           ========================= */
-        function parseDate(dataString) {
-            // "2025-11-21 12:45:00" -> Date
-            if (!dataString) return new Date();
-            return new Date(dataString.replace(' ', 'T'));
+        // --- PARTE ESTÁTICA (Nunca muda com o select) ---
+        processarKPIsTopo(dadosGlobais);
+        renderDonutEstatico(dadosGlobais);
+
+        // --- PARTE DINÂMICA (Inicia com 7 dias) ---
+        atualizarDashboardAnalise(7);
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+/* =========================
+   LÓGICA: PARTE ESTÁTICA (TOPO)
+   ========================= */
+function processarKPIsTopo(dados) {
+    // 1. Total
+    document.getElementById('kpi-total').innerText = dados.length;
+
+    // 2. Média Total (Todos os dias)
+    const d1 = parseDate(dados[0].dtHora);
+    const d2 = parseDate(dados[dados.length - 1].dtHora);
+    const diffDias = Math.max(1, Math.ceil(Math.abs(d2 - d1) / (86400000))); 
+    const media = (dados.length / diffDias).toFixed(1);
+    document.getElementById('kpi-media').innerText = `Média (${media}/dia)`;
+
+    // 3. Dia da Semana (Global)
+    const diasCount = {};
+    dados.forEach(a => {
+        const d = parseDate(a.dtHora).toLocaleDateString('pt-BR', { weekday: 'long' });
+        diasCount[d] = (diasCount[d] || 0) + 1;
+    });
+    const topDia = getKeyMax(diasCount);
+    // Atenção: IDs originais do HTML para o topo
+    document.getElementById('kpi-pico').innerText = capitalize(topDia);
+    document.getElementById('kpi-dia-quantidade').innerText = `${diasCount[topDia] || 0} alertas`;
+    atualizarCriticidadeBadge('kpi-dia-criticidade', diasCount[topDia]);
+
+    // 4. Horário (Global)
+    const horasCount = {};
+    dados.forEach(a => {
+        const h = parseDate(a.dtHora).getHours();
+        const label = `${String(h).padStart(2, '0')}:00`;
+        horasCount[label] = (horasCount[label] || 0) + 1;
+    });
+    const topHora = getKeyMax(horasCount);
+    document.getElementById('kpi-horario').innerText = topHora;
+    document.getElementById('kpi-horario-quantidade').innerText = `${horasCount[topHora] || 0} alertas`;
+    atualizarCriticidadeBadge('kpi-horario-criticidade', horasCount[topHora]);
+
+    // 5. Componente Crítico (Global - Texto e Donut)
+    const compCount = {};
+    dados.forEach(a => {
+        const c = normalizarComponente(a.componente);
+        compCount[c] = (compCount[c] || 0) + 1;
+    });
+    const topComp = getKeyMax(compCount);
+    document.getElementById('kpi-componente').innerText = topComp;
+    document.getElementById('kpi-comp-sub').innerHTML = 
+        `${compCount[topComp] || 0} Alertas <span id="kpi-comp-criticidade"></span>`;
+    atualizarCriticidadeBadge('kpi-comp-criticidade', compCount[topComp]);
+}
+
+function renderDonutEstatico(dados) {
+    const counts = { CPU: 0, RAM: 0, Disco: 0 };
+    dados.forEach(a => {
+        const c = normalizarComponente(a.componente);
+        if(counts[c] !== undefined) counts[c]++;
+    });
+
+    const ctx = document.getElementById('donutComp').getContext('2d');
+    if(donutChart) donutChart.destroy();
+    
+    donutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(counts),
+            datasets: [{
+                data: Object.values(counts),
+                backgroundColor: [palette.cpu, palette.ram, palette.disco],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '75%',
+            responsive: true,
+            plugins: { legend: { display: false } }
         }
+    });
+}
 
-        function normalizarComponente(nome) {
-            if (!nome) return "Outros";
-            const n = nome.toLowerCase();
-            if (n.includes('processador') || n.includes('cpu')) return 'CPU';
-            if (n.includes('memoria') || n.includes('ram')) return 'RAM';
-            if (n.includes('disco') || n.includes('disk')) return 'Disco';
-            return 'Outros';
+/* =========================
+   LÓGICA: PARTE DINÂMICA (ANÁLISE)
+   ========================= */
+function atualizarDashboardAnalise(dias) {
+    const hoje = new Date();
+    const dataLimite = new Date();
+    dataLimite.setDate(hoje.getDate() - dias);
+
+    // Filtra dados do período selecionado
+    const dadosFiltrados = dadosGlobais.filter(a => {
+        const d = parseDate(a.dtHora);
+        return d >= dataLimite && d <= hoje;
+    });
+
+    // 1. Atualiza Badge de Tendência
+    calcularTendencia(dadosGlobais, dias);
+
+    // 2. Gráfico de Linha (Histórico)
+    renderGraficoLinha(dadosFiltrados, dias);
+
+    // 3. Gráficos de Barra (Comp e Horas)
+    renderGraficosBarra(dadosFiltrados);
+
+    // 4. Card Azul "Pico de Alertas" (Lógica customizada por período)
+    renderCardPicoAzul(dadosFiltrados, dias);
+}
+
+/* --- DETALHES DA ANÁLISE --- */
+
+function renderCardPicoAzul(dados, dias) {
+    // IDs NOVOS definidos no HTML (blue-...)
+    const lbl1 = document.getElementById('blue-label-1');
+    const val1 = document.getElementById('blue-val-1');
+    const lbl2 = document.getElementById('blue-label-2');
+    const val2 = document.getElementById('blue-val-2');
+    const valComp = document.getElementById('blue-val-comp');
+
+    if (dados.length === 0) {
+        val1.innerText = "-"; val2.innerText = "-"; valComp.innerText = "-";
+        return;
+    }
+
+    let top1, top2, topC;
+
+    // Lógica 7 DIAS: Dia > Horário > Componente
+    if (dias === 7) {
+        lbl1.innerText = "Dia:";
+        lbl2.innerText = "Horário:";
+
+        // Acha o dia
+        const diasC = {}; 
+        dados.forEach(a => diasC[parseDate(a.dtHora).toLocaleDateString('pt-BR', {weekday:'long'})] = (diasC[parseDate(a.dtHora).toLocaleDateString('pt-BR', {weekday:'long'})]||0)+1);
+        top1 = getKeyMax(diasC);
+
+        // Filtra só esse dia para achar horário e componente
+        const dadosDia = dados.filter(a => parseDate(a.dtHora).toLocaleDateString('pt-BR', {weekday:'long'}) === top1);
+        
+        const horaC = {};
+        dadosDia.forEach(a => horaC[parseDate(a.dtHora).getHours()+'h'] = (horaC[parseDate(a.dtHora).getHours()+'h']||0)+1);
+        top2 = getKeyMax(horaC);
+        topC = getTopComponent(dadosDia);
+    }
+    
+    // Lógica 30 DIAS: Semana > Dia > Componente
+    else if (dias === 30) {
+        lbl1.innerText = "Semana:";
+        lbl2.innerText = "Dia:";
+        
+        // Agrupa por semana
+        const semC = {};
+        dados.forEach(a => {
+            const label = getSemanaLabel(parseDate(a.dtHora));
+            semC[label] = (semC[label]||0)+1;
+        });
+        top1 = getKeyMax(semC);
+
+        // Filtra semana
+        const dadosSem = dados.filter(a => getSemanaLabel(parseDate(a.dtHora)) === top1);
+        
+        // Acha dia da semana (ex: 21/11)
+        const diaC = {};
+        dadosSem.forEach(a => {
+            const d = parseDate(a.dtHora).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+            diaC[d] = (diaC[d]||0)+1;
+        });
+        top2 = getKeyMax(diaC);
+        topC = getTopComponent(dadosSem);
+    }
+
+    // Lógica 1 ANO: Mês > Semana > Componente
+    else {
+        lbl1.innerText = "Mês:";
+        lbl2.innerText = "Semana:";
+
+        const mesC = {};
+        dados.forEach(a => {
+            const m = parseDate(a.dtHora).toLocaleDateString('pt-BR', {month:'long'});
+            mesC[m] = (mesC[m]||0)+1;
+        });
+        top1 = getKeyMax(mesC);
+
+        const dadosMes = dados.filter(a => parseDate(a.dtHora).toLocaleDateString('pt-BR', {month:'long'}) === top1);
+        
+        // Semana do mes
+        const semMesC = {};
+        dadosMes.forEach(a => {
+            const dia = parseDate(a.dtHora).getDate();
+            const sem = Math.ceil(dia/7) + "ª Semana";
+            semMesC[sem] = (semMesC[sem]||0)+1;
+        });
+        top2 = getKeyMax(semMesC);
+        topC = getTopComponent(dadosMes);
+    }
+
+    val1.innerText = capitalize(top1);
+    val2.innerText = capitalize(top2);
+    valComp.innerText = topC;
+}
+
+function calcularTendencia(dados, dias) {
+    const hoje = new Date();
+    // Período Atual (0 a -dias)
+    const iniAtual = new Date(); iniAtual.setDate(hoje.getDate() - dias);
+    // Período Anterior (-dias a -2*dias)
+    const iniAnt = new Date(); iniAnt.setDate(hoje.getDate() - (dias * 2));
+
+    let countAtual = 0;
+    let countAnt = 0;
+
+    dados.forEach(a => {
+        const d = parseDate(a.dtHora);
+        if (d >= iniAtual && d <= hoje) countAtual++;
+        else if (d >= iniAnt && d < iniAtual) countAnt++;
+    });
+
+    const badge = document.getElementById('trendBadge');
+    
+    // Se não teve alertas antes, é "novo" ou "infinito"
+    if (countAnt === 0) {
+        badge.innerHTML = countAtual > 0 ? `+${countAtual} (Novo)` : `0%`;
+        badge.className = 'trend-badge neutro';
+        return;
+    }
+
+    const diff = countAtual - countAnt;
+    const pct = ((diff / countAnt) * 100).toFixed(1);
+    const sinal = diff > 0 ? '+' : '';
+    
+    // Regra de cor: Mais alertas = Ruim (Vermelho/Positivo), Menos alertas = Bom (Verde/Negativo)
+    let classe = 'neutro';
+    if (diff > 0) classe = 'positivo'; // Vermelho (definido no CSS)
+    if (diff < 0) classe = 'negativo'; // Verde
+
+    badge.innerHTML = `${diff > 0 ? '▲' : '▼'} ${sinal}${pct}%`;
+    badge.className = `trend-badge ${classe}`;
+}
+
+function renderGraficoLinha(dados, dias) {
+    const ctx = document.getElementById('historyLine').getContext('2d');
+    
+    // Preparar labels e buckets
+    let labels = [];
+    let buckets = {}; // Chave -> {CPU:0, RAM:0...}
+    const hoje = new Date();
+
+    if (dias === 365) {
+        // Agrupar por MÊS (últimos 12)
+        for(let i=11; i>=0; i--){
+            const d = new Date(hoje.getFullYear(), hoje.getMonth()-i, 1);
+            const k = d.toLocaleDateString('pt-BR', {month:'short'}).toUpperCase();
+            labels.push(k);
+            buckets[k] = {CPU:0, RAM:0, Disco:0};
         }
-
-        function normalizarTipo(tipoString) {
-            if (!tipoString) return 'todos';
-            const t = tipoString.toLowerCase();
-            if (t.includes('muito')) return 'muitoUrgente';
-            if (t.includes('emerg')) return 'emergencia';
-            if (t.includes('urgent')) return 'urgente';
-            return 'todos';
-        }
-
-        function getKeyComMaiorValor(obj) {
-            if (!obj || Object.keys(obj).length === 0) return "-";
-            let maxKey = null;
-            let maxVal = -Infinity;
-            for (const k of Object.keys(obj)) {
-                const v = obj[k] || 0;
-                if (v > maxVal) { maxVal = v; maxKey = k; }
-            }
-            return maxKey || "-";
-        }
-
-        /* =========================
-           KPIs
-           ========================= */
-        function processarKPIs(alertas) {
-            const total = alertas.length;
-            document.getElementById('kpi-total').innerText = total;
-
-            // Média por 7 dias
-            const media = (total / 7);
-            document.getElementById('kpi-media').innerText = `MÉDIA (${media.toFixed(1)}/DIA)`;
-
-            // contagens
-            const contagemDias = {};
-            const contagemHoras = {};
-            const contagemComp = {};
-
-            alertas.forEach(a => {
-                const d = parseDate(a.dtHora);
-                const dia = d.toLocaleDateString('pt-BR', { weekday: 'long' });
-                contagemDias[dia] = (contagemDias[dia] || 0) + 1;
-
-                const hora = String(d.getHours()).padStart(2, '0') + ':00';
-                contagemHoras[hora] = (contagemHoras[hora] || 0) + 1;
-
-                const comp = normalizarComponente(a.componente);
-                contagemComp[comp] = (contagemComp[comp] || 0) + 1;
-            });
-
-            const topDia = getKeyComMaiorValor(contagemDias);
-            const topHora = getKeyComMaiorValor(contagemHoras);
-            const topComp = getKeyComMaiorValor(contagemComp);
-
-            const qtdTopDia = contagemDias[topDia] || 0;
-            const qtdTopHora = contagemHoras[topHora] || 0;
-            const qtdTopComp = contagemComp[topComp] || 0;
-
-            document.getElementById('kpi-pico').innerText = topDia !== '-' ? `${capitalize(topDia)} (${qtdTopDia} Alertas)` : '-';
-            document.getElementById('kpi-horario').innerText = topHora !== '-' ? `${topHora} (${qtdTopHora} Alertas)` : '-';
-            document.getElementById('kpi-componente').innerText = topComp || '-';
-            document.getElementById('kpi-comp-sub').innerText = `${qtdTopComp} Alertas (Muito Urgente)`;
-        }
-
-        function capitalize(s) {
-            if (!s) return s;
-            return s.charAt(0).toUpperCase() + s.slice(1);
-        }
-
-        /* =========================
-           GRAFICO DE COMPONENTES (BAR HORIZONTAL)
-           ========================= */
-        function processarGraficoComponentes(alertas) {
-            const contagem = {};
-            alertas.forEach(a => {
-                const c = normalizarComponente(a.componente);
-                contagem[c] = (contagem[c] || 0) + 1;
-            });
-
-            // Ordena por maior
-            const sorted = Object.entries(contagem).sort(([, a], [, b]) => b - a);
-            const labels = sorted.map(([k]) => k);
-            const data = sorted.map(([, v]) => v);
-            const bgColors = labels.map(l => {
-                if (l === 'CPU') return palette.cpu;
-                if (l === 'RAM') return palette.ram;
-                if (l === 'Disco') return palette.disco;
-                return palette.padrao;
-            });
-
-            const ctx = document.getElementById('componentsBar').getContext('2d');
-            if (componentsChart) componentsChart.destroy();
-            componentsChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels, datasets: [{ data, backgroundColor: bgColors, borderRadius: 8 }] },
-                options: {
-                    indexAxis: 'y',
-                    plugins: { legend: { display: false } },
-                    responsive: true,
-                    scales: {
-                        x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#cbd5e1' } },
-                        y: { ticks: { color: '#cbd5e1' }, grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        /* =========================
-           GRAFICO HORAS (BAR VERTICAL)
-           ========================= */
-        function processarGraficoHoras(alertas) {
-            const horasData = Array(24).fill(0);
-            const labels = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0') + ':00');
-
-            alertas.forEach(a => {
-                const d = parseDate(a.dtHora);
-                const h = d.getHours();
-                if (!isNaN(h)) horasData[h]++;
-            });
-
-            const ctx = document.getElementById('hourlyBar').getContext('2d');
-            if (hourlyChart) hourlyChart.destroy();
-            hourlyChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels, datasets: [{ data: horasData, backgroundColor: 'rgba(69,170,242,0.9)', borderRadius: 4 }] },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { ticks: { color: '#cbd5e1', maxRotation: 0 }, grid: { color: 'rgba(255,255,255,0.02)' } },
-                        y: { ticks: { color: '#cbd5e1' }, grid: { color: 'rgba(255,255,255,0.02)' } }
-                    }
-                }
-            });
-        }
-
-        /* =========================
-           HISTÓRICO (LINHA) - 7 DIAS
-           ========================= */
-        function processarDadosHistorico(alertas) {
-            // Labels últimos 7 dias (dd/mm)
-            const hoje = new Date();
-            const labels = [];
-            const mapaIndex = {};
-            for (let i = 6; i >= 0; i--) {
-                const d = new Date();
-                d.setDate(hoje.getDate() - i);
-                const label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-                labels.push(label);
-                mapaIndex[label] = labels.length - 1;
-            }
-
-            const criar = () => ({ CPU: Array(7).fill(0), RAM: Array(7).fill(0), Disco: Array(7).fill(0) });
-            const dados = { labels, todos: criar(), urgente: criar(), muitoUrgente: criar(), emergencia: criar() };
-
-            alertas.forEach(a => {
-                const d = parseDate(a.dtHora);
-                const label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-                if (!(label in mapaIndex)) return;
-                const idx = mapaIndex[label];
-                const comp = normalizarComponente(a.componente);
-                const tipo = normalizarTipo(a.gravidade);
-
-                if (dados.todos[comp]) dados.todos[comp][idx]++;
-
-                if (tipo !== 'todos' && dados[tipo] && dados[tipo][comp] !== undefined) {
-                    dados[tipo][comp][idx]++;
-                }
-            });
-
-            return dados;
-        }
-
-        function createHistoryChart(labels, datasetGroup) {
-            const ctx = document.getElementById('historyLine').getContext('2d');
-            if (historyChart) historyChart.destroy();
-
-            historyChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: [
-                        { label: 'CPU', data: datasetGroup.CPU, borderColor: palette.cpu, backgroundColor: 'rgba(64,201,255,0.08)', tension: 0.35, pointRadius: 4, fill: true },
-                        { label: 'RAM', data: datasetGroup.RAM, borderColor: palette.ram, backgroundColor: 'rgba(69,170,242,0.06)', tension: 0.35, pointRadius: 4, fill: true },
-                        { label: 'Disco', data: datasetGroup.Disco, borderColor: palette.disco, backgroundColor: 'rgba(46,172,163,0.06)', tension: 0.35, pointRadius: 4, fill: true }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { labels: { color: '#cbd5e1' } } },
-                    scales: {
-                        x: { ticks: { color: '#9aa4b2' }, grid: { color: 'rgba(255,255,255,0.02)' } },
-                        y: { ticks: { color: '#9aa4b2' }, grid: { color: 'rgba(255,255,255,0.02)' } }
-                    }
-                }
-            });
-        }
-
-        /* =========================
-           DONUT (COMPOSIÇÃO POR COMPONENTE)
-           ========================= */
-        function createDonut(alertas) {
-            const contagem = { CPU: 0, RAM: 0, Disco: 0, Outros: 0 };
-            alertas.forEach(a => {
-                const c = normalizarComponente(a.componente);
-                contagem[c] = (contagem[c] || 0) + 1;
-            });
-            const labels = Object.keys(contagem);
-            const data = labels.map(l => contagem[l]);
-            const colors = labels.map(l => l === 'CPU' ? palette.cpu : (l === 'RAM' ? palette.ram : (l === 'Disco' ? palette.disco : palette.padrao)));
-
-            const ctx = document.getElementById('donutComp').getContext('2d');
-            if (donutChart) donutChart.destroy();
-            donutChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels, datasets: [{ data, backgroundColor: colors, cutout: '70%' }] },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-
-        /* =========================
-           INICIALIZAÇÃO DE TABS / BOTÕES
-           ========================= */
-        function initTabs() {
-            // aqui podemos adicionar comportamento do botão de período se quiser
-            document.getElementById('periodBtn').addEventListener('click', () => {
-                alert('Filtro de período (apenas demo) — por enquanto sempre últimos 7 dias');
-            });
-
-            // inicializa filtros visuais (se houver)
-            // se quiser trocar séries (Todos / Urgente / Emergência), podemos adicionar botões
-        }
-
-        /* =========================
-           UTIL - CAPTURA DOS DADOS PROCESSADOS E RENDERIZAÇÃO
-           ========================= */
-
-        document.addEventListener('click', (e) => {
-            // exemplo: futuramente fazer troca de séries do histórico
+        dados.forEach(a => {
+            const d = parseDate(a.dtHora);
+            const k = d.toLocaleDateString('pt-BR', {month:'short'}).toUpperCase();
+            if(buckets[k]) buckets[k][normalizarComponente(a.componente)]++;
         });
 
-        /* =========================
-           FINAL
-           ========================= */
+    } else {
+        // Agrupar por DIA (últimos 7 ou 30)
+        for(let i=dias-1; i>=0; i--){
+            const d = new Date(); d.setDate(hoje.getDate()-i);
+            const k = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+            labels.push(k);
+            buckets[k] = {CPU:0, RAM:0, Disco:0};
+        }
+        dados.forEach(a => {
+            const d = parseDate(a.dtHora);
+            const k = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+            if(buckets[k]) buckets[k][normalizarComponente(a.componente)]++;
+        });
+    }
+
+    // Extrair arrays para o ChartJS
+    const dataCPU = labels.map(l => buckets[l].CPU);
+    const dataRAM = labels.map(l => buckets[l].RAM);
+    const dataDisco = labels.map(l => buckets[l].Disco);
+
+    if (historyChart) historyChart.destroy();
+
+    historyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                { label: 'CPU', data: dataCPU, borderColor: palette.cpu, backgroundColor: 'rgba(64,201,255,0.1)', fill: true, tension: 0.3 },
+                { label: 'RAM', data: dataRAM, borderColor: palette.ram, backgroundColor: 'rgba(69,170,242,0.1)', fill: true, tension: 0.3 },
+                { label: 'Disco', data: dataDisco, borderColor: palette.disco, backgroundColor: 'rgba(46,172,163,0.1)', fill: true, tension: 0.3 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // CRUCIAL: Permite que o CSS controle a altura
+            plugins: { legend: { labels: { color: '#cbd5e1' } } },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+            }
+        }
+    });
+}
+
+function renderGraficosBarra(dados) {
+    // 1. Componentes
+    const cCount = { CPU: 0, RAM: 0, Disco: 0 };
+    dados.forEach(a => cCount[normalizarComponente(a.componente)]++);
+    
+    // Filtra > 0
+    const labelsC = Object.keys(cCount).filter(k => cCount[k] > 0);
+    const dataC = labelsC.map(k => cCount[k]);
+    const colorC = labelsC.map(k => palette[k.toLowerCase()] || palette.padrao);
+
+    const ctxC = document.getElementById('componentsBar').getContext('2d');
+    if (componentsChart) componentsChart.destroy();
+    componentsChart = new Chart(ctxC, {
+        type: 'bar',
+        data: { labels: labelsC, datasets: [{ data: dataC, backgroundColor: colorC, borderRadius: 5 }] },
+        options: { 
+            indexAxis: 'y', 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { display: false }, y: { ticks: { color: '#cbd5e1' }, grid: { display: false } } }
+        }
+    });
+
+    // 2. Horas
+    const hCount = Array(24).fill(0);
+    dados.forEach(a => {
+        const h = parseDate(a.dtHora).getHours();
+        if(!isNaN(h)) hCount[h]++;
+    });
+    const labelsH = hCount.map((_, i) => i + 'h');
+
+    const ctxH = document.getElementById('hourlyBar').getContext('2d');
+    if (hourlyChart) hourlyChart.destroy();
+    hourlyChart = new Chart(ctxH, {
+        type: 'bar',
+        data: { labels: labelsH, datasets: [{ data: hCount, backgroundColor: palette.ram, borderRadius: 3 }] },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { display: false }, y: { display: false } } 
+        }
+    });
+}
+
+/* =========================
+   UTILITÁRIOS
+   ========================= */
+function parseDate(s) { return new Date(s.replace(' ', 'T')); }
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : '-'; }
+function normalizarComponente(n) {
+    const l = (n || '').toLowerCase();
+    if(l.includes('cpu') || l.includes('proc')) return 'CPU';
+    if(l.includes('ram') || l.includes('mem')) return 'RAM';
+    if(l.includes('disk') || l.includes('disco')) return 'Disco';
+    return 'Outros';
+}
+function getKeyMax(obj) {
+    let max = -1, key = '-';
+    for(let k in obj) { if(obj[k] > max){ max = obj[k]; key = k; } }
+    return key;
+}
+function getTopComponent(arr) {
+    const c = {}; arr.forEach(x => { let n = normalizarComponente(x.componente); c[n]=(c[n]||0)+1; });
+    return getKeyMax(c);
+}
+function getSemanaLabel(d) {
+    // Retorna "Semana X" baseado no dia do ano
+    const onejan = new Date(d.getFullYear(), 0, 1);
+    const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+    return `Semana ${week}`;
+}
+function atualizarCriticidadeBadge(id, qtd) {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.className = 'kpi-criticidade';
+    let nivel = '-';
+    if (qtd >= 10) { el.classList.add('critico'); nivel = 'Crítico'; }
+    else if (qtd >= 5) { el.classList.add('alto'); nivel = 'Alto'; }
+    else if (qtd >= 1) { el.classList.add('moderado'); nivel = 'Moderado'; }
+    el.innerText = nivel;
+}
     </script>
 </body>
 
