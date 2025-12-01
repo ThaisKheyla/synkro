@@ -71,8 +71,29 @@
     padding-right: 24px;
  
 }
-.direita{
+.direitacol{
     width: 30%;
+}
+
+.locomover{
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    background-color: rgb(239, 239, 239);
+    color: black;
+    width: 100%;
+    justify-content: space-between;
+    height: 40px;
+    border: 10px;
+    border-radius: 100px;
+}
+.locomover>div, .locomover>div>button{ 
+height: 100%; 
+display: flex;
+align-items: center;
+justify-content: center;
+width: 80px;
+font-size: 13pt;
 }
 
 /*não é meu*/

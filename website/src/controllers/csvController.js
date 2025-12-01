@@ -1,4 +1,5 @@
 async function buscarCSV(req, res) {
+  var macAdress = req.params.macAdress; 
   /** csv file
   a,b,c
   1,2,3
@@ -23,8 +24,12 @@ async function buscarCSV(req, res) {
   
   const jsonArray = await csv({ delimiter: ';' }).fromFile(csvFilePath);
   // console.log(jsonArray)
-  res.json(jsonArray)
+   
+  const jsonArrayId = jsonArray.filter(item=>item.macAdress==macAdress)
+  res.json(jsonArrayId)
 }
+
+ 
 
 module.exports = {
     buscarCSV
