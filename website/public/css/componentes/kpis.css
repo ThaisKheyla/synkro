@@ -6,6 +6,60 @@
     flex-wrap: wrap;
 }
 
+.bolinha-orange {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: orange;
+}
+
+.bolinha-red {
+    background-color: red;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+
+.kpi-valor-ram {
+    margin-left: 15px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    color: #46baaa;
+}
+
+.kpi-valor-cpu {
+    margin-left: 15px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+
+    color: #ed44d1;
+}
+
+.kpi-valor-disk {
+    margin-left: 15px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    color: #afbb01;
+}
 
 .kpis-linha-2 {
     display: flex;
@@ -16,17 +70,17 @@
     flex-wrap: wrap;
 }
 
-.subtitleKpi{
+.subtitleKpi {
     display: flex;
     justify-items: auto;
-    justify-content: space-between; 
+    justify-content: space-between;
     width: 75px;
 }
 
-.subtitleKpi-disk{
+.subtitleKpi-disk {
     display: flex;
     justify-items: auto;
-    justify-content: space-between; 
+    justify-content: space-between;
     width: 90px;
 }
 
@@ -55,15 +109,17 @@
     font-size: 1.1rem;
     flex-shrink: 0;
 }
-.txt-red{
+
+.txt-red {
     color: red;
 }
-.txt-green{
+
+.txt-green {
     color: green;
 }
 
 
-.kpi-card.kpi-info{
+.kpi-card.kpi-info {
     background-color: #2563eb;
     border-color: #38bdf8;
     text-shadow: black;
@@ -71,13 +127,13 @@
     cursor: pointer;
 }
 
-.kpi-card.kpi-info:hover{
+.kpi-card.kpi-info:hover {
     background-color: #38bdf8;
     border-color: #2563eb;
     border-radius: 30px;
 }
 
-.kpi-card.kpi-disk:hover{
+.kpi-card.kpi-disk:hover {
     background-color: #0070a0;
     color: white;
     border-color: #2563eb;
@@ -97,18 +153,18 @@
 }
 
 .kpi-disk .kpi-icone {
-   background: rgba(255, 217, 0, 0.212);
+    background: rgba(255, 217, 0, 0.212);
     color: #C1CF00DA;
 }
 
 .kpi-disk-2 .kpi-icone {
-   background: rgba(255, 217, 0, 0.212);
+    background: rgba(255, 217, 0, 0.212);
     color: #C1CF00DA;
 }
 
 
 .kpi-tempo .kpi-icone {
-    background: rgba(99,102,241,0.15);
+    background: rgba(99, 102, 241, 0.15);
     color: #0004ff;
 }
 
@@ -124,11 +180,11 @@
     margin-bottom: 2px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-   
+
 }
 
 .kpi-valor {
-   margin-left: 15px;
+    margin-left: 15px;
     font-size: 0.95rem;
     font-weight: 700;
     line-height: 1;
@@ -158,14 +214,17 @@
     gap: 4px;
     color: orange;
 }
-.border-red{
-    border-color: red;
+
+.border-ram {
+    border-color: #46baaa
 }
-.border-orange{
-    border-color: orange;
+
+.border-cpu {
+    border-color: #ef44d2
 }
-.border-orange{
-    border-color: none;
+
+.border-disk {
+    border-color: #b2be01
 }
 
 .kpi-gb {
@@ -184,25 +243,32 @@
     font-size: 0.8em;
     color: var(--accent-light);
 }
+
 /* --- Estilos para KPIs Extras (2ª Linha) --- */
 
 .kpis-row.kpi-extra-row {
-    margin-bottom: 16px; /* Mais espaço para separar o gráfico */
+    margin-bottom: 16px;
+    /* Mais espaço para separar o gráfico */
     /* Você pode ajustar o 'gap' ou 'justify-content' se quiser que eles fiquem mais centralizados ou separados */
-    gap: 20px; /* Reduz o gap entre eles para caberem 3 no espaço de 4 grandes */
+    gap: 20px;
+    /* Reduz o gap entre eles para caberem 3 no espaço de 4 grandes */
 }
 
 .kpi-extra-row .kpi-card {
     /* Ajusta o tamanho dos cards extras (ex: 3 cards por linha) */
-    max-width: 250px; /* Mais largura para o texto de descrição extra */
+    max-width: 250px;
+    /* Mais largura para o texto de descrição extra */
     min-width: 150px;
-    height: 60px; /* Mais altura para acomodar a descrição e valor maior */
-    align-items: flex-start; /* Alinha o conteúdo ao topo para melhor leitura */
+    height: 60px;
+    /* Mais altura para acomodar a descrição e valor maior */
+    align-items: flex-start;
+    /* Alinha o conteúdo ao topo para melhor leitura */
     padding: 8px 12px;
 }
 
 .kpi-extra-row .kpi-icone {
-    margin-top: 2px; /* Pequeno ajuste visual */
+    margin-top: 2px;
+    /* Pequeno ajuste visual */
 }
 
 .kpi-extra-row .kpi-titulo {
@@ -210,25 +276,29 @@
 }
 
 .kpi-extra-row .kpi-valor {
-    font-size: 1.1rem; /* Aumenta o valor para destaque */
+    font-size: 1.1rem;
+    /* Aumenta o valor para destaque */
 }
 
 /* --- Estilos de Cores e Ícones para KPIs Extras --- */
 
 /* TEMPERATURA */
 .kpi-temp-extra .kpi-icone {
-    background: rgba(239, 68, 68, 0.15); /* Vermelho */
+    background: rgba(239, 68, 68, 0.15);
+    /* Vermelho */
     color: #ef4444;
 }
 
 /* REDE (Tráfego) */
 .kpi-rede .kpi-icone {
-    background: rgba(168, 85, 247, 0.15); /* Roxo/Violeta */
+    background: rgba(168, 85, 247, 0.15);
+    /* Roxo/Violeta */
     color: #a855f7;
 }
 
 /* EVENTOS/ALERTAS */
 .kpi-eventos .kpi-icone {
-    background: rgba(249, 115, 22, 0.15); /* Laranja escuro */
+    background: rgba(249, 115, 22, 0.15);
+    /* Laranja escuro */
     color: #f97316;
 }

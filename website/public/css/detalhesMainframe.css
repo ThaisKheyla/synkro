@@ -380,7 +380,7 @@ body {
 .kpi-card:hover, .btnModal:Hover , .kpi-card-disk:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-xl);
-    border: 1px solid var(--accent-light);
+    
 }
 
 /* Ícone KPI: Gradientes Vibrantes */
