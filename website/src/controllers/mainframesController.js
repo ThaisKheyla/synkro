@@ -283,6 +283,22 @@ function buscarAlertasPorMainframe(req, res) {
             res.status(500).json(erro.sqlMessage);
         });
 }
+async function obterEmpresaPorMac(req, res) {
+    const mac = req.params.mac;
+
+    try {
+        const resultado = await mainframesModel.buscarEmpresaPorMac(mac);
+
+        if (resultado.length === 0) {
+            return res.status(404).json({ erro: "MAC Address não encontrado no banco." });
+        }
+
+        res.json(resultado[0]); // já retorna { idEmpresa, nomeEmpresa, idMainframe }
+    } catch (erro) {
+        console.error("Erro ao buscar empresa por MAC:", erro);
+        res.status(500).json({ erro: "Erro interno do servidor." });
+    }
+}
 
 module.exports = {
   listarSetores,
@@ -302,5 +318,6 @@ module.exports = {
   contarAlertasPorMainframe,
   buscarRankingAlertas, 
   buscarStatusGeralEKPIs,
-  buscarAlertasPorMainframe
+  buscarAlertasPorMainframe,
+  obterEmpresaPorMac
 };

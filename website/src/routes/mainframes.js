@@ -41,4 +41,8 @@ router.get("/detalheAlertas/:idMainframe", function (req, res) {
     mainframesController.buscarAlertasPorMainframe(req, res);
 });
 
+router.get("/empresaPorMac/:mac", function(req, res) {
+    mainframesController.obterEmpresaPorMac(req, res);
+});
+
 module.exports = router;

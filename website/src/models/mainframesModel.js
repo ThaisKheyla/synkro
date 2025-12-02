@@ -324,6 +324,20 @@ function buscarAlertasPorMainframe(idMainframe) {
   return database.executar(instrucaoSql);
 }
 
+function buscarEmpresaPorMac(mac) {
+  const instrucao = `
+    SELECT 
+      e.id AS idEmpresa,
+      e.nomeEmpresarial AS nomeEmpresa,
+      m.id AS idMainframe
+    FROM mainframe m
+    JOIN setor s ON m.fkSetor = s.id
+    JOIN empresa e ON s.fkEmpresa = e.id
+    WHERE m.macAdress = '${mac}';
+  `;
+  return database.executar(instrucao);
+}
+
 // ===== EXPORTA TODAS AS FUNÇÕES =====
 module.exports = {
   listarSetores,
@@ -346,5 +360,6 @@ module.exports = {
   contarAlertasPorMainframe,
   buscarRankingAlertas,
   buscarStatusGeralEKPIs,
-  buscarAlertasPorMainframe
+  buscarAlertasPorMainframe,
+  buscarEmpresaPorMac
 };

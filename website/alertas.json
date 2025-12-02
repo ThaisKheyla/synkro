@@ -1,0 +1,98 @@
+[
+  {
+    "dtHora": "2025-12-01 18:20:05",
+    "valorColetado": 9.91,
+    "componente": "Disco Rígido",
+    "gravidade": "Emergencia",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2025-11-20 07:34:12",
+    "valorColetado": 7.42,
+    "componente": "Processador",
+    "gravidade": "Urgente",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2025-10-31 10:00:00",
+    "valorColetado": 9.88,
+    "componente": "Memória RAM",
+    "gravidade": "Muito Urgente",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2025-09-15 14:55:30",
+    "valorColetado": 5.12,
+    "componente": "Disco Rígido",
+    "gravidade": "Urgente",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2025-07-04 22:10:45",
+    "valorColetado": 9.42,
+    "componente": "Processador",
+    "gravidade": "Emergencia",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2025-04-18 13:30:15",
+    "valorColetado": 8.01,
+    "componente": "Memória RAM",
+    "gravidade": "Muito Urgente",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2024-12-30 09:05:00",
+    "valorColetado": 9.99,
+    "componente": "Disco Rígido",
+    "gravidade": "Emergencia",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2024-09-01 17:40:20",
+    "valorColetado": 6.75,
+    "componente": "Processador",
+    "gravidade": "Urgente",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2024-05-15 03:00:00",
+    "valorColetado": 9.60,
+    "componente": "Memória RAM",
+    "gravidade": "Emergencia",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2024-01-22 11:11:11",
+    "valorColetado": 8.80,
+    "componente": "Disco Rígido",
+    "gravidade": "Muito Urgente",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2023-12-05 20:50:50",
+    "valorColetado": 9.85,
+    "componente": "Processador",
+    "gravidade": "Emergencia",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  },
+  {
+    "dtHora": "2023-12-01 16:35:00",
+    "valorColetado": 5.45,
+    "componente": "Memória RAM",
+    "gravidade": "Urgente",
+    "macAdress": "166250251803552",
+    "identificacaoMainframe": "Hideo"
+  }
+]

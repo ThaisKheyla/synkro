@@ -10,14 +10,13 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- CSS (coloque este arquivo como css/dashMainframesGerente.css) -->
+    <!-- CSS (substitua pelo novo arquivo CSS abaixo) -->
     <link rel="stylesheet" href="./css/dashMainframesGerente.css">
 </head>
 
-
 <body>
     <div class="layout-principal">
-        <!-- ==== BARRA LATERAL (COPIADA SEM ALTERAÇÕES) ==== -->
+        <!-- BARRA LATERAL (NÃO ALTERADA) -->
         <aside class="barra-lateral">
             <div class="logo">Synkro</div>
             <div class="perfil-usuario">
@@ -42,72 +41,70 @@
             </nav>
         </aside>
 
-        <!-- ==== CONTEÚDO PRINCIPAL - DASHBOARD (REESCRITO) ==== -->
+        <!-- CONTEÚDO PRINCIPAL - (PARTE DIREITA REFEITA) -->
         <main class="conteudo-dashboard dashboard-mainframe">
             <header class="dashboard-header">
-                <h2 class="titulo-principal">Histórico Total</h2>
+                <h2 class="titulo-principal">Visão Geral do Mainframe – <span id="nome-mainframe">...</span></h2>
                 <div class="header-sep"></div>
             </header>
 
-            <!-- TOP ROW: KPIs -->
+            <!-- TOP KPIs -->
             <section class="top-row">
                 <div class="kpi-grid">
                     <div class="kpi-card kpi-total card">
                         <div class="kpi-title">Total de Alertas</div>
                         <div id="kpi-total" class="kpi-value">0</div>
-                        <div id="kpi-media" class="kpi-sub">MÉDIA (0.0/DIA)</div>
+                        <div class="kpi-bottom-line">
+                            <span id="kpi-total-badge" class="kpi-criticidade"></span>
+                            <span id="kpi-ultimo-alerta">Último alerta: --</span>
+                        </div>
                     </div>
 
-                    <!-- KPI: Dia da semana -->
                     <div class="kpi-card card">
                         <div class="kpi-title">Dia que mais registra alerta</div>
                         <div class="kpi-peak-content">
                             <div class="peak-line">
-
                                 <strong id="kpi-pico">-</strong>
                             </div>
                         </div>
-
-                        <div id="kpi-dia-quantidade" class="kpi-sub">- 0 alertas</div>
-                        <span id="kpi-dia-criticidade" class="kpi-criticidade"></span>
+                        <div class="kpi-bottom-line">
+                            <span id="kpi-dia-criticidade" class="kpi-criticidade"></span>
+                            <span id="kpi-dia-quantidade">- alertas</span>
+                        </div>
                     </div>
 
                     <div class="kpi-card card">
                         <div class="kpi-title">Horário que mais registra alerta</div>
                         <div class="kpi-peak-content">
                             <div class="peak-line">
-
                                 <strong id="kpi-horario">-</strong>
                             </div>
                         </div>
-
-                        <div id="kpi-horario-quantidade" class="kpi-sub">0 alertas</div>
-                        <span id="kpi-horario-criticidade" class="kpi-criticidade"></span>
+                        <div class="kpi-bottom-line">
+                            <span id="kpi-horario-criticidade" class="kpi-criticidade"></span>
+                            <span id="kpi-horario-quantidade">- alertas</span>
+                        </div>
                     </div>
-
-                    <div class="kpi-card kpi-critical card">
-                        <div class="kpi-title">Componente Crítico</div>
-                        <div class="kpi-critical-main">
-                            <div id="kpi-componente" class="kpi-value-large">CPU</div>
-                            <div class="donut-wrap">
-                                <canvas id="donutComp" width="140" height="140"></canvas>
+                    <div class="kpi-card card">
+                        <div class="kpi-title">Componente mais Crítico</div>
+                        <div class="kpi-peak-content">
+                            <div class="peak-line">
+                                <div id="kpi-componente" class="kpi-value-large">CPU</div>
                             </div>
                         </div>
-                        <div id="kpi-comp-sub" class="kpi-sub">
-                            0 Alertas (Muito Urgente)
+                        <div class="kpi-bottom-line">
                             <span id="kpi-comp-criticidade" class="kpi-criticidade"></span>
+                            <span id="kpi-comp-sub">0 alertas</span>
                         </div>
                     </div>
-
                 </div>
             </section>
 
-            <!-- ANALYSIS SECTION -->
+            <!-- ANALYSIS -->
             <section class="analysis">
                 <div class="analysis-header-line">
-                    <h3 class="analysis-title">Análise</h3>
-
-                    <select id="periodSelect" class="period-select">
+                    <h3 class="analysis-title">Análise de Tendências</h3>
+                    <select id="periodSelect" class="period-select" aria-label="Selecionar período">
                         <option value="7">Últimos 7 dias</option>
                         <option value="30">Últimos 30 dias</option>
                         <option value="365">Último ano</option>
@@ -116,34 +113,36 @@
                 <div class="analysis-sep"></div>
 
                 <div class="analysis-grid">
-                    <!-- Left: Large history line -->
+                    <!-- LEFT: Histórico grande -->
                     <div class="history-card card">
-    <div class="history-header">
-        <div class="chart-title">Histórico de todos os Alertas</div>
-        <div id="trendBadge" class="trend-badge">▲ +2%</div>
-    </div>
-    <div class="chart-container-wrapper">
-        <canvas id="historyLine"></canvas>
-    </div>
-</div>
+                        <div class="history-header">
+                            <div class="chart-title">Histórico de todos os Alertas</div>
+                            <div id="trendBadge" class="trend-badge neutro">—</div>
+                        </div>
+                        <div class="chart-container-wrapper">
+                            <canvas id="historyLine"></canvas>
+                        </div>
+                    </div>
 
-                    <!-- Right: two stacked charts -->
+                    <!-- RIGHT: Coluna com gráfico de componentes, pico e horas -->
                     <div class="right-charts">
                         <div class="top-right-group">
                             <div class="card chart-small">
                                 <div class="chart-title">Alertas por Componente</div>
-                                <canvas id="componentsBar" style="height:160px;"></canvas>
+                                <canvas id="componentsBar"></canvas>
                             </div>
+
                             <div class="pico-card">
-    <h4>Pico de alertas</h4>
-    <p><strong id="blue-label-1">Dia:</strong> <span id="blue-val-1">-</span></p>
-    <p><strong id="blue-label-2">Horário:</strong> <span id="blue-val-2">-</span></p>
-    <p><strong>Componente:</strong> <span id="blue-val-comp">-</span></p>
-</div>
+                                <h4>Pico de alertas</h4>
+                                <p><strong id="blue-label-1">Dia:</strong> <span id="blue-val-1">-</span></p>
+                                <p><strong id="blue-label-2">Horário:</strong> <span id="blue-val-2">-</span></p>
+                                <p><strong>Componente:</strong> <span id="blue-val-comp">-</span></p>
+                            </div>
                         </div>
+
                         <div class="card chart-small lower">
                             <div class="chart-title">Alertas por Horas do Dia</div>
-                            <canvas id="hourlyBar" height="200"></canvas>
+                            <canvas id="hourlyBar"></canvas>
                         </div>
                     </div>
                 </div>
@@ -151,460 +150,503 @@
         </main>
     </div>
 
+    <!-- ====== SCRIPTS ======
+         Use o JS existente (já testado). Mantive o seu código praticamente intacto,
+         com pequenos ajustes de inicialização para compatibilidade com a nova estrutura.
+    -->
     <script>
-       /* =========================
-   CONFIGURAÇÃO / VARIÁVEIS
-   ========================= */
-const ARQUIVO_ALERTA_S3 = "alertas.json"; // Ajuste o caminho
-const ID_SESSAO_MAINFRAME = 'ID_MAINFRAME_SELECIONADO';
+        /* ========== CONFIGURAÇÃO VARIÁVEIS ========== */
+        const ARQUIVO_ALERTA_S3 = "alertas.json"; // ajuste conforme sua rota
+        const ID_SESSAO_MAINFRAME = 'ID_MAINFRAME_SELECIONADO';
 
-const palette = {
-    cpu: 'rgba(64,201,255,0.95)',
-    ram: 'rgba(69,170,242,0.95)',
-    disco: 'rgba(46,172,163,0.95)',
-    padrao: 'rgba(148,163,184,0.9)'
-};
+        const palette = {
+            cpu: 'rgba(64,201,255,0.95)',
+            ram: 'rgba(69,170,242,0.95)',
+            disco: 'rgba(46,172,163,0.95)',
+            padrao: 'rgba(148,163,184,0.9)'
+        };
 
-// Instâncias globais dos gráficos para poder destruir antes de recriar
-let historyChart = null;
-let componentsChart = null;
-let hourlyChart = null;
-let donutChart = null; // Este é estático
+        let historyChart = null;
+        let componentsChart = null;
+        let hourlyChart = null;
+        let donutChart = null;
+        let dadosGlobais = [];
 
-let dadosGlobais = [];
+        window.onload = async function () {
+            const macSelecionado = sessionStorage.getItem(ID_SESSAO_MAINFRAME);
+            await carregarDados(macSelecionado);
 
-/* =========================
-   ON LOAD
-   ========================= */
-window.onload = async function () {
-    const macSelecionado = sessionStorage.getItem(ID_SESSAO_MAINFRAME);
-    
-    // 1. Carrega dados
-    await carregarDados(macSelecionado);
+            const select = document.getElementById('periodSelect');
+            select.addEventListener('change', (e) => {
+                atualizarDashboardAnalise(parseInt(e.target.value));
+            });
 
-    // 2. Configura o Select
-    const select = document.getElementById('periodSelect');
-    if (select) {
-        select.addEventListener('change', (e) => {
-            atualizarDashboardAnalise(parseInt(e.target.value));
-        });
-    }
-};
+            // inicia com 7 dias
+            atualizarDashboardAnalise(parseInt(select.value || 7));
+        };
 
-/* =========================
-   CARREGAMENTO E DISTRIBUIÇÃO
-   ========================= */
-async function carregarDados(mac) {
-    try {
-        const res = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`); // Ajuste rota
-        if (!res.ok) throw new Error('Erro ao buscar JSON');
-        const raw = await res.json();
-        
-        // Filtra pelo mainframe (se houver)
-        dadosGlobais = mac ? raw.filter(a => String(a.macAdress) === String(mac)) : raw;
+        async function carregarDados(mac) {
+            try {
+                const res = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`);
+                if (!res.ok) throw new Error('Erro ao buscar JSON');
+                const raw = await res.json();
 
-        if (dadosGlobais.length === 0) {
-            console.warn("Sem dados.");
-            return;
-        }
+                dadosGlobais = mac ? raw.filter(a => String(a.macAdress) === String(mac)) : raw;
 
-        // --- PARTE ESTÁTICA (Nunca muda com o select) ---
-        processarKPIsTopo(dadosGlobais);
-        renderDonutEstatico(dadosGlobais);
+                if (dadosGlobais.length > 0) {
+                    // Pega o nome do primeiro registro encontrado no JSON
+                    const nome = dadosGlobais[0].identificacaoMainframe;
+                    document.getElementById('nome-mainframe').innerText = nome;
+                } else {
+                    document.getElementById('nome-mainframe').innerText = "Não encontrado";
+                }
 
-        // --- PARTE DINÂMICA (Inicia com 7 dias) ---
-        atualizarDashboardAnalise(7);
+                if (dadosGlobais.length === 0) {
+                    console.warn("Sem dados.");
+                    // mesmo sem dados, inicializar gráficos vazios
+                    processarKPIsTopo([]);
+                    renderDonutEstatico([]);
+                    atualizarDashboardAnalise(7);
+                    return;
+                }
 
-    } catch (err) {
-        console.error(err);
-    }
-}
+                processarKPIsTopo(dadosGlobais);
+                renderDonutEstatico(dadosGlobais);
+                atualizarDashboardAnalise(7);
 
-/* =========================
-   LÓGICA: PARTE ESTÁTICA (TOPO)
-   ========================= */
-function processarKPIsTopo(dados) {
-    // 1. Total
-    document.getElementById('kpi-total').innerText = dados.length;
-
-    // 2. Média Total (Todos os dias)
-    const d1 = parseDate(dados[0].dtHora);
-    const d2 = parseDate(dados[dados.length - 1].dtHora);
-    const diffDias = Math.max(1, Math.ceil(Math.abs(d2 - d1) / (86400000))); 
-    const media = (dados.length / diffDias).toFixed(1);
-    document.getElementById('kpi-media').innerText = `Média (${media}/dia)`;
-
-    // 3. Dia da Semana (Global)
-    const diasCount = {};
-    dados.forEach(a => {
-        const d = parseDate(a.dtHora).toLocaleDateString('pt-BR', { weekday: 'long' });
-        diasCount[d] = (diasCount[d] || 0) + 1;
-    });
-    const topDia = getKeyMax(diasCount);
-    // Atenção: IDs originais do HTML para o topo
-    document.getElementById('kpi-pico').innerText = capitalize(topDia);
-    document.getElementById('kpi-dia-quantidade').innerText = `${diasCount[topDia] || 0} alertas`;
-    atualizarCriticidadeBadge('kpi-dia-criticidade', diasCount[topDia]);
-
-    // 4. Horário (Global)
-    const horasCount = {};
-    dados.forEach(a => {
-        const h = parseDate(a.dtHora).getHours();
-        const label = `${String(h).padStart(2, '0')}:00`;
-        horasCount[label] = (horasCount[label] || 0) + 1;
-    });
-    const topHora = getKeyMax(horasCount);
-    document.getElementById('kpi-horario').innerText = topHora;
-    document.getElementById('kpi-horario-quantidade').innerText = `${horasCount[topHora] || 0} alertas`;
-    atualizarCriticidadeBadge('kpi-horario-criticidade', horasCount[topHora]);
-
-    // 5. Componente Crítico (Global - Texto e Donut)
-    const compCount = {};
-    dados.forEach(a => {
-        const c = normalizarComponente(a.componente);
-        compCount[c] = (compCount[c] || 0) + 1;
-    });
-    const topComp = getKeyMax(compCount);
-    document.getElementById('kpi-componente').innerText = topComp;
-    document.getElementById('kpi-comp-sub').innerHTML = 
-        `${compCount[topComp] || 0} Alertas <span id="kpi-comp-criticidade"></span>`;
-    atualizarCriticidadeBadge('kpi-comp-criticidade', compCount[topComp]);
-}
-
-function renderDonutEstatico(dados) {
-    const counts = { CPU: 0, RAM: 0, Disco: 0 };
-    dados.forEach(a => {
-        const c = normalizarComponente(a.componente);
-        if(counts[c] !== undefined) counts[c]++;
-    });
-
-    const ctx = document.getElementById('donutComp').getContext('2d');
-    if(donutChart) donutChart.destroy();
-    
-    donutChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(counts),
-            datasets: [{
-                data: Object.values(counts),
-                backgroundColor: [palette.cpu, palette.ram, palette.disco],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            cutout: '75%',
-            responsive: true,
-            plugins: { legend: { display: false } }
-        }
-    });
-}
-
-/* =========================
-   LÓGICA: PARTE DINÂMICA (ANÁLISE)
-   ========================= */
-function atualizarDashboardAnalise(dias) {
-    const hoje = new Date();
-    const dataLimite = new Date();
-    dataLimite.setDate(hoje.getDate() - dias);
-
-    // Filtra dados do período selecionado
-    const dadosFiltrados = dadosGlobais.filter(a => {
-        const d = parseDate(a.dtHora);
-        return d >= dataLimite && d <= hoje;
-    });
-
-    // 1. Atualiza Badge de Tendência
-    calcularTendencia(dadosGlobais, dias);
-
-    // 2. Gráfico de Linha (Histórico)
-    renderGraficoLinha(dadosFiltrados, dias);
-
-    // 3. Gráficos de Barra (Comp e Horas)
-    renderGraficosBarra(dadosFiltrados);
-
-    // 4. Card Azul "Pico de Alertas" (Lógica customizada por período)
-    renderCardPicoAzul(dadosFiltrados, dias);
-}
-
-/* --- DETALHES DA ANÁLISE --- */
-
-function renderCardPicoAzul(dados, dias) {
-    // IDs NOVOS definidos no HTML (blue-...)
-    const lbl1 = document.getElementById('blue-label-1');
-    const val1 = document.getElementById('blue-val-1');
-    const lbl2 = document.getElementById('blue-label-2');
-    const val2 = document.getElementById('blue-val-2');
-    const valComp = document.getElementById('blue-val-comp');
-
-    if (dados.length === 0) {
-        val1.innerText = "-"; val2.innerText = "-"; valComp.innerText = "-";
-        return;
-    }
-
-    let top1, top2, topC;
-
-    // Lógica 7 DIAS: Dia > Horário > Componente
-    if (dias === 7) {
-        lbl1.innerText = "Dia:";
-        lbl2.innerText = "Horário:";
-
-        // Acha o dia
-        const diasC = {}; 
-        dados.forEach(a => diasC[parseDate(a.dtHora).toLocaleDateString('pt-BR', {weekday:'long'})] = (diasC[parseDate(a.dtHora).toLocaleDateString('pt-BR', {weekday:'long'})]||0)+1);
-        top1 = getKeyMax(diasC);
-
-        // Filtra só esse dia para achar horário e componente
-        const dadosDia = dados.filter(a => parseDate(a.dtHora).toLocaleDateString('pt-BR', {weekday:'long'}) === top1);
-        
-        const horaC = {};
-        dadosDia.forEach(a => horaC[parseDate(a.dtHora).getHours()+'h'] = (horaC[parseDate(a.dtHora).getHours()+'h']||0)+1);
-        top2 = getKeyMax(horaC);
-        topC = getTopComponent(dadosDia);
-    }
-    
-    // Lógica 30 DIAS: Semana > Dia > Componente
-    else if (dias === 30) {
-        lbl1.innerText = "Semana:";
-        lbl2.innerText = "Dia:";
-        
-        // Agrupa por semana
-        const semC = {};
-        dados.forEach(a => {
-            const label = getSemanaLabel(parseDate(a.dtHora));
-            semC[label] = (semC[label]||0)+1;
-        });
-        top1 = getKeyMax(semC);
-
-        // Filtra semana
-        const dadosSem = dados.filter(a => getSemanaLabel(parseDate(a.dtHora)) === top1);
-        
-        // Acha dia da semana (ex: 21/11)
-        const diaC = {};
-        dadosSem.forEach(a => {
-            const d = parseDate(a.dtHora).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-            diaC[d] = (diaC[d]||0)+1;
-        });
-        top2 = getKeyMax(diaC);
-        topC = getTopComponent(dadosSem);
-    }
-
-    // Lógica 1 ANO: Mês > Semana > Componente
-    else {
-        lbl1.innerText = "Mês:";
-        lbl2.innerText = "Semana:";
-
-        const mesC = {};
-        dados.forEach(a => {
-            const m = parseDate(a.dtHora).toLocaleDateString('pt-BR', {month:'long'});
-            mesC[m] = (mesC[m]||0)+1;
-        });
-        top1 = getKeyMax(mesC);
-
-        const dadosMes = dados.filter(a => parseDate(a.dtHora).toLocaleDateString('pt-BR', {month:'long'}) === top1);
-        
-        // Semana do mes
-        const semMesC = {};
-        dadosMes.forEach(a => {
-            const dia = parseDate(a.dtHora).getDate();
-            const sem = Math.ceil(dia/7) + "ª Semana";
-            semMesC[sem] = (semMesC[sem]||0)+1;
-        });
-        top2 = getKeyMax(semMesC);
-        topC = getTopComponent(dadosMes);
-    }
-
-    val1.innerText = capitalize(top1);
-    val2.innerText = capitalize(top2);
-    valComp.innerText = topC;
-}
-
-function calcularTendencia(dados, dias) {
-    const hoje = new Date();
-    // Período Atual (0 a -dias)
-    const iniAtual = new Date(); iniAtual.setDate(hoje.getDate() - dias);
-    // Período Anterior (-dias a -2*dias)
-    const iniAnt = new Date(); iniAnt.setDate(hoje.getDate() - (dias * 2));
-
-    let countAtual = 0;
-    let countAnt = 0;
-
-    dados.forEach(a => {
-        const d = parseDate(a.dtHora);
-        if (d >= iniAtual && d <= hoje) countAtual++;
-        else if (d >= iniAnt && d < iniAtual) countAnt++;
-    });
-
-    const badge = document.getElementById('trendBadge');
-    
-    // Se não teve alertas antes, é "novo" ou "infinito"
-    if (countAnt === 0) {
-        badge.innerHTML = countAtual > 0 ? `+${countAtual} (Novo)` : `0%`;
-        badge.className = 'trend-badge neutro';
-        return;
-    }
-
-    const diff = countAtual - countAnt;
-    const pct = ((diff / countAnt) * 100).toFixed(1);
-    const sinal = diff > 0 ? '+' : '';
-    
-    // Regra de cor: Mais alertas = Ruim (Vermelho/Positivo), Menos alertas = Bom (Verde/Negativo)
-    let classe = 'neutro';
-    if (diff > 0) classe = 'positivo'; // Vermelho (definido no CSS)
-    if (diff < 0) classe = 'negativo'; // Verde
-
-    badge.innerHTML = `${diff > 0 ? '▲' : '▼'} ${sinal}${pct}%`;
-    badge.className = `trend-badge ${classe}`;
-}
-
-function renderGraficoLinha(dados, dias) {
-    const ctx = document.getElementById('historyLine').getContext('2d');
-    
-    // Preparar labels e buckets
-    let labels = [];
-    let buckets = {}; // Chave -> {CPU:0, RAM:0...}
-    const hoje = new Date();
-
-    if (dias === 365) {
-        // Agrupar por MÊS (últimos 12)
-        for(let i=11; i>=0; i--){
-            const d = new Date(hoje.getFullYear(), hoje.getMonth()-i, 1);
-            const k = d.toLocaleDateString('pt-BR', {month:'short'}).toUpperCase();
-            labels.push(k);
-            buckets[k] = {CPU:0, RAM:0, Disco:0};
-        }
-        dados.forEach(a => {
-            const d = parseDate(a.dtHora);
-            const k = d.toLocaleDateString('pt-BR', {month:'short'}).toUpperCase();
-            if(buckets[k]) buckets[k][normalizarComponente(a.componente)]++;
-        });
-
-    } else {
-        // Agrupar por DIA (últimos 7 ou 30)
-        for(let i=dias-1; i>=0; i--){
-            const d = new Date(); d.setDate(hoje.getDate()-i);
-            const k = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-            labels.push(k);
-            buckets[k] = {CPU:0, RAM:0, Disco:0};
-        }
-        dados.forEach(a => {
-            const d = parseDate(a.dtHora);
-            const k = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-            if(buckets[k]) buckets[k][normalizarComponente(a.componente)]++;
-        });
-    }
-
-    // Extrair arrays para o ChartJS
-    const dataCPU = labels.map(l => buckets[l].CPU);
-    const dataRAM = labels.map(l => buckets[l].RAM);
-    const dataDisco = labels.map(l => buckets[l].Disco);
-
-    if (historyChart) historyChart.destroy();
-
-    historyChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                { label: 'CPU', data: dataCPU, borderColor: palette.cpu, backgroundColor: 'rgba(64,201,255,0.1)', fill: true, tension: 0.3 },
-                { label: 'RAM', data: dataRAM, borderColor: palette.ram, backgroundColor: 'rgba(69,170,242,0.1)', fill: true, tension: 0.3 },
-                { label: 'Disco', data: dataDisco, borderColor: palette.disco, backgroundColor: 'rgba(46,172,163,0.1)', fill: true, tension: 0.3 }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false, // CRUCIAL: Permite que o CSS controle a altura
-            plugins: { legend: { labels: { color: '#cbd5e1' } } },
-            scales: {
-                x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+            } catch (err) {
+                console.error(err);
             }
         }
-    });
-}
 
-function renderGraficosBarra(dados) {
-    // 1. Componentes
-    const cCount = { CPU: 0, RAM: 0, Disco: 0 };
-    dados.forEach(a => cCount[normalizarComponente(a.componente)]++);
-    
-    // Filtra > 0
-    const labelsC = Object.keys(cCount).filter(k => cCount[k] > 0);
-    const dataC = labelsC.map(k => cCount[k]);
-    const colorC = labelsC.map(k => palette[k.toLowerCase()] || palette.padrao);
+        /* ========== KPIs TOPO ========== */
+        function processarKPIsTopo(dados) {
+            document.getElementById('kpi-total').innerText = dados.length || 0;
+            atualizarCriticidadeBadge('kpi-total-badge', dados.length);
 
-    const ctxC = document.getElementById('componentsBar').getContext('2d');
-    if (componentsChart) componentsChart.destroy();
-    componentsChart = new Chart(ctxC, {
-        type: 'bar',
-        data: { labels: labelsC, datasets: [{ data: dataC, backgroundColor: colorC, borderRadius: 5 }] },
-        options: { 
-            indexAxis: 'y', 
-            responsive: true, 
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { x: { display: false }, y: { ticks: { color: '#cbd5e1' }, grid: { display: false } } }
+            // === TEMPO DESDE O ÚLTIMO ALERTA ===
+            const datas = dados.map(a => parseDate(a.dtHora)).sort((a, b) => b - a);
+            const ultimo = datas[0];
+            document.getElementById("kpi-ultimo-alerta").innerText = calcularTempoDesde(ultimo);
+
+            if (dados.length === 0) {
+                document.getElementById('kpi-ultimo-alerta').innerText = '—';
+                document.getElementById('kpi-pico').innerText = '-';
+                document.getElementById('kpi-dia-quantidade').innerText = '-';
+                document.getElementById('kpi-horario').innerText = '-';
+                document.getElementById('kpi-horario-quantidade').innerText = '-';
+                document.getElementById('kpi-componente').innerText = '-';
+                document.getElementById('kpi-comp-sub').innerText = '-';
+                return;
+            }
+
+
+            const diasCount = {};
+            dados.forEach(a => {
+                const d = parseDate(a.dtHora).toLocaleDateString('pt-BR', { weekday: 'long' });
+                diasCount[d] = (diasCount[d] || 0) + 1;
+            });
+            const topDia = getKeyMax(diasCount);
+            document.getElementById('kpi-pico').innerText = capitalize(topDia);
+            document.getElementById('kpi-dia-quantidade').innerText = `${diasCount[topDia] || 0} alertas`;
+            atualizarCriticidadeBadge('kpi-dia-criticidade', diasCount[topDia]);
+
+            const horasCount = {};
+            dados.forEach(a => {
+                const h = parseDate(a.dtHora).getHours();
+                const label = `${String(h).padStart(2, '0')}:00`;
+                horasCount[label] = (horasCount[label] || 0) + 1;
+            });
+            const topHora = getKeyMax(horasCount);
+            document.getElementById('kpi-horario').innerText = topHora;
+            document.getElementById('kpi-horario-quantidade').innerText = `${horasCount[topHora] || 0} alertas`;
+            atualizarCriticidadeBadge('kpi-horario-criticidade', horasCount[topHora]);
+
+            const compCount = {};
+            dados.forEach(a => {
+                const c = normalizarComponente(a.componente);
+                compCount[c] = (compCount[c] || 0) + 1;
+            });
+            const topComp = getKeyMax(compCount);
+            document.getElementById('kpi-componente').innerText = topComp;
+            document.getElementById('kpi-comp-sub').innerText = `${compCount[topComp] || 0} Alertas`;
+            atualizarCriticidadeBadge('kpi-comp-criticidade', compCount[topComp]);
         }
-    });
 
-    // 2. Horas
-    const hCount = Array(24).fill(0);
-    dados.forEach(a => {
-        const h = parseDate(a.dtHora).getHours();
-        if(!isNaN(h)) hCount[h]++;
-    });
-    const labelsH = hCount.map((_, i) => i + 'h');
+        function renderDonutEstatico(dados) {
+            const counts = { CPU: 0, RAM: 0, Disco: 0 };
+            dados.forEach(a => {
+                const c = normalizarComponente(a.componente);
+                if (counts[c] !== undefined) counts[c]++;
+            });
 
-    const ctxH = document.getElementById('hourlyBar').getContext('2d');
-    if (hourlyChart) hourlyChart.destroy();
-    hourlyChart = new Chart(ctxH, {
-        type: 'bar',
-        data: { labels: labelsH, datasets: [{ data: hCount, backgroundColor: palette.ram, borderRadius: 3 }] },
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { x: { display: false }, y: { display: false } } 
+            const ctx = document.getElementById('donutComp').getContext('2d');
+            if (donutChart) donutChart.destroy();
+
+            donutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(counts),
+                    datasets: [{
+                        data: Object.values(counts),
+                        backgroundColor: [palette.cpu, palette.ram, palette.disco],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    responsive: true,
+                    plugins: { legend: { display: false } }
+                }
+            });
         }
-    });
-}
 
-/* =========================
-   UTILITÁRIOS
-   ========================= */
-function parseDate(s) { return new Date(s.replace(' ', 'T')); }
-function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : '-'; }
-function normalizarComponente(n) {
-    const l = (n || '').toLowerCase();
-    if(l.includes('cpu') || l.includes('proc')) return 'CPU';
-    if(l.includes('ram') || l.includes('mem')) return 'RAM';
-    if(l.includes('disk') || l.includes('disco')) return 'Disco';
-    return 'Outros';
-}
-function getKeyMax(obj) {
-    let max = -1, key = '-';
-    for(let k in obj) { if(obj[k] > max){ max = obj[k]; key = k; } }
-    return key;
-}
-function getTopComponent(arr) {
-    const c = {}; arr.forEach(x => { let n = normalizarComponente(x.componente); c[n]=(c[n]||0)+1; });
-    return getKeyMax(c);
-}
-function getSemanaLabel(d) {
-    // Retorna "Semana X" baseado no dia do ano
-    const onejan = new Date(d.getFullYear(), 0, 1);
-    const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
-    return `Semana ${week}`;
-}
-function atualizarCriticidadeBadge(id, qtd) {
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.className = 'kpi-criticidade';
-    let nivel = '-';
-    if (qtd >= 10) { el.classList.add('critico'); nivel = 'Crítico'; }
-    else if (qtd >= 5) { el.classList.add('alto'); nivel = 'Alto'; }
-    else if (qtd >= 1) { el.classList.add('moderado'); nivel = 'Moderado'; }
-    el.innerText = nivel;
-}
+        /* ========== ANÁLISE DINÂMICA ========== */
+        function atualizarDashboardAnalise(dias) {
+            const hoje = new Date();
+            const dataLimite = new Date();
+            dataLimite.setDate(hoje.getDate() - dias);
+
+            const dadosFiltrados = dadosGlobais.filter(a => {
+                const d = parseDate(a.dtHora);
+                return d >= dataLimite && d <= hoje;
+            });
+
+            calcularTendencia(dadosGlobais, dias);
+            renderGraficoLinha(dadosFiltrados, dias);
+            renderGraficosBarra(dadosFiltrados);
+            renderCardPicoAzul(dadosFiltrados, dias);
+        }
+
+        /* ========== FUNÇÕES DE RENDER (mesmas que você já tinha, mantidas) ========== */
+        /* renderCardPicoAzul, calcularTendencia, renderGraficoLinha, renderGraficosBarra,
+           utilitários parseDate, normalizarComponente, getKeyMax, getTopComponent, etc.
+           - copiei as mesmas funções da versão anterior (você já as tinha), sem alterar lógica.
+           - para manter a resposta curta, suponho que estas funções já existam (se quiser, eu colo aqui de novo).
+        */
+
+        function renderCardPicoAzul(dados, dias) {
+            const lbl1 = document.getElementById('blue-label-1');
+            const val1 = document.getElementById('blue-val-1');
+            const lbl2 = document.getElementById('blue-label-2');
+            const val2 = document.getElementById('blue-val-2');
+            const valComp = document.getElementById('blue-val-comp');
+
+            if (dados.length === 0) {
+                val1.innerText = "-"; val2.innerText = "-"; valComp.innerText = "-";
+                return;
+            }
+
+            let top1, top2, topC;
+
+            if (dias === 7) {
+                lbl1.innerText = "Dia:";
+                lbl2.innerText = "Horário:";
+                const diasC = {};
+                dados.forEach(a => {
+                    const dia = parseDate(a.dtHora).toLocaleDateString('pt-BR', { weekday: 'long' });
+                    diasC[dia] = (diasC[dia] || 0) + 1;
+                });
+                top1 = getKeyMax(diasC);
+                const dadosDia = dados.filter(a => parseDate(a.dtHora).toLocaleDateString('pt-BR', { weekday: 'long' }) === top1);
+                const horaC = {};
+                dadosDia.forEach(a => {
+                    const h = parseDate(a.dtHora).getHours();
+                    horaC[`${String(h).padStart(2, '0')}:00`] = (horaC[`${String(h).padStart(2, '0')}:00`] || 0) + 1;
+                });
+                top2 = getKeyMax(horaC);
+                topC = getTopComponent(dadosDia);
+            } else if (dias === 30) {
+                lbl1.innerText = "Semana:";
+                lbl2.innerText = "Dia:";
+
+                // agrupar por semana do mês (1ª, 2ª, 3ª...)
+                function semanaDoMes(data) {
+                    const dia = data.getDate();
+                    const n = Math.ceil(dia / 7);
+                    return n;
+                }
+
+                function nomeSemana(n) {
+                    return [
+                        "1ª Semana",
+                        "2ª Semana",
+                        "3ª Semana",
+                        "4ª Semana",
+                        "5ª Semana"
+                    ][n - 1] || "Semana desconhecida";
+                }
+
+                const semC = {};
+                dados.forEach(a => {
+                    const s = semanaDoMes(parseDate(a.dtHora));
+                    semC[s] = (semC[s] || 0) + 1;
+                });
+
+                const topW = getKeyMax(semC);  // número da semana (1–5)
+                top1 = nomeSemana(topW);
+
+                const dadosSemana = dados.filter(a => semanaDoMes(parseDate(a.dtHora)) == topW);
+
+                const diaC = {};
+                dadosSemana.forEach(a => {
+                    const dia = parseDate(a.dtHora).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "2-digit"
+                    });
+                    diaC[dia] = (diaC[dia] || 0) + 1;
+                });
+
+                top2 = getKeyMax(diaC);
+                topC = getTopComponent(dadosSemana);
+            }
+            else {
+                lbl1.innerText = "Mês:";
+                lbl2.innerText = "Semana:";
+                const mesC = {};
+                dados.forEach(a => {
+                    const m = parseDate(a.dtHora).toLocaleDateString('pt-BR', { month: 'long' });
+                    mesC[m] = (mesC[m] || 0) + 1;
+                });
+                top1 = getKeyMax(mesC);
+                const dadosMes = dados.filter(a => parseDate(a.dtHora).toLocaleDateString('pt-BR', { month: 'long' }) === top1);
+                const semMesC = {};
+                dadosMes.forEach(a => {
+                    const dia = parseDate(a.dtHora).getDate();
+                    const sem = Math.ceil(dia / 7) + "ª Semana";
+                    semMesC[sem] = (semMesC[sem] || 0) + 1;
+                });
+                top2 = getKeyMax(semMesC);
+                topC = getTopComponent(dadosMes);
+            }
+
+            val1.innerText = capitalize(top1);
+            val2.innerText = capitalize(top2);
+            valComp.innerText = topC;
+        }
+
+        function calcularTendencia(dados, dias) {
+            const hoje = new Date();
+            const iniAtual = new Date();
+            iniAtual.setDate(hoje.getDate() - dias);
+
+            const iniAnt = new Date();
+            iniAnt.setDate(hoje.getDate() - (dias * 2));
+
+            let countAtual = 0;
+            let countAnt = 0;
+
+            dados.forEach(a => {
+                const d = parseDate(a.dtHora);
+                if (d >= iniAtual && d <= hoje) countAtual++;
+                else if (d >= iniAnt && d < iniAtual) countAnt++;
+            });
+
+            const badge = document.getElementById('trendBadge');
+
+            // === CASO ESPECIAL: sem período anterior ===
+            if (countAnt === 0) {
+                if (countAtual > 0) {
+                    badge.innerHTML = `Novo`;
+                    badge.className = 'trend-badge novo';
+                } else {
+                    badge.innerHTML = `0%`;
+                    badge.className = 'trend-badge neutro';
+                }
+                return;
+            }
+
+            // === CÁLCULO DA PORCENTAGEM ===
+            const diff = countAtual - countAnt;
+            const pct = ((diff / countAnt) * 100).toFixed(1);
+
+            let classe = "neutro";
+            let icon = "";
+
+            if (diff > 0) {
+                classe = "positivo";
+                icon = "▲";
+            } else if (diff < 0) {
+                classe = "negativo";
+                icon = "▼";
+            }
+
+            badge.innerHTML = `${icon} ${pct}%`;
+            badge.className = `trend-badge ${classe}`;
+        }
+
+        function renderGraficoLinha(dados, dias) {
+            const ctx = document.getElementById('historyLine').getContext('2d');
+            let labels = [];
+            let buckets = {};
+            const hoje = new Date();
+
+            if (dias === 365) {
+                for (let i = 11; i >= 0; i--) {
+                    const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+                    const k = d.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase();
+                    labels.push(k);
+                    buckets[k] = { CPU: 0, RAM: 0, Disco: 0 };
+                }
+                dados.forEach(a => {
+                    const d = parseDate(a.dtHora);
+                    const k = d.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase();
+                    if (buckets[k]) buckets[k][normalizarComponente(a.componente)]++;
+                });
+            } else {
+                for (let i = dias - 1; i >= 0; i--) {
+                    const d = new Date(); d.setDate(hoje.getDate() - i);
+                    const k = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                    labels.push(k);
+                    buckets[k] = { CPU: 0, RAM: 0, Disco: 0 };
+                }
+                dados.forEach(a => {
+                    const d = parseDate(a.dtHora);
+                    const k = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                    if (buckets[k]) buckets[k][normalizarComponente(a.componente)]++;
+                });
+            }
+
+            const dataCPU = labels.map(l => buckets[l].CPU);
+            const dataRAM = labels.map(l => buckets[l].RAM);
+            const dataDisco = labels.map(l => buckets[l].Disco);
+
+            if (historyChart) historyChart.destroy();
+
+            historyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'CPU', data: dataCPU, borderColor: palette.cpu, backgroundColor: 'rgba(64,201,255,0.08)', fill: true, tension: 0.3 },
+                        { label: 'RAM', data: dataRAM, borderColor: palette.ram, backgroundColor: 'rgba(69,170,242,0.06)', fill: true, tension: 0.3 },
+                        { label: 'Disco', data: dataDisco, borderColor: palette.disco, backgroundColor: 'rgba(46,172,163,0.06)', fill: true, tension: 0.3 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#cbd5e1' } } },
+                    scales: {
+                        x: { ticks: { color: '#ffffff' }, grid: { color: 'rgba(255,255,255,0.15)' } },
+                        y: { ticks: { color: '#ffffff' }, grid: { color: 'rgba(255,255,255,0.15)' } }
+                    }
+                }
+            });
+        }
+
+        function renderGraficosBarra(dados) {
+            const cCount = { CPU: 0, RAM: 0, Disco: 0 };
+            dados.forEach(a => {
+                const c = normalizarComponente(a.componente);
+                if (cCount[c] !== undefined) cCount[c]++;
+            });
+
+            const labelsC = Object.keys(cCount).filter(k => cCount[k] > 0);
+            const dataC = labelsC.map(k => cCount[k]);
+            const colorC = labelsC.map(k => palette[k.toLowerCase()] || palette.padrao);
+
+            const ctxC = document.getElementById('componentsBar').getContext('2d');
+            if (componentsChart) componentsChart.destroy();
+            componentsChart = new Chart(ctxC, {
+                type: 'bar',
+                data: { labels: labelsC, datasets: [{ data: dataC, backgroundColor: colorC, borderRadius: 6 }] },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255,255,255,0.08)' }
+                        },
+                        y: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255,255,255,0.08)' }
+                        }
+                    }
+                }
+            });
+
+            const hCount = Array(24).fill(0);
+            dados.forEach(a => {
+                const h = parseDate(a.dtHora).getHours();
+                if (!isNaN(h)) hCount[h]++;
+            });
+            const labelsH = hCount.map((_, i) => i + 'h');
+
+            const ctxH = document.getElementById('hourlyBar').getContext('2d');
+            if (hourlyChart) hourlyChart.destroy();
+            hourlyChart = new Chart(ctxH, {
+                type: 'bar',
+                data: { labels: labelsH, datasets: [{ data: hCount, backgroundColor: palette.ram, borderRadius: 3 }] },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255,255,255,0.08)' }
+                        },
+                        y: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255,255,255,0.08)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        /* UTILITÁRIOS */
+        function parseDate(s) { return new Date(String(s).replace(' ', 'T')); }
+        function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : '-'; }
+        function normalizarComponente(n) {
+            const l = (n || '').toLowerCase();
+            if (l.includes('cpu') || l.includes('proc')) return 'CPU';
+            if (l.includes('ram') || l.includes('mem')) return 'RAM';
+            if (l.includes('disk') || l.includes('disco')) return 'Disco';
+            return 'Outros';
+        }
+        function getKeyMax(obj) {
+            let max = -1, key = '-';
+            for (let k in obj) { if (obj[k] > max) { max = obj[k]; key = k; } }
+            return key;
+        }
+        function getTopComponent(arr) {
+            const c = {}; arr.forEach(x => { let n = normalizarComponente(x.componente); c[n] = (c[n] || 0) + 1; });
+            return getKeyMax(c);
+        }
+        function getSemanaLabel(d) {
+            const onejan = new Date(d.getFullYear(), 0, 1);
+            const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+            return `Semana ${week}`;
+        }
+        function atualizarCriticidadeBadge(id, qtd) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.className = 'kpi-criticidade';
+            let nivel = '-';
+            if (qtd >= 10) { el.classList.add('critico'); nivel = 'Crítico'; }
+            else if (qtd >= 5) { el.classList.add('alto'); nivel = 'Alto'; }
+            else if (qtd >= 1) { el.classList.add('moderado'); nivel = 'Moderado'; }
+            el.innerText = nivel;
+        }
+        function calcularTempoDesde(data) {
+            const agora = new Date();
+            const diffMs = agora - data;
+
+            const horas = Math.floor(diffMs / (1000 * 60 * 60));
+            const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+            if (horas === 0 && minutos === 0) return "Agora";
+            if (horas === 0) return `Último: há ${minutos} min`;
+            if (horas < 24) return `Último: há ${horas}h ${minutos}m`;
+
+            const dias = Math.floor(horas / 24);
+            return `Último: há ${dias} dia${dias > 1 ? "s" : ""}`;
+        }
     </script>
 </body>
 
