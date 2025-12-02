@@ -110,11 +110,85 @@
 
                 const todosAlertas = await resposta.json();
 
-                // 2. Processamento dos dados no Front-end (Agrupamento por MAC Address)
-                const ranking = processarRanking(todosAlertas);
+                filtrarAlertasPorEmpresa(todosAlertas).then(alertasFiltrados => {
+                    const ranking = processarRanking(alertasFiltrados);
+                    renderizarLista(ranking, container);
+                });
 
-                // 3. Renderiza a lista
-                renderizarLista(ranking, container);
+                async function filtrarAlertasPorEmpresa(alertas) {
+                    const idEmpresaUsuario = sessionStorage.getItem("ID_EMPRESA_USUARIO");
+                    if (!idEmpresaUsuario) {
+                        console.warn("ID_EMPRESA_USUARIO não encontrado na sessão.");
+                        return [];
+                    }
+
+                    // 1) Extrai macs únicos do JSON
+                    const macsUnicos = Array.from(new Set(alertas.map(a => String(a.macAdress).trim())));
+
+                    // 2) Para armazenar info por mac (ou erro)
+                    const mapaMacParaEmpresa = new Map();
+                    const macsComErro = [];
+
+                    // 3) Faz as requisições em paralelo (map -> Promise)
+                    const promises = macsUnicos.map(async (mac) => {
+                        try {
+                            const url = `/mainframes/empresaPorMac/${encodeURIComponent(mac)}`;
+                            const resp = await fetch(url, { method: 'GET' });
+
+                            if (!resp.ok) {
+                                // Registra o erro com status para investigar depois
+                                console.warn(`Resposta não OK para MAC ${mac}: ${resp.status}`);
+                                macsComErro.push({ mac, status: resp.status });
+                                mapaMacParaEmpresa.set(mac, null);
+                                return;
+                            }
+
+                            // tenta parsear JSON com proteção contra body inválido
+                            let json;
+                            try {
+                                json = await resp.json();
+                            } catch (e) {
+                                console.warn(`Resposta não JSON para MAC ${mac}`, e);
+                                macsComErro.push({ mac, status: resp.status, note: 'non-json' });
+                                mapaMacParaEmpresa.set(mac, null);
+                                return;
+                            }
+
+                            // espera que o backend retorne idEmpresa (ou nome) — adaptável
+                            if (json && (json.idEmpresa !== undefined || json.fkEmpresa !== undefined)) {
+                                const idEmpresaRetornado = json.idEmpresa ?? json.fkEmpresa;
+                                mapaMacParaEmpresa.set(mac, String(idEmpresaRetornado));
+                            } else {
+                                // backend retornou algo inesperado
+                                console.warn(`Formato inesperado retorno empresa por mac para ${mac}:`, json);
+                                mapaMacParaEmpresa.set(mac, null);
+                                macsComErro.push({ mac, status: resp.status, body: json });
+                            }
+                        } catch (err) {
+                            console.error(`Erro ao validar MAC ${mac}:`, err);
+                            macsComErro.push({ mac, error: err.message || err });
+                            mapaMacParaEmpresa.set(mac, null);
+                        }
+                    });
+
+                    // 4) Aguardar todas
+                    await Promise.all(promises);
+
+                    // 5) Monta lista filtrada: só alertas cujo mac pertence à mesma empresa do usuário
+                    const filtrados = alertas.filter(a => {
+                        const mac = String(a.macAdress).trim();
+                        const idEmpresaDoMac = mapaMacParaEmpresa.get(mac);
+                        return idEmpresaDoMac !== undefined && idEmpresaDoMac !== null && String(idEmpresaDoMac) === String(idEmpresaUsuario);
+                    });
+
+                    // 6) Log de macs problemáticos pra você investigar no backend
+                    if (macsComErro.length > 0) {
+                        console.warn('Macs com erro/sem resposta válida (investigar backend):', macsComErro.slice(0, 10));
+                    }
+
+                    return filtrados;
+                }
+
 
             } catch (error) {
                 console.error("❌ Erro ao carregar dados do S3:", error);
@@ -145,7 +219,7 @@
         }
 
         function renderizarLista(lista, container) {
-            
+
             if (lista.length === 0) {
                 container.innerHTML = "<li>Nenhum alerta encontrado no arquivo.</li>";
                 return;
@@ -168,23 +242,23 @@
 
             // Adiciona o evento de clique para ir aos detalhes
             adicionarListenersDeClique(container);
-            
+
         }
 
         function adicionarListenersDeClique(container) {
-    // listener do botão
-    container.querySelectorAll('.btn-detalhes').forEach(botao => {
-        botao.addEventListener('click', (e) => {
-            e.stopPropagation(); // impede que clique no LI inteiro dispare algo
+            // listener do botão
+            container.querySelectorAll('.btn-detalhes').forEach(botao => {
+                botao.addEventListener('click', (e) => {
+                    e.stopPropagation(); // impede que clique no LI inteiro dispare algo
 
-            const macAdress = botao.getAttribute('data-id');
+                    const macAdress = botao.getAttribute('data-id');
 
-            sessionStorage.setItem(ID_SESSAO_MAINFRAME, macAdress);
-            window.location.href = 'dashMainframesGerente.html';
-        });
-    });
-}
-        
+                    sessionStorage.setItem(ID_SESSAO_MAINFRAME, macAdress);
+                    window.location.href = 'dashMainframesGerente.html';
+                });
+            });
+        }
+
 
         // Funções antigas de KPI e status (carregarKpisEStatus) não são mais necessárias e foram removidas.
     </script>
