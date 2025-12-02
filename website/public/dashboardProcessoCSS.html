@@ -18,11 +18,13 @@
         let selecionadoindex = 0;
         //tipo da metrica se ela é cpu ou ram
         let tipometrica="uso_cpu_total_perc"
+        // let macAdress=localStorage.getItem('mainframe_macadress')//storage salvo na tela detalhes mainframe
+        let macAdress=166250251803552
 
         async function carregar() {
-            try {
-                
-                const res = await fetch('dashboard/dados');//
+            try { 
+                const res = await fetch(`/csv/dadoscsv/dashboardprocesso.csv/${macAdress}`)
+                console.log(res )
                 // const res = await fetch('http://localhost:8080/csv/processo/166250251803552');//
                 if (!res.ok) throw new Error('Erro ao buscar dados');
                 dadosfiltrados = await res.json();
