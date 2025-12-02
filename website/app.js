@@ -14,7 +14,7 @@ const PORTA_APP = process.env.APP_PORT || 8000;
 const HOST_APP = process.env.APP_HOST || "localhost";
 
 const app = express();
-
+const s3Router = require('./src/routes/s3Route');
 const indexRouter = require("./src/routes/index");
 const usuarioRouter = require("./src/routes/usuarios");
 const empresasRouter = require("./src/routes/empresas");
@@ -26,8 +26,10 @@ const empresaDetalhadaRouter = require("./src/routes/empresaDetalhada");
 const csvRouter = require("./src/routes/csv");
 const dashboardRouter = require("./src/routes/dashboard");
 
-const s3Router = require('./src/routes/s3Route');
-app.use('/', s3Router);
+
+// route do .json
+const s3Route = require('./src/routes/s3Route');
+app.use('/s3Route', s3Route);
 
 
 app.use(express.json());
@@ -45,6 +47,8 @@ app.use("/funcionarios", funcionariosRouter);
 app.use("/empresa", empresaDetalhadaRouter);
 app.use("/csv", csvRouter);
 app.use("/dashboard", dashboardRouter);
+app.use('/', s3Router);
+
 
 app.listen(PORTA_APP, () => {
   console.log(`

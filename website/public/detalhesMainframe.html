@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="./css/detalhesMainframe.css">
     <link rel="stylesheet" href="./css/componentes/kpis.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+
     <script src="./js/sessao.js"></script>
 </head>
 
@@ -47,11 +49,13 @@
 
             <div class="graficos">
                 <div class="grafico-box">
-                    <h3 class="section-title">Métricas gerais do mainframe  <span id="mainfrane-title"></span></h3>
+                    <h3 class="section-title">Métricas gerais do mainframe <span id="mainfrane-title"></span></h3>
 
                     <div class="kpis-linha">
 
                         <div class="kpi-card kpi-cpu">
+                            <div id="bolinha-cpu" class=""></div>
+                            <div id="bolinha-cpu"></div>
                             <div class="kpi-icone"><i class="ri-cpu-line"></i></div>
                             <div class="kpi-info">
                                 <div class="subtitleKpi">
@@ -64,6 +68,9 @@
                         </div>
 
                         <div class="kpi-card kpi-ram">
+                      
+                            <div id="bolinha-ram" class=""></div>
+
                             <div class="kpi-icone"><i class="ri-database-2-line"></i></div>
                             <div class="kpi-info">
                                 <div class="subtitleKpi">
@@ -75,6 +82,7 @@
                         </div>
 
                         <div class="kpi-card kpi-disk" onclick="window.location.href='dashkeyla.html'">
+                            <div id="bolinha-disk" class=""></div>
                             <div class="kpi-icone"><i class="ri-hard-drive-2-line"></i></div>
                             <div class="kpi-info">
                                 <div class="subtitleKpi-disk">
@@ -167,16 +175,16 @@
                             <span class="mf-card-titulo">latência read/Write disco</span>
                             <span class="mf-card-valor" id="mfLatencia"></span>
                         </div>
-                         <div class="mf-card">
+                        <div class="mf-card">
                             <span class="mf-card-titulo"> IOPS disco</span>
                             <span class="mf-card-valor" id="mfUltIops"></span>
                         </div>
-                            <div class="mf-card">
+                        <div class="mf-card">
                             <span class="extra-titulo">Throughput Disco</span>
                             <span class="extra-valor" id="kpiRedeValor"></span>
                             <span class="extra-desc" id="kpiRedeDesc"></span>
                         </div>
-                         <div class="mf-card">
+                        <div class="mf-card">
                             <span class="mf-card-titulo">Último Evento de Alerta</span>
                             <span class="mf-card-valor" id="mfUltIncidencia"></span>
                         </div>
@@ -209,18 +217,17 @@
             return (diferenca > 0 ? "+" : "") + diferenca + "%";
         }
 
-        function setMainframe(id){
+        function setMainframe(id) {
             sessionStorage.MAINFRAME = id
         }
 
         async function buscarJsonS3() {
             const resposta = await fetch(`/s3Route/dados/detalhesMainframe.json`);
             const data = await resposta.json();
-
+            console.log("aqui óoooo" + data)
             const empresaId = sessionStorage.ID_EMPRESA_USUARIO
 
             const empresa = data.find(item => item.empresa == empresaId);
-
             if (!empresa) {
                 console.error("Nenhum mainframe encontrado para esta empresa");
                 return;
@@ -305,6 +312,7 @@
             document.getElementById('ramAlert').className = "kpi-valor"
             document.getElementById('ramAlertN').className = "kpi-valor"
             document.getElementById('ramValue').classList.remove("txt-green", "txt-red")
+    
 
             const diskCard = document.querySelector(".kpi-card.kpi-disk");
             diskCard.classList.remove("border-red", "border-orange", "border-null");
@@ -327,58 +335,115 @@
             document.getElementById('ramValue').classList.add((mf.ram[4] - mf.ram[3] <= 0) ? "txt-green" : "txt-red")
             document.getElementById('diskValue').textContent = sinal(mf.disk[4], mf.disk[3])
             document.getElementById('diskValue').classList.add((mf.disk[4] - mf.disk[3] <= 0) ? "txt-green" : "txt-red")
+            document.getElementById('cpuAlert').className = ("kpi-valor-cpu")
+            document.getElementById('ramAlert').className = ("kpi-valor-ram")
+            document.getElementById('diskAlert').className = ("kpi-valor-disk")
+            document.querySelector(".kpi-card.kpi-cpu").classList.add("border-cpu")
+            document.querySelector(".kpi-card.kpi-ram").classList.add("border-ram")
+             document.querySelector(".kpi-card.kpi-disk").classList.add("border-disk")
 
             if (mf.cpu[4] >= metricaCpu) {
-                document.getElementById('cpuAlert').className = ("kpi-valor-alert-2");
-                document.getElementById('cpuAlertN').className = ("kpi-valor-alert-2");
-                document.querySelector(".kpi-card.kpi-cpu").classList.add("border-red");
-            } else if (mf.cpu[4] >= (metricaCpu * 0.80)) {
-                document.getElementById('cpuAlert').className = ("kpi-valor-alert-1")
+                document.getElementById("bolinha-cpu").classList.add("bolinha-red")
+                document.getElementById('cpuAlertN').className = ("kpi-valor-alert-2")
+                } else if (mf.cpu[4] >= (metricaCpu * 0.80)) {
+                document.getElementById("bolinha-cpu").classList.add("bolinha-red")
                 document.getElementById('cpuAlertN').className = ("kpi-valor-alert-1")
-                document.querySelector(".kpi-card.kpi-cpu").classList.add("border-orange")
-            }
+                }
 
-            if (mf.ram[4] >= metricaRam) {
-                document.getElementById('ramAlert').className = ("kpi-valor-alert-2")
+            if (mf.ram[1] >= metricaRam) {
+                document.getElementById("bolinha-ram").classList.add("bolinha-red")
                 document.getElementById('ramAlertN').className = ("kpi-valor-alert-2")
-                document.querySelector(".kpi-card.kpi-ram").classList.add("border-red")
+             
             } else if (mf.ram[4] >= (metricaRam * 0.80)) {
-                document.getElementById('ramAlert').className = ("kpi-valor-alert-1")
+                document.getElementById("bolinha-ram").classList.add("bolinha-orange")
                 document.getElementById('ramAlertN').className = ("kpi-valor-alert-1")
-                document.querySelector(".kpi-card.kpi-ram").classList.add("border-orange")
             }
 
             if (mf.disk[4] >= metricaDisk) {
-                document.getElementById('diskAlert').className = ("kpi-valor-alert-2");
-                document.getElementById('diskAlertN').className = ("kpi-valor-alert-2");
-                document.querySelector(".kpi-card.kpi-disk").classList.add("border-red");
+                document.getElementById("bolinha-disk").classList.add("bolinha-red")
+                document.getElementById('diskAlertN').className = ("kpi-valor-alert-2")           
             } else if (mf.disk[4] >= (metricaDisk * 0.80)) {
-                document.getElementById('diskAlert').className = ("kpi-valor-alert-1")
+                document.getElementById("bolinha-disk").classList.add("bolinha-red")
                 document.getElementById('diskAlertN').className = ("kpi-valor-alert-1")
-                document.querySelector(".kpi-card.kpi-disk").classList.add("border-orange")
             }
 
             document.getElementById(`mainF${id}`).className = "mainframe-evento clicked"
         }
 
         function initMainChart(id) {
-            const ctx = document.getElementById("mainChart").getContext("2d")
+            const ctx = document.getElementById("mainChart").getContext("2d");
             const mf = mainframesData[id];
 
-            if (mainChart) mainChart.destroy()
+            const annotationMap = ["limiteCPU", "limiteRAM", "limiteDISCO"];
+
+            const customLegendClickHandler = (e, legendItem, legend) => {
+                const chart = legend.chart;
+                const index = legendItem.datasetIndex;
+
+                // Alterna visibilidade do dataset
+                chart.setDatasetVisibility(index, !chart.isDatasetVisible(index));
+
+                // Conta quantos datasets estão visíveis
+                const visibleCount = chart.data.datasets.reduce((acc, _, i) => acc + (chart.isDatasetVisible(i) ? 1 : 0), 0);
+
+                // Primeiro desliga todas as annotations
+                Object.values(chart.options.plugins.annotation.annotations).forEach(a => a.display = false);
+
+                // Se só um dataset estiver visível, liga a annotation correspondente
+                if (visibleCount === 1) {
+                    const visibleIndex = chart.data.datasets.findIndex((_, i) => chart.isDatasetVisible(i));
+
+                    if (visibleIndex === 0) { // CPU
+                        chart.options.plugins.annotation.annotations.limiteCPU.display = true;
+                        chart.options.plugins.annotation.annotations.alertaCPU.display = true;
+                    } else if (visibleIndex === 1) { // RAM
+                        chart.options.plugins.annotation.annotations.limiteRAM.display = true;
+                        chart.options.plugins.annotation.annotations.alertaRAM.display = true;
+                    } else if (visibleIndex === 2) { // DISCO
+                        chart.options.plugins.annotation.annotations.limiteDISCO.display = true;
+                        chart.options.plugins.annotation.annotations.alertaDISCO.display = true;
+                    }
+                }
+                chart.update();
+            };
+
+            if (mainChart) mainChart.destroy();
 
             mainChart = new Chart(ctx, {
                 type: "line",
                 data: {
                     labels: mf.cpu.map((_, i) => `${i * 3}s`),
                     datasets: [
-                        { label: "CPU", data: mf.cpu, borderColor: "#ef44d2", backgroundColor: "rgba(235, 37, 225, 0.15)", fill: true },
-                        { label: "RAM", data: mf.ram, borderColor: "#46baaa", backgroundColor: "rgba(16, 185, 129, 0.25)", fill: true },
+                        { label: "CPU", data: mf.cpu, borderColor: "#ef44d2", backgroundColor: "rgba(235,37,225,0.15)", fill: true },
+                        { label: "RAM", data: mf.ram, borderColor: "#46baaa", backgroundColor: "rgba(16,185,129,0.25)", fill: true },
                         { label: "DISCO", data: mf.disk, borderColor: "#C1CF00DA", backgroundColor: "rgba(255,217,0,0.411)", fill: true }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
-            })
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 100, title: { display: true, text: "Usage (%)" } },
+                        x: { title: { display: true, text: "Time" } }
+                    },
+                    plugins: {
+                        legend: { onClick: customLegendClickHandler },
+                        annotation: {
+                            annotations: {
+                                limiteCPU: {
+                                    type: "line", yMin: metricaCpu, yMax: metricaCpu, borderColor: "red", borderWidth: 3, display: false, label: { content: "Limite CPU", enabled: true, position: "end" }
+                                },
+                                alertaCPU: { type: "line", yMin: metricaCpu * 0.8, yMax: metricaCpu * 0.8, borderColor: "orange", borderWidth: 2, display: false, label: { content: "Alerta 80% CPU", enabled: true, position: "end" } },
+                                limiteRAM: { type: "line", yMin: metricaRam, yMax: metricaRam, borderColor: "red", borderWidth: 3, display: false, label: { content: "Limite RAM", enabled: true, position: "end" } },
+                                alertaRAM: { type: "line", yMin: metricaRam * 0.8, yMax: metricaRam * 0.8, borderColor: "orange", borderWidth: 2, display: false, label: { content: "Alerta 80% RAM", enabled: true, position: "end" } },
+                                limiteDISCO: { type: "line", yMin: metricaDisk, yMax: metricaDisk, borderColor: "red", borderWidth: 3, display: false, label: { content: "Limite Disco", enabled: true, position: "end" } },
+                                alertaDISCO: { type: "line", yMin: metricaDisk * 0.8, yMax: metricaDisk * 0.8, borderColor: "orange", borderWidth: 2, display: false, label: { content: "Alerta 80% Disco", enabled: true, position: "end" } }
+                            }
+
+                        }
+                    }
+                }
+            });
         }
 
         function updateChartData() {
@@ -396,16 +461,16 @@
         function loadMainframeDetails(id) {
             currentMainframeId = id
 
-            setMainframe(id+1)
+            setMainframe(id + 1)
             updateMainKpis(id)
             updateMainframeDetails(id)
             initMainChart(id)
 
-            document.getElementById("mainfrane-title").innerText = ` ${id + 1}  ` + mainframesData[id].nome 
+            document.getElementById("mainfrane-title").innerText = ` ${id + 1}  ` + mainframesData[id].nome
         }
 
         window.onload = () => {
-            
+
             validarSessaoSynkro()
             buscarJsonS3().then(() => {
                 renderMainframesList()
