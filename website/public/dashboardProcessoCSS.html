@@ -24,8 +24,7 @@
         async function carregar() {
             try { 
                 const res = await fetch(`/csv/dadoscsv/dashboardprocesso.csv/${macAdress}`)
-                console.log(res )
-                // const res = await fetch('http://localhost:8080/csv/processo/166250251803552');//
+                // const res = await fetch('http://localhost:8080/csv/processo/166250251803552'); 
                 if (!res.ok) throw new Error('Erro ao buscar dados');
                 dadosfiltrados = await res.json();
                 //datares=filtrardados(dadoscru);
