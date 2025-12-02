@@ -1,25 +1,37 @@
-const fs = require('fs');
-const path = require('path');
+const AWS = require('aws-sdk');
 
-const JSON_FILE_PATH = path.join(__dirname, '..', 'database', 'dashboard_data.json');
+// Configure credenciais AWS (use variáveis de ambiente)
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION || 'us-east-1'
+});
 
-function buscarDadosDashboard(req, res) {
-    console.log("Buscando dados do dashboard...");
+async function buscarDadosDashboard(req, res) {
+    console.log("Buscando dados do dashboard no S3...");
     
     try {
-        const data = fs.readFileSync(JSON_FILE_PATH, 'utf8');
-        const jsonData = JSON.parse(data);
+        // parâmetros: ajuste bucket e key conforme sua estrutura
+        const params = {
+            Bucket: process.env.AWS_S3_BUCKET || 'seu-bucket-synkro',
+            Key: 'dashboard/dashboard_data.json'  // caminho no S3
+        };
         
-        console.log(`Dados encontrados: ${jsonData.length} registros.`);
+        const data = await s3.getObject(params).promise();
+        const jsonData = JSON.parse(data.Body.toString('utf-8'));
+        
+        console.log(`Dados encontrados: ${jsonData.length || Object.keys(jsonData).length} registros.`);
         res.status(200).json(jsonData);
         
     } catch (error) {
-        if (error.code === 'ENOENT') {
-            console.error(`Erro: Arquivo JSON não encontrado em ${JSON_FILE_PATH}`);
-            res.status(404).json({ erro: "Arquivo de dados do dashboard não encontrado." });
+        console.error("Erro ao buscar dados do S3:", error.message);
+        
+        if (error.code === 'NoSuchKey') {
+            res.status(404).json({ erro: "Arquivo de dados não encontrado no S3." });
+        } else if (error.code === 'NoSuchBucket') {
+            res.status(404).json({ erro: "Bucket S3 não encontrado." });
         } else {
-            console.error("Erro ao ler ou parsear o JSON:", error.message);
-            res.status(500).json({ erro: "Erro interno ao processar os dados." });
+            res.status(500).json({ erro: "Erro ao processar dados do S3.", detalhes: error.message });
         }
     }
 }
