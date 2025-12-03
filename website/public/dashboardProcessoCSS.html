@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/dashboardProcesso.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- <script src="./js/sessao.js"></script> -->
+    <script src="./js/sessao.js"></script>
     <script>
         var dadosfiltrados = []
         var dadoscru = []
@@ -18,8 +18,8 @@
         let selecionadoindex = 0;
         //tipo da metrica se ela é cpu ou ram
         let tipometrica="uso_cpu_total_perc"
-        // let macAdress=localStorage.getItem('mainframe_macadress')//storage salvo na tela detalhes mainframe
-        let macAdress=166250251803552
+        let macAdress=localStorage.getItem('macadress')//storage salvo na tela detalhes mainframe
+        // let macAdress=166250251803552
 
         async function carregar() {
             try { 
@@ -42,7 +42,7 @@
 
 
         window.addEventListener('load', () => {
-            // validarSessaoSynkro();
+            validarSessaoSynkro();
             carregar();
             document.getElementById('dataHeader').textContent = new Date().toLocaleDateString();
         });
