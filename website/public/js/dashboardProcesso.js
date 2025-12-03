@@ -8,6 +8,7 @@ parte = 12 * pagina
 
 function grafico() {
     if (meugrafico) {
+ 
         meugrafico.destroy();
         document.querySelectorAll('.botao-nav').forEach(btn => btn.classList.remove('ativo'));
         elemento = document.getElementById('btnCPU');
@@ -267,6 +268,7 @@ function grafico() {
 
                     // Pega o índice do ponto clicado
                     const index = elements[0].index;
+                    console.log(index)
                     definirMark(index)
 
                 }
@@ -646,7 +648,7 @@ function listaprocesso() {
 
 }
 //atualiza o valor azul que representa o total de cpu
-function atribuirvalor(realIndex, atributo) {
+function atribuirvalor(realIndex, atributo) { 
     let valor = dadosfiltrados[dadosfiltrados.length + realIndex][atributo]
 
     document.getElementById("graficoValor").textContent = valor + "%";
