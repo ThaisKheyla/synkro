@@ -41,7 +41,28 @@ async function lerArquivo(req, res) {
   }
 }
 
+async function listarArquivos(req, res) {
+  try {
+    const params = {
+      Bucket: process.env.S3_BUCKET,
+      Prefix: "alertas"
+    };
+
+    const data = await s3.listObjectsV2(params).promise();
+
+    const arquivos = data.Contents
+      .map(obj => obj.Key)
+      .filter(k => k.endsWith(".json"));
+
+    res.json(arquivos);
+
+  } catch (err) {
+    console.error("❌ ERRO AO LISTAR ARQUIVOS:", err);
+    res.status(500).json({ erro: err.message });
+  }
+}
+
 module.exports = {
   lerArquivo,
-  qtdAlerta: lerArquivo
+  listarArquivos
 };

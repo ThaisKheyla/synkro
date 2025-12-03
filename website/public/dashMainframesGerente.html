@@ -129,7 +129,10 @@
                         <div class="top-right-group">
                             <div class="card chart-small">
                                 <div class="chart-title">Alertas por Componente</div>
-                                <canvas id="componentsBar"></canvas>
+
+                                <div class="chart-container-wrapper">
+                                    <canvas id="componentsBar"></canvas>
+                                </div>
                             </div>
 
                             <div class="pico-card">
@@ -161,9 +164,9 @@
 
         const palette = {
             cpu: 'rgba(64,201,255,0.95)',
-            ram: 'rgba(69,170,242,0.95)',
-            disco: 'rgba(46,172,163,0.95)',
-            padrao: 'rgba(148,163,184,0.9)'
+            ram: '#A855F7',
+            disco: '#4F46E5',
+            padrao: 'rgba(64,201,255,0.95)'
         };
 
         let historyChart = null;
@@ -175,6 +178,7 @@
         window.onload = async function () {
             const macSelecionado = sessionStorage.getItem(ID_SESSAO_MAINFRAME);
             await carregarDados(macSelecionado);
+            
 
             const select = document.getElementById('periodSelect');
             select.addEventListener('change', (e) => {
@@ -187,31 +191,37 @@
 
         async function carregarDados(mac) {
             try {
-                const res = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`);
-                if (!res.ok) throw new Error('Erro ao buscar JSON');
-                const raw = await res.json();
+                // 1) Buscar lista de arquivos
+                const resLista = await fetch("/lista");
+                if (!resLista.ok) throw new Error("Erro ao buscar lista de arquivos");
 
-                dadosGlobais = mac ? raw.filter(a => String(a.macAdress) === String(mac)) : raw;
+                const arquivos = await resLista.json();
 
-                if (dadosGlobais.length > 0) {
-                    // Pega o nome do primeiro registro encontrado no JSON
-                    const nome = dadosGlobais[0].identificacaoMainframe;
-                    document.getElementById('nome-mainframe').innerText = nome;
-                } else {
-                    document.getElementById('nome-mainframe').innerText = "Não encontrado";
-                }
-
-                if (dadosGlobais.length === 0) {
-                    console.warn("Sem dados.");
-                    // mesmo sem dados, inicializar gráficos vazios
-                    processarKPIsTopo([]);
-                    renderDonutEstatico([]);
+                // Nenhum arquivo encontrado
+                if (arquivos.length === 0) {
+                    dadosGlobais = [];
                     atualizarDashboardAnalise(7);
                     return;
                 }
 
+                let dadosCombinados = [];
+
+                // 2) Buscar cada arquivo e juntar
+                for (const arq of arquivos) {
+                    const res = await fetch("/dados/" + arq);
+                    if (!res.ok) continue; // ignora erros individuais
+
+                    const json = await res.json();
+                    dadosCombinados.push(...json);
+                }
+
+                // 3) Filtrar por MAC, se necessário
+                dadosGlobais = mac
+                    ? dadosCombinados.filter(a => String(a.macAdress) === String(mac))
+                    : dadosCombinados;
+
+                // 4) Atualizar dashboard
                 processarKPIsTopo(dadosGlobais);
-                renderDonutEstatico(dadosGlobais);
                 atualizarDashboardAnalise(7);
 
             } catch (err) {
@@ -580,7 +590,7 @@
             if (hourlyChart) hourlyChart.destroy();
             hourlyChart = new Chart(ctxH, {
                 type: 'bar',
-                data: { labels: labelsH, datasets: [{ data: hCount, backgroundColor: palette.ram, borderRadius: 3 }] },
+                data: { labels: labelsH, datasets: [{ data: hCount, backgroundColor: palette.padrao, borderRadius: 3 }] },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
