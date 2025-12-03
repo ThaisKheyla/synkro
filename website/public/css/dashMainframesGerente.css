@@ -51,7 +51,7 @@ body {
     height: 96%;
     border-radius: 16px;
     overflow: hidden;
-    background-color: var(--azul-medio);
+    background-color: var();
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -507,8 +507,8 @@ body {
 /* ================================ */
 
 .history-card {
-    height: 380px;
-    max-height: 380px;
+    height: 460px;
+    max-height: 460px;
     overflow: hidden;
     padding: 12px;
     display: flex;
@@ -549,8 +549,8 @@ canvas {
 /* ================================ */
 
 .chart-small {
-    height: 140px;
-    min-height: 140px;
+    height: 214px;
+    min-height: 214px;
     overflow: hidden;
     padding: 10px;
     display: flex;
@@ -558,8 +558,8 @@ canvas {
 }
 
 .chart-small.lower {
-    height: 209px;
-    min-height: 209px;
+    height: 214px;
+    min-height: 214px;
 }
 
 #hourlyBar {
