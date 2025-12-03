@@ -197,7 +197,7 @@ ORDER BY FIELD(g.descricao, 'Emergência', 'Muito Urgente', 'Urgente');
 
 function carregarSelectMainframe(fkEmpresa) {
   var instrucaoSql = `
-    SELECT DISTINCT mf.id
+    SELECT mf.macAdress, mf.id
     FROM mainframe mf
     JOIN setor s ON mf.fkSetor = s.id
     WHERE fkEmpresa = ${fkEmpresa}

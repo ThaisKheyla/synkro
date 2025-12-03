@@ -1,0 +1,49 @@
+Configurar as credencias AWS:
+
+[bash]
+	Entrar no diretório do usuário .aws -> C:\Users\Guilherme\.aws>
+	Abrir bloco de notas credentials usando o comando no bash -> notepad credentials
+	Colar as credenciais da AWS incluindo o [default]
+
+-------------------------- PYTHON --------------------------
+
+Configurar nome dos buckets raw nos arquivos "script-captura-dados-aws.py" e "script-captura-processo-aws.py"
+Baixar biblioteca boto3 usando comando no terminal -> pip install boto3
+Rodar os dois arquivos em terminais diferentes -> python script-captura-dados-aws.py
+						python script-captura-processo-aws.py
+
+------------------------------------------------------------
+
+-------------------------- ETL 1 --------------------------
+
+**Rodar o script do banco de dados MySQL**
+
+Configurar dados do banco no .env
+	DB_USER=usuario
+	DB_PASSWORD=senha
+Rodar ConexaoBd para verificar se está conectado com o banco de dados corretamente
+Rodar Main
+
+------------------------------------------------------------
+
+-------------------------- ETL 2 --------------------------
+
+Configurar dados do banco no .env
+	DB_USER=usuario
+	DB_PASSWORD=senha
+Rodar ETLs Individuais
+
+------------------------------------------------------------
+
+-------------------------- SITE --------------------------
+
+Configurar dados do banco no .env
+	DB_USER='usuario'
+	DB_PASSWORD='senha'
+	DB_PORT='3306'
+Configurar nome do bucket client no .env
+Rodar ETLs Individuais
+
+------------------------------------------------------------
+
+

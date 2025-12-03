@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 var mainframesController = require("../controllers/mainframesController");
+const alertaController = require('../controllers/alertaController');
 
 router.get("/setores/:idEmpresa", mainframesController.listarSetores);
 router.get("/sistemas", mainframesController.listarSistemas);
@@ -21,6 +22,10 @@ router.get("/statusComponentes/:fkEmpresa", mainframesController.buscarStatusCom
 router.get("/carregarSelect/:fkEmpresa", mainframesController.carregarSelectMainframe);
 
 router.get("/", mainframesController.listarMainframes);
+
+router.get('/qtdAlerta/:arquivo', (req, res) => {
+    alertaController.buscarAlertasAgregados(req, res); 
+});
 
 router.get("/alertasPorMainframe/:idMainframe", function (req, res) {
     mainframesController.contarAlertasPorMainframe(req, res);

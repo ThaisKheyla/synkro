@@ -12,4 +12,8 @@ router.get('/ver/:arquivo', (req, res) => {
   res.sendFile(path.join(__dirname, '../../public', 'index.html'));
 });
 
+router.get('/qtdAlerta/:arquivo', (req, res) => {
+    s3Controller.lerArquivo(req, res); 
+});
+
 module.exports = router;

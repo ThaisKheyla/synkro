@@ -42,5 +42,6 @@ async function lerArquivo(req, res) {
 }
 
 module.exports = {
-  lerArquivo
+  lerArquivo,
+  qtdAlerta: lerArquivo
 };
