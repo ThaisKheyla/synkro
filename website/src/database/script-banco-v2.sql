@@ -208,7 +208,7 @@ INSERT INTO sistema_operacional (nome) VALUES
 -- Mainframes
 INSERT INTO mainframe (fabricante, modelo, macAdress, fkSetor, fkSistemaOperacional) VALUES
 ('IBM', 'Z15', '166250251803552', 1, 1),
-('IBM', 'Z16', '269058910482378', 2, 2),
+('IBM', 'Z16', '269166201749049', 2, 2),
 ('IBM', 'Z14', '269058765243378', 3, 1),
 ('IBM', 'Z15', '269058769680975', 4, 2),
 ('IBM', 'Z14', '745683251336432', 5, 2),
@@ -238,9 +238,9 @@ INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
 (3, 1, 3, 1, 0.0, 99.0); -- Mainframe 1 | Disco
 
 INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES 
-(5, 1, 1, 2, 0.0, 95.0), -- Mainframe 2 | Processador
-(6, 1, 2, 2, 0.0, 95.0), -- Mainframe 2 | RAM
-(4, 1, 3, 2, 0.0, 80.0); -- Mainframe 2 | Disco
+(5, 1, 1, 2, 0.0, 10.0), -- Mainframe 2 | Processador
+(6, 1, 2, 2, 0.0, 90.0), -- Mainframe 2 | RAM
+(4, 1, 3, 2, 0.0, 68.0); -- Mainframe 2 | Disco
 
 INSERT INTO metrica (id, fkTipo, fkComponente, fkMainframe, min, max) VALUES
 (7, 1, 1, 3, 0.0, 95.0), -- Mainframe 3 | Processador
@@ -350,6 +350,7 @@ DELIMITER ;
 -- =====================================================
 -- INSERT EXTRAS NA EMPRESA 1
 -- =====================================================
+/*
 
 -- Mainframe 1 (Métricas 1, 2, 4)
 INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
@@ -460,6 +461,8 @@ INSERT INTO alerta (dt_hora, valor_coletado, fkMetrica, fkStatus) VALUES
 (NOW() - INTERVAL 35 MINUTE, 92.0, 19, 1),  -- Processador
 (NOW() - INTERVAL 40 MINUTE, 65.0, 20, 2), -- RAM
 (NOW() - INTERVAL 45 MINUTE, 98.0, 21, 3); -- Disco
+
+*/
 
 -- =====================================================
 -- SELECTS

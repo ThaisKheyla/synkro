@@ -132,6 +132,8 @@
 </html>
 
 <script>
+    const ARQUIVO_ALERTA_S3 = "quantidadeAlertas.json";
+
     let chartAlertas = null;
 
     async function plotarGraficoAlertas() {
@@ -139,11 +141,15 @@
         if (!idMainframe) return;
 
         try {
-            const resposta = await fetch(`/mainframes/alertasPorMainframe/${idMainframe}`);
-            let dados = [];
+            const resposta = await fetch(`/mainframes/qtdAlerta/${ARQUIVO_ALERTA_S3}`);
+            let dadosAgregados = [];
             if (resposta.status !== 204) {
-                dados = await resposta.json();
+                dadosAgregados = await resposta.json();
             }
+
+            const dados = dadosAgregados.filter(item => {
+                return String(item.macAdress) === String(idMainframe);
+            });
 
             const gravidades = ['Urgente', 'Muito Urgente', 'Emergência'];
             const cores = {
@@ -154,8 +160,8 @@
 
             const componentes = {
                 'Processador': { nome: 'Processador', contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } },
-                'RAM': { nome: 'RAM', contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } },
-                'Disco': { nome: 'Disco', contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } }
+                'Memória RAM': { nome: 'RAM', contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } },
+                'Disco Rígido': { nome: 'Disco', contagens: { 'Emergência': 0, 'Muito Urgente': 0, 'Urgente': 0 } }
             };
 
             dados.forEach(item => {
@@ -165,11 +171,12 @@
                 }
             });
 
-            const labelsComponentes = Object.values(componentes).map(c => c.nome);
+            const chavesComponentes = Object.keys(componentes);
+            const labelsComponentes = chavesComponentes;
             const datasets = gravidades.map(gravidade => {
                 return {
                     label: gravidade,
-                    data: labelsComponentes.map(nomeComp => componentes[nomeComp].contagens[gravidade]),
+                    data: chavesComponentes.map(chaveComp => componentes[chaveComp].contagens[gravidade]),
                     backgroundColor: cores[gravidade],
                     stack: 'Stack 1'
                 };
@@ -356,8 +363,7 @@
 
             mainframeSelect.innerHTML = resposta.map(m => {
                 return `
-            <option value="${m.id}">Mainframe ${m.id}</option>
-            `;
+                <option value="${m.macAdress}">Mainframe ${m.id}</option>`;
             }).join('');
 
             plotarGraficoAlertas();
