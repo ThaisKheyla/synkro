@@ -29,7 +29,7 @@
                 <div class="email-usuario" id="email_login">marcos.silva@empresa1.com</div>
             </div>
             <nav>
-                <ul class="menu-links">
+                <ul class="menhttps://github.com/ThaisKheyla/synkro.gitu-links">
                     <li><a href="dashboardGerente.html"><i class="ri-dashboard-3-line"></i>Visão Geral</a></li>
                     <li><a href="visaoMainframesGerente.html" class="ativo"><i
                                 class="ri-dashboard-3-line"></i>Mainframes</a></li>
@@ -191,37 +191,31 @@
 
         async function carregarDados(mac) {
             try {
-                // 1) Buscar lista de arquivos
-                const resLista = await fetch("/lista");
-                if (!resLista.ok) throw new Error("Erro ao buscar lista de arquivos");
+                const res = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`);
+                if (!res.ok) throw new Error('Erro ao buscar JSON');
+                const raw = await res.json();
 
-                const arquivos = await resLista.json();
+                dadosGlobais = mac ? raw.filter(a => String(a.macAdress) === String(mac)) : raw;
 
-                // Nenhum arquivo encontrado
-                if (arquivos.length === 0) {
-                    dadosGlobais = [];
+                if (dadosGlobais.length > 0) {
+                    // Pega o nome do primeiro registro encontrado no JSON
+                    const nome = dadosGlobais[0].identificacaoMainframe;
+                    document.getElementById('nome-mainframe').innerText = nome;
+                } else {
+                    document.getElementById('nome-mainframe').innerText = "Não encontrado";
+                }
+
+                if (dadosGlobais.length === 0) {
+                    console.warn("Sem dados.");
+                    // mesmo sem dados, inicializar gráficos vazios
+                    processarKPIsTopo([]);
+                    renderDonutEstatico([]);
                     atualizarDashboardAnalise(7);
                     return;
                 }
-
-                let dadosCombinados = [];
-
-                // 2) Buscar cada arquivo e juntar
-                for (const arq of arquivos) {
-                    const res = await fetch("/dados/" + arq);
-                    if (!res.ok) continue; // ignora erros individuais
-
-                    const json = await res.json();
-                    dadosCombinados.push(...json);
-                }
-
-                // 3) Filtrar por MAC, se necessário
-                dadosGlobais = mac
-                    ? dadosCombinados.filter(a => String(a.macAdress) === String(mac))
-                    : dadosCombinados;
-
-                // 4) Atualizar dashboard
+                 
                 processarKPIsTopo(dadosGlobais);
+                renderDonutEstatico(dadosGlobais);
                 atualizarDashboardAnalise(7);
 
             } catch (err) {
