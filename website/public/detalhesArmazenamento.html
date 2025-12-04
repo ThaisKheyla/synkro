@@ -1,11 +1,400 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Armazenamento</title>
+    <title>Dashboard - Armazenamento (Disco) - Mainframes Synkro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashMainframes.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/sessao.js"></script>
 </head>
-<body>
-    
+
+<body onload="validarSessaoSynkro()">
+    <div class="layout-principal">
+        <aside class="barra-lateral">
+            <div class="logo">
+                Synkro
+            </div>
+            <div class="perfil-usuario">
+                <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
+                <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
+                <div class="cargo-usuario">
+                    <i class="ri-shield-user-line"></i>
+                    Analista de Infra
+                </div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
+            </div>
+            <nav>
+                <ul class="menu-links">
+                    <li>
+                        <a href="dashboardAnalista.html">
+                            <i class="ri-dashboard-3-line"></i>
+                            Visão Geral
+                        </a>
+                    </li>
+                    <li>
+                        <a href="CadastroMainframe.html">
+                            <i class="ri-file-add-line icon-cadastro"></i>
+                            Cadastrar Mainframes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="detalhesMainframe.html" class="ativo">
+                            <i class="ri-database-2-line"></i>
+                            Mainframes
+                        </a>
+                    </li>
+                </ul>
+                <button class="btn-sair" onclick="limparSessao()">
+                    <i class="ri-logout-box-r-line"></i>
+                    Encerrar Sessão
+                </button>
+            </nav>
+        </aside>
+        <main class="conteudo-dashboard">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h1>Dashboard Mainframes — Armazenamento</h1>
+                    <p class="topbar-subtitle">Monitoramento de Armazenamento (Disco) dos Mainframes</p>
+                </div>
+            </header>
+            <section class="kpi-row">
+
+
+                <div class="kpi-card" aria-label="IOPS">
+                    <div class="kpi-info">
+                        <div class="kpi-title">IOPS </div>
+                        <div class="kpi-value">14.3K</div>
+                        <div class="kpi-sub">Operações de leitura/escrita por segundo. Indica a performance de I/O do
+                            sistema.</div>
+                    </div>
+                </div>
+
+                <div class="kpi-card" aria-label="Throughput">
+                    <div class="kpi-info">
+                        <div class="kpi-title">Throughput</div>
+                        <div class="kpi-value">1.2 GB/s</div>
+                        <div class="kpi-sub">Taxa de transferência de dados. Mede a quantidade de dados processados por
+                            segundo.</div>
+                    </div>
+                </div>
+
+                <div class="kpi-card" aria-label="Latência média">
+                    <div class="kpi-info">
+                        <div class="kpi-title">Latência Média</div>
+                        <div class="kpi-value">4.3 ms</div>
+                        <div class="kpi-sub">Tempo de resposta médio. Quanto menor, melhor o desempenho do sistema.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grade">
+                <div class="card pequeno1">
+                    <h3>Uso do disco</h3>
+                    <p class="valor">4.0 TB
+                        <span class="texto-percentual">(22%)</span>
+                    </p>
+
+                    <span class="unidade">de 18.2 TB total</span>
+                    <div class="bars" role="img" aria-label="Gráfico de espaço livre e ocupado em porcentagem">
+                        <canvas id="espacoChart" role="img"
+                            aria-label="Gráfico horizontal mostrando Espaço Ocupado 78% e Espaço Livre 22%"></canvas>
+                    </div>
+                </div>
+
+                <div class="card grande1">
+                    <h3>Latência a cada 5 minutos</h3>
+                    <span class="percent-up">↓ -0.2ms vs. Média</span>
+                    <p class="valor">4.3 ms</p>
+                    <span class="unidade">Tempo de resposta dos mainframes</span>
+                    <div class="chart-grande">
+                        <canvas id="latenciaChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card medio1">
+                    <div class="iops-header">
+                        <div>
+                            <h3>IOPS em Tempo Real</h3>
+                        </div>
+                        <span class="iops-badge status-healthy">✓ Saudável</span>
+                    </div>
+                    <div class="iops-main">
+                        <p class="iops-current">14.3K</p>
+                        <span class="iops-label">/s</span>
+                    </div>
+                    <div class="iops-mini-stats">
+                        <div class="mini-stat">
+                            <span class="mini-label">Pico</span>
+                            <span class="mini-value">14.9K</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-label">Média</span>
+                            <span class="mini-value">14.0K</span>
+                        </div>
+                    </div>
+                    <div class="iops-chart">
+                        <canvas id="iopsChart"></canvas>
+                    </div>
+                </div>
+                <div class="card grande1">
+                    <h3>Aumento em meses</h3>
+                    <span class="percent-up">↑ +3.0 TB desde -30d</span>
+                    <p class="valor">14.2 TB</p>
+                    <span class="unidade">Taxa de crescimento: ~0.1 TB/dia</span>
+                    <div class="chart-grande">
+                        <canvas id="historicoDiscoChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
 </body>
+<script>
+    Chart.defaults.color = '#e2e8f0';
+    Chart.defaults.font.family = 'Inter, sans-serif';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+    const colors = {
+        primary: '#38bdf8',
+        secondary: '#f59e0b',
+        success: '#10b981',
+        danger: '#ef4444',
+        blue: '#2563eb',
+    };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: 0 },
+    };
+
+    const latenciaCtx = document.getElementById('latenciaChart').getContext('2d');
+    const gradientLatencia = latenciaCtx.createLinearGradient(0, 0, 0, 200);
+    gradientLatencia.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
+    gradientLatencia.addColorStop(0.5, 'rgba(56, 189, 248, 0.15)');
+    gradientLatencia.addColorStop(1, 'rgba(56, 189, 248, 0.02)');
+
+    new Chart(latenciaCtx, {
+        type: 'line',
+        data: {
+            labels: ['00:05', '00:10', '00:15', '00:20', '00:25', '00:30', '00:35', '00:40', '00:45', '00:50', '00:55', '01:00', '01:05', '01:10', '01:15', '01:20', '01:25', '01:30', '01:35', '01:40', '01:45', '01:50', '01:55', '02:00'],
+            datasets: [{
+                label: 'Latência (ms)',
+                data: [5.1, 4.8, 4.5, 4.9, 4.6, 4.4, 4.3, 4.2, 4.7, 4.5, 4.4, 4.1, 4.3, 4.6, 4.2, 4.3, 4.0, 4.2, 4.5, 4.3, 4.4, 4.1, 4.2, 4.3],
+                backgroundColor: gradientLatencia,
+                borderColor: colors.primary,
+                borderWidth: 3,
+                tension: 0.45,
+                pointRadius: 0,
+                pointHoverRadius: 0,
+                fill: true,
+                shadowColor: 'rgba(56, 189, 248, 0.4)',
+                shadowBlur: 10,
+            }]
+        },
+        options: {
+            ...chartOptions,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.98)',
+                    titleColor: '#38bdf8',
+                    bodyColor: '#f8fafc',
+                    borderColor: colors.primary,
+                    borderWidth: 2,
+                    padding: 12,
+                    titleFont: { size: 13, weight: 700 },
+                    bodyFont: { size: 12, weight: 600 },
+                    cornerRadius: 6,
+                    displayColors: false,
+                    callbacks: {
+                        title: function (context) {
+                            return context[0].label;
+                        },
+                        label: function (context) {
+                            return context.parsed.y.toFixed(1) + ' ms';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.06)',
+                        drawBorder: false,
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        color: '#94a3b8',
+                        font: { size: 10, weight: 500 },
+                        callback: v => v + ' ms',
+                        padding: 8
+                    },
+                    max: 10.0,
+                    min: 1.5
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: '#64748b',
+                        font: { size: 10, weight: 500 },
+                        padding: 8
+                    }
+                }
+            },
+        }
+    });
+
+    if (document.getElementById('iopsChart')) {
+        const iopsCtx = document.getElementById('iopsChart').getContext('2d');
+        new Chart(iopsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
+                datasets: [{
+                    label: 'IOPS',
+                    data: [12800, 14200, 14320, 14900, 13900],
+                    borderColor: colors.secondary,
+                    backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: colors.secondary,
+                    pointBorderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: colors.secondary,
+                        borderWidth: 1,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(255, 255, 255, 0.08)', drawBorder: false },
+                        ticks: { color: '#94a3b8', font: { size: 10 }, callback: v => (v / 1000).toFixed(1) + 'K' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                    }
+                },
+            }
+        });
+    }
+
+    const espacoCtx = document.getElementById('espacoChart').getContext('2d');
+    new Chart(espacoCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Em uso', 'Livre'],
+            datasets: [{
+                label: 'Espaço (%)',
+                data: [78, 22],
+                backgroundColor: [colors.secondary, colors.success],
+                borderColor: 'transparent',
+                borderRadius: 6,
+                hoverBackgroundColor: [colors.secondary, 'rgba(16, 185, 129, 0.8)'],
+            }]
+        },
+        options: {
+            ...chartOptions,
+            indexAxis: 'y',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    titleColor: '#fff',
+                    bodyColor: '#cbd5e1',
+                    borderColor: colors.secondary,
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function (context) {
+                            return context.parsed.x + '%';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255, 255, 255, 0.08)', drawBorder: false },
+                    ticks: { color: '#94a3b8', font: { size: 10 }, callback: v => v + '%' },
+                    max: 100
+                },
+                y: {
+                    grid: { display: false },
+                    ticks: { color: '#fff', font: { size: 11, weight: 500 } }
+                }
+            },
+        }
+    });
+
+    if (document.getElementById('historicoDiscoChart')) {
+        const historicoDiscoCtx = document.getElementById('historicoDiscoChart').getContext('2d');
+        new Chart(historicoDiscoCtx, {
+            type: 'line',
+            data: {
+                labels: ['-12m', '-11m', '-10m', '-9m', '-8m', '-7m', '-6m', '-5m', '-4m', '-3m', '-2m', '-1m'],
+                datasets: [{
+                    label: 'Disco Utilizado (TB)',
+                    data: [11.2, 12.8, 14.7, 14.2, 13.9, 14.0, 14.3, 14.5, 14.6, 14.8, 14.9, 14.2],
+                    backgroundColor: 'rgba(37, 99, 235, 0.15)',
+                    borderColor: colors.blue,
+                    borderWidth: 3,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: colors.blue,
+                    pointBorderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                ...chartOptions,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: colors.blue,
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function (context) {
+                                return context.parsed.y + ' TB';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(255, 255, 255, 0.08)', drawBorder: false },
+                        ticks: { color: '#94a3b8', font: { size: 10 }, callback: v => v + ' TB' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                    }
+                },
+            }
+        });
+    }
+</script>
+
 </html>
