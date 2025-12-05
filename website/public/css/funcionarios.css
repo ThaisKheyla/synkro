@@ -188,6 +188,7 @@ body {
     margin-top: 4px;
 }
 
+
 .barra-lateral nav ul {
     list-style: none;
     padding: 0;
@@ -214,7 +215,7 @@ body {
     color: var(--branco);
 }
 
-/* ======== MENU LINKS ======== */
+/* ======== MENU LINKS (Novo) ======== */
 .menu-links {
     list-style: none;
     padding: 0;
@@ -329,7 +330,6 @@ body {
 .btn-sair:hover i {
     transform: translateX(4px);
 }
-
 
 @media (max-width: 900px) {
     .btn-sair {

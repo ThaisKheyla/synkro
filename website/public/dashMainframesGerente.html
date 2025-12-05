@@ -12,32 +12,55 @@
 
     <!-- CSS (substitua pelo novo arquivo CSS abaixo) -->
     <link rel="stylesheet" href="./css/dashMainframesGerente.css">
+    <script src="./js/sessao.js"></script>
 </head>
 
 <body>
     <div class="layout-principal">
-        <!-- BARRA LATERAL (NÃO ALTERADA) -->
         <aside class="barra-lateral">
-            <div class="logo">Synkro</div>
+            <div class="logo">
+                Synkro
+            </div>
             <div class="perfil-usuario">
                 <img src="./assets/imgs/userSynkro.webp" alt="Foto de perfil padrão">
-                <div class="nome-usuario" id="nome_login">Marcos Silva</div>
+                <div class="nome-usuario" id="nome_login">Nome Sobrenome</div>
                 <div class="cargo-usuario">
                     <i class="ri-shield-user-line"></i>
                     Gerente de Infra
                 </div>
-                <div class="email-usuario" id="email_login">marcos.silva@empresa1.com</div>
+                <div class="email-usuario" id="email_login">usuario.email@synkro.com</div>
             </div>
             <nav>
-                <ul class="menhttps://github.com/ThaisKheyla/synkro.gitu-links">
-                    <li><a href="dashboardGerente.html"><i class="ri-dashboard-3-line"></i>Visão Geral</a></li>
-                    <li><a href="visaoMainframesGerente.html" class="ativo"><i
-                                class="ri-dashboard-3-line"></i>Mainframes</a></li>
-                    <li><a href="historico.html"><i class="ri-file-add-line icon-cadastro"></i>Logs e Histórico</a></li>
-                    <li><a href="Funcionarios.html"><i class="ri-database-2-line"></i>Funcionários cadastrados</a></li>
+                <ul class="menu-links">
+                    <li>
+                        <a href="dashboardGerente.html">
+                            <i class="ri-dashboard-3-line"></i>
+                            Visão Geral
+                        </a>
+                    </li>
+                    <li>
+                        <a href="visaoMainframesGerente.html" class="ativo">
+                            <i class="ri-server-line"></i>
+                            Mainframes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="historico.html">
+                            <i class="ri-file-add-line icon-cadastro"></i>
+                            Logs e Histórico
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Funcionarios.html">
+                            <i class="ri-database-2-line"></i>
+                            Funcionários cadastrados
+                        </a>
+                    </li>
                 </ul>
-                <button class="btn-sair" onclick="limparSessao()"><i class="ri-logout-box-r-line"></i>Encerrar
-                    Sessão</button>
+                <button class="btn-sair" onclick="limparSessao()">
+                    <i class="ri-logout-box-r-line"></i>
+                    Encerrar Sessão
+                </button>
             </nav>
         </aside>
 
@@ -176,6 +199,11 @@
         let dadosGlobais = [];
 
         window.onload = async function () {
+
+            if (typeof validarSessaoSynkro === 'function') {
+                validarSessaoSynkro();
+            }
+
             const macSelecionado = sessionStorage.getItem(ID_SESSAO_MAINFRAME);
             await carregarDados(macSelecionado);
             
