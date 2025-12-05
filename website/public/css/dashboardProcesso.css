@@ -4,6 +4,22 @@
    max-height: 300px; 
    width:970px
 }
+.voltar{
+    background-color:var(--azul-primario);
+    border-radius: 20px; 
+    margin-top: 20px;
+    padding: 10px;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+}
+.voltar:hover{
+    background-color: #1d315f;
+}
+#voltar{
+    color: white;
+    text-decoration: none;
+}
 
 .grafico-box{ 
     max-width:65%;

@@ -1,7 +1,14 @@
+require('dotenv').config();
 const AWS = require('aws-sdk');
-const csv = require('csvtojson');
+const Papa = require('papaparse');
 
-AWS.config.update({ region: process.env.AWS_REGION });
+// Configuração da AWS usando variáveis de ambiente
+AWS.config.update({
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  sessionToken: process.env.AWS_SESSION_TOKEN
+});
 const s3 = new AWS.S3();
 
 async function buscarCSV(req, res) {
@@ -41,7 +48,7 @@ async function buscarCSVAWS(req,res) {
     const fileKey = req.params.arquivo;   // usa o mesmo parâmetro da rota
     const macAdress = req.params.macAdress; 
     if (!/^[\w.\-]+$/.test(fileKey)) {
-      return res.status(400).send('❌ Nome de arquivo inválido.');
+      return res.status(400).send('Nome de arquivo inválido.');
     }
 
     const params = {
@@ -49,7 +56,7 @@ async function buscarCSVAWS(req,res) {
       Key: fileKey
     };
     
-    console.log(`📥 Lendo CSV do S3: ${params.Bucket}/${params.Key}`);
+    console.log(`Lendo CSV do S3: ${params.Bucket}/${params.Key}`);
 
     const data = await s3.getObject(params).promise();
     const text = data.Body.toString('utf-8').trim();

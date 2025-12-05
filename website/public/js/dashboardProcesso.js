@@ -5,6 +5,7 @@ selecionadoindex = dadosfiltrados.length - 1
 definirindex = 12
 pagina = 0
 parte = 12 * pagina
+limite=50
 
 function grafico() {
     if (meugrafico) {
@@ -65,8 +66,22 @@ function grafico() {
             pointBackgroundColor: setarCor(),
             pointRadius: setarTamanho(),
             fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
+            borderColor: 'rgb(4, 192, 255)',
+            tension: 0.1,
+            borderWidth: 2,
+            hidden: false,
+            
+            
+             
+            pointBorderColor: ctx => {
+                const value = ctx.parsed.y;
+                if (value>limite) {
+                    return 'red'   
+                } else{
+                    return 'blue'
+                }
+            },
+            
         },
         {
             label: dadosfiltrados[dadosfiltrados.length - 1].nome1,
@@ -251,8 +266,7 @@ function grafico() {
             fill: false,
             borderColor: 'rgb(4, 192, 255)',
             tension: 0.1,
-            hidden: true,
-
+            hidden: true, 
         },
 
         ]
@@ -267,8 +281,7 @@ function grafico() {
                 if (elements.length > 0) {
 
                     // Pega o índice do ponto clicado
-                    const index = elements[0].index;
-                    console.log(index)
+                    const index = elements[0].index; 
                     definirMark(index)
 
                 }
@@ -282,7 +295,7 @@ function grafico() {
                 tooltip: {
                     enabled: true
                 },
-
+                
             },
             scales: {
                 x: {
@@ -780,11 +793,16 @@ function setarCor() {
     // Percorre cada índice do array 
     for (let i = 0; i < dadosfiltrados.length; i++) {
         // Se o índice atual for igual ao índice selecionado, o ponto é destacado
-        if (i === selecionadoindex) {
-            cores.push("red");
+        if (i === selecionadoindex) { 
+            cores.push("white");
         }
         else {
-            cores.push("blue");
+            if (dadosfiltrados[i].uso_cpu_total_perc>50) {
+                cores.push("red")
+            }else{
+
+                cores.push("blue");
+            }
         }
     }
     //slice coleta o index dos valores de um array especifico

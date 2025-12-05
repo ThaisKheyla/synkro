@@ -22,7 +22,8 @@
         // let macAdress=166250251803552
 
         async function carregar() {
-            try { 
+            try {
+                // const res = await fetch(`/csv/dadoscsv/nome arquivo/ mac adress`)
                 const res = await fetch(`/csv/dadoscsv/dashboardprocesso.csv/${macAdress}`)
                 // const res = await fetch('http://localhost:8080/csv/processo/166250251803552'); 
                 if (!res.ok) throw new Error('Erro ao buscar dados');
@@ -113,8 +114,9 @@
         </aside>
 
         <main class="conteudo-dashboard-processo" role="main"
-            aria-label="Painel Principal de Monitoramento em Tempo Real do Mainframe">
 
+            aria-label="Painel Principal de Monitoramento em Tempo Real do Mainframe">
+            
             <h3 class="section-title" title="Visão geral e desempenho do sistema em tempo real.">Monitoramento de
                 recursos e processos</h3>
  
@@ -148,11 +150,10 @@
                         </div>
                     </div>
                     <p class="legenda-grafico-container" style="font-size: 0.85rem; color: #ffffff; margin-top: 10px;">
-                        O gráfico apresenta dados coletados a cada 5 minutos, cobrindo o período das última
-                        hora.
+                        O gráfico apresenta dados coletados a cada captura, cobrindo o intervalo pquendo de até 5 minutos.
                     </p>
                     <canvas id="myChart" aria-label="Gráfico de linha Histórico da Métrica Selecionada"></canvas>
-
+                    
                 </div>
                 <div class="direitacol">
 
@@ -169,7 +170,12 @@
                             <button onclick="direitaMark()">></button>
                             <button onclick="direitaFluxo()">>></button>
                         </div>
-    
+
+                        
+                    </div>
+                    <div class="voltar">
+
+                        <a href="detalhesMainframe.html" id="voltar">Visão geral Mainframe</a>
                     </div>
                 </div>
             </div>
