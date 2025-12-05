@@ -8,28 +8,30 @@ const s3 = new AWS.S3({
 });
 
 async function buscarDadosDashboard(req, res) {
-    console.log("Buscando dados do dashboard no S3...");
+    console.log("🔍 Buscando dados do dashboard no S3...");
     
     try {
         // parâmetros: ajuste bucket e key conforme sua estrutura
         const params = {
-            Bucket: process.env.AWS_S3_BUCKET || 'seu-bucket-synkro',
+            Bucket: process.env.AWS_S3_BUCKET,
             Key: 'dashboard/dashboard_data.json'  // caminho no S3
         };
         
         const data = await s3.getObject(params).promise();
         const jsonData = JSON.parse(data.Body.toString('utf-8'));
         
-        console.log(`Dados encontrados: ${jsonData.length || Object.keys(jsonData).length} registros.`);
+        console.log(" Dados encontrados com sucesso!");
         res.status(200).json(jsonData);
         
     } catch (error) {
-        console.error("Erro ao buscar dados do S3:", error.message);
+        console.error(" Erro ao buscar dados do S3:", error.message);
         
         if (error.code === 'NoSuchKey') {
-            res.status(404).json({ erro: "Arquivo de dados não encontrado no S3." });
+            res.status(404).json({ erro: "Arquivo dashboard_data.json não encontrado no S3." });
         } else if (error.code === 'NoSuchBucket') {
             res.status(404).json({ erro: "Bucket S3 não encontrado." });
+        } else if (error.code === 'AccessDenied') {
+            res.status(403).json({ erro: "Acesso negado ao bucket S3. Verifique as credenciais." });
         } else {
             res.status(500).json({ erro: "Erro ao processar dados do S3.", detalhes: error.message });
         }

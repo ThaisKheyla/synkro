@@ -1,9 +1,9 @@
 const API_URL = "/dashboard/dados";
 
-let rawDashboardData = [];
+let dashboardData = {};
 
 async function buscarDadosDashboard() {
-    console.log("Iniciando busca de dados do dashboard na API...");
+    console.log(" Iniciando busca de dados do dashboard na API...");
     try {
         const response = await fetch(API_URL);
         
@@ -11,21 +11,16 @@ async function buscarDadosDashboard() {
             throw new Error(`Erro HTTP: ${response.status}`);
         }
         
-        rawDashboardData = await response.json();
-        console.log(`Dados do dashboard carregados com sucesso. Total de registros: ${rawDashboardData.length}`);
+        dashboardData = await response.json();
+        console.log(" Dados carregados com sucesso!", dashboardData);
         
-        const kpiTotalAlertas = document.getElementById('kpiTotalAlertas');
-        if (kpiTotalAlertas) {
-            kpiTotalAlertas.innerText = rawDashboardData.length; 
-        }
+        // Dispara evento customizado indicando que os dados estão prontos
+        window.dispatchEvent(new CustomEvent('dashboardDataLoaded', { detail: dashboardData }));
         
     } catch (error) {
-        console.error("Falha ao buscar dados do dashboard:", error);
-
-        const kpiTotalAlertas = document.getElementById('kpiTotalAlertas');
-        if (kpiTotalAlertas) {
-            kpiTotalAlertas.innerText = "Erro de Carga";
-        }
+        console.error(" Falha ao buscar dados:", error);
+        //  usar dados vazio para evitar crash
+        dashboardData = { semana: {}, mes: {}, semestre: {}, ano: {} };
     }
 }
 
