@@ -9,35 +9,39 @@ const s3 = new AWS.S3({
 
 async function buscarDadosDashboard(req, res) {
     console.log("🔍 Buscando dados do dashboard no S3...");
-    
+
+    const params = {
+        Bucket: process.env.AWS_S3_BUCKET,
+        Key: 'dashboard/dashboard_data.json'
+    };
+    console.log("S3 params:", { Bucket: params.Bucket, Key: params.Key, Region: process.env.AWS_REGION });
+
     try {
-        // parâmetros: ajuste bucket e key conforme sua estrutura
-        const params = {
-            Bucket: process.env.AWS_S3_BUCKET,
-            Key: 'dashboard/dashboard_data.json'  // caminho no S3
-        };
-        
         const data = await s3.getObject(params).promise();
-        const jsonData = JSON.parse(data.Body.toString('utf-8'));
-        
-        console.log(" Dados encontrados com sucesso!");
-        res.status(200).json(jsonData);
-        
-    } catch (error) {
-        console.error(" Erro ao buscar dados do S3:", error.message);
-        
-        if (error.code === 'NoSuchKey') {
-            res.status(404).json({ erro: "Arquivo dashboard_data.json não encontrado no S3." });
-        } else if (error.code === 'NoSuchBucket') {
-            res.status(404).json({ erro: "Bucket S3 não encontrado." });
-        } else if (error.code === 'AccessDenied') {
-            res.status(403).json({ erro: "Acesso negado ao bucket S3. Verifique as credenciais." });
-        } else {
-            res.status(500).json({ erro: "Erro ao processar dados do S3.", detalhes: error.message });
+
+        if (!data || !data.Body) {
+            console.error("S3 retornou objeto vazio.");
+            return res.status(500).json({ erro: "Objeto S3 vazio." });
         }
+
+        let jsonData;
+        try {
+            jsonData = JSON.parse(data.Body.toString('utf-8'));
+        } catch (parseErr) {
+            console.error("Erro ao parsear JSON do S3:", parseErr);
+            return res.status(500).json({ erro: "JSON inválido no S3.", detalhes: parseErr.message });
+        }
+
+        console.log(" Dados carregados do S3. Keys:", Object.keys(jsonData));
+        return res.status(200).json(jsonData);
+
+    } catch (error) {
+        console.error(" Erro ao buscar S3:", error && (error.stack || error.message || error));
+        const code = error && error.code ? error.code : 'UnknownError';
+        const statusMap = { NoSuchKey: 404, NoSuchBucket: 404, AccessDenied: 403 };
+        const status = statusMap[code] || 500;
+        return res.status(status).json({ erro: "Erro ao buscar dados do S3.", code, mensagem: error.message });
     }
 }
 
-module.exports = {
-    buscarDadosDashboard
-};
+module.exports = { buscarDadosDashboard };

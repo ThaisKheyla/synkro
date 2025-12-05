@@ -17,7 +17,7 @@ async function lerArquivo(req, res) {
     const fileKey = req.params.arquivo;
 
     if (!/^[\w.\-]+$/.test(fileKey)) {
-      return res.status(400).send('❌ Nome de arquivo inválido.');
+      return res.status(400).send(' Nome de arquivo inválido.');
     }
 
     const params = {

@@ -150,7 +150,7 @@
         const SLA_CONTRATADO = 99.9;
         let periodoAtual = 'semana';
         let tempoFiltro = 'all';
-        let dashboardData = {};
+        // NÃO declarar `dashboardData` aqui — é inicializado em ./js/dashboard.js
 
         // Aguarda os dados chegarem da API
         window.addEventListener('dashboardDataLoaded', (e) => {
@@ -418,8 +418,9 @@
                 btn.addEventListener('click', () => setFiltroTempo(btn.getAttribute('data-filtro')));
             });
 
-            // atualiza a dashboard
-            if (Object.keys(dashboardData).length > 0) {
+        
+            if (window.dashboardData && Object.keys(window.dashboardData).length > 0) {
+                dashboardData = window.dashboardData;
                 atualizarDashboard(periodoAtual);
             }
         };
