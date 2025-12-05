@@ -255,6 +255,8 @@
                     iops: mf.iops,
                     data: mf.dt
                 };
+
+                sessionStorage.setItem("macadress", mf.mac)
             });
 
 
@@ -426,10 +428,12 @@
                     maintainAspectRatio: false,
                     scales: {
                         y: { beginAtZero: true, max: 100, title: { display: true, text: "Usage (%)" } },
-                        x: {                            ticks: {
-                            maxRotation: 45,  // define a diagonal
-                            minRotation: 45
-                        } }
+                        x: {
+                            ticks: {
+                                maxRotation: 45,  // define a diagonal
+                                minRotation: 45
+                            }
+                        }
                     },
                     plugins: {
                         legend: { onClick: customLegendClickHandler },
@@ -447,7 +451,7 @@
 
                         }
                     }, x: {
-                        
+
                     }
                 }
             });
