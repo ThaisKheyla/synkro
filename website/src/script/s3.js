@@ -1,7 +1,15 @@
+require('dotenv').config();
 const AWS = require('aws-sdk');
 const Papa = require('papaparse');
 
-AWS.config.update({ region: process.env.AWS_REGION });
+// Configuração da AWS usando variáveis de ambiente
+AWS.config.update({
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  sessionToken: process.env.AWS_SESSION_TOKEN
+});
+
 const s3 = new AWS.S3();
 
 async function lerArquivo(req, res) {
@@ -13,7 +21,7 @@ async function lerArquivo(req, res) {
     }
 
     const params = {
-      Bucket: process.env.S3_BUCKET, 
+      Bucket: process.env.S3_BUCKET,
       Key: fileKey
     };
 
