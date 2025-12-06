@@ -5,7 +5,7 @@ selecionadoindex = dadosfiltrados.length - 1
 definirindex = 12
 pagina = 0
 parte = 12 * pagina
-limite=50
+limite=80
 
 function grafico() {
     if (meugrafico) {
@@ -15,7 +15,7 @@ function grafico() {
         elemento = document.getElementById('btnCPU');
         elemento.classList.add('ativo')
         let valor = dadosfiltrados[selecionadoindex].uso_cpu_total_perc
-        document.getElementById("graficoValor").textContent = valor + "%";
+        document.getElementById("graficoValor").innerHTML = valor + "%";
         document.getElementById("titulo-grafico").innerHTML = `
         <i class="ri-cpu-line"></i> CPU - Uso em Tempo Real (Gráfico Histórico)
         `;
@@ -43,7 +43,7 @@ function grafico() {
             dadosfiltrados[dadosfiltrados.length - 1].timestamp
         ],
         datasets: [{
-            label: 'cputotal',
+            label: 'CPU Total',
             data:
                 dadosmovel("uso_cpu_total_perc", 13)
 
@@ -66,7 +66,7 @@ function grafico() {
             pointBackgroundColor: setarCor(),
             pointRadius: setarTamanho(),
             fill: false,
-            borderColor: 'rgb(4, 192, 255)',
+            borderColor: 'rgba(255, 255, 255, 1)',
             tension: 0.1,
             borderWidth: 2,
             hidden: false,
@@ -89,7 +89,7 @@ function grafico() {
             fill: false,
             borderColor: 'rgb(4, 192, 255)',
             tension: 0.1,
-            hidden: false
+            hidden: true
         },
         {
             label: dadosfiltrados[dadosfiltrados.length - 1].nome2,
@@ -111,7 +111,7 @@ function grafico() {
             fill: false,
             borderColor: 'rgb(4, 192, 255)',
             tension: 0.1,
-            hidden: false
+            hidden: true
 
         },
         {
@@ -304,6 +304,8 @@ function grafico() {
                     }
                 },
                 y: {
+                    min: 0,
+                    max: 100,
                     ticks: {
                         color: 'white'
                     },
@@ -349,7 +351,7 @@ function grafico2() {
             dadosfiltrados[dadosfiltrados.length - 1].timestamp
         ],
         datasets: [{
-            label: 'ramtotal',
+            label: 'RAM total',
             data: [
                 dadosfiltrados[dadosfiltrados.length - 13].uso_ram_total_perc,
                 dadosfiltrados[dadosfiltrados.length - 12].uso_ram_total_perc,
@@ -368,9 +370,17 @@ function grafico2() {
             pointBackgroundColor: setarCor(),
             pointRadius: setarTamanho(),
             fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-
+            borderColor: 'rgba(255, 255, 255, 1)',
+            tension: 0.1,
+            
+            pointBorderColor: ctx => {
+                const value = ctx.parsed.y;
+                if (value>limite) {
+                    return 'red'   
+                } else{
+                    return 'blue'
+                }
+            },
         },
         {
             label: dadosfiltrados[dadosfiltrados.length - 1].nome1,
@@ -392,7 +402,7 @@ function grafico2() {
             fill: false,
             borderColor: 'rgb(4, 192, 255)',
             tension: 0.1,
-            hidden: false
+            hidden: true
         },
         {
             label: dadosfiltrados[dadosfiltrados.length - 1].nome2,
@@ -414,7 +424,7 @@ function grafico2() {
             fill: false,
             borderColor: 'rgb(4, 192, 255)',
             tension: 0.1,
-            hidden: false
+            hidden: true
 
         },
         {
@@ -605,6 +615,8 @@ function grafico2() {
                     }
                 },
                 y: {
+                    min: 0,
+                    max: 100,
                     ticks: {
                         color: 'white'
                     },
@@ -663,14 +675,19 @@ function listaprocesso() {
 //atualiza o valor azul que representa o total de cpu
 function atribuirvalor(realIndex, atributo) { 
     let valor = dadosfiltrados[dadosfiltrados.length + realIndex][atributo]
-
-    document.getElementById("graficoValor").textContent = valor + "%";
+    
+    // document.graficoValor.innerHTML=`<span class="value" id="graficoValor" aria-live="polite">${valor}</span>`
+    if (valor>limite) {
+        document.getElementById("graficoValor").innerHTML = `<span class="value" id="graficoValor" aria-live="polite" style="color:red">${valor}%</span>`
+    }else{ 
+        document.getElementById("graficoValor").innerHTML = `<span class="value" id="graficoValor" aria-live="polite" style="color:rgb(4, 192, 255)">${valor}%</span>`
+    }
 }
 
 //função recebe o valor atual da bola vermelha
 function definirMark(index) {
     const label = data.labels[index];
-    const value = data.datasets[0].data[index];
+    const value = data.datasets[0].data[index]; 
     const realIndex = index - 13;
     const atributo = tipometrica
     atribuirvalor(realIndex, atributo)
@@ -797,7 +814,7 @@ function setarCor() {
             cores.push("white");
         }
         else {
-            if (dadosfiltrados[i].uso_cpu_total_perc>50) {
+            if (dadosfiltrados[i].uso_cpu_total_perc>limite) {
                 cores.push("red")
             }else{
 
@@ -828,7 +845,7 @@ function carregarUltimoAlerta() {
         const element = dadosfiltrados[i];
 
         if (element.uso_cpu_total_perc >= 80) {
-
+            
             break;
         }
     }
