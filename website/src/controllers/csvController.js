@@ -1,6 +1,7 @@
 require('dotenv').config();
 const AWS = require('aws-sdk');
 const Papa = require('papaparse');
+const csv = require('csvtojson');  
 
 // Configuração da AWS usando variáveis de ambiente
 AWS.config.update({
@@ -18,8 +19,7 @@ async function buscarCSV(req, res) {
   1,2,3
   4,5,6
   */
-  const csvFilePath = 'src/database/trusted.csv'
-  const csv = require('csvtojson')
+  const csvFilePath = 'src/database/trusted.csv' 
 
   
   csv({ delimiter: ';' })
@@ -69,7 +69,7 @@ async function buscarCSVAWS(req,res) {
 
     res.json(jsonArrayId);
   } catch (err) {
-    console.error('❌ Erro ao buscar CSV do S3:', err.message);
+    console.error(' Erro ao buscar CSV do S3:', err.message);
     res.status(500).send('Erro ao buscar CSV: ' + err.message);
   }
 }
