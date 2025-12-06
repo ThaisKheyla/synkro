@@ -259,7 +259,7 @@
                 sessionStorage.setItem("macadress", mf.mac)
             });
 
-            
+
 
             console.log("Convertido:", mainframesData);
         }
@@ -471,7 +471,8 @@
 
         function loadMainframeDetails(id) {
             currentMainframeId = id
-
+            resetBolinhas();
+            resetMainframeClick();
             setMainframe(id + 1)
             updateMainKpis(id)
             updateMainframeDetails(id)
@@ -489,6 +490,16 @@
             })
 
             setInterval(updateChartData, 3000);
+        }
+        function resetBolinhas() {
+            document.querySelectorAll("#bolinha-cpu, #bolinha-ram, #bolinha-disk")
+                .forEach(b => {
+                    b.classList.remove("bolinha-red", "bolinha-orange");
+                });
+        }
+        function resetMainframeClick() {
+            document.querySelectorAll(".mainframe-evento")
+                .forEach(el => el.classList.remove("clicked"));
         }
 
         const modal = document.getElementById("modalOverlay")
