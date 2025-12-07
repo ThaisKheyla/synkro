@@ -75,7 +75,7 @@
                                 id="mainframe-alerta-mac">00:1B:44:11:3A:B7</span>
                         </div>
                     </div>
-                    <div onclick="window.location.href='detalhesMainframe.html'">> VOLTAR</div>
+                    <div onclick="voltarParaMainframe()">></div>
                 </div>
             </div>
 
@@ -288,24 +288,24 @@
         try {
             const resposta = await fetch(`/s3Route/dados/detalhesArmazenamento.json`);
             const data = await resposta.json();
-            console.log("Dados de Armazenamento:", data);
+            console.log("Dados de Armazenamento (completo):", data);
 
             let empresaId = sessionStorage.ID_EMPRESA_USUARIO;
-            // supondo que `mac` e `empresa` já estejam definidos
-
+            let mainframeMac = sessionStorage.getItem('MAINFRAME_MAC');
+            let mainframeNome = sessionStorage.getItem('MAINFRAME_NOME');
 
             if (empresaId !== undefined && empresaId !== null) {
-                // tentar converter para número quando aplicável
                 const n = Number(empresaId);
                 if (!Number.isNaN(n)) empresaId = n;
             }
 
+            // Buscar empresa no array consolidado
             let empresa = null;
-            if (Array.isArray(data)) {
-                empresa = data.find(item => item.empresa == empresaId);
+            if (data.empresas && Array.isArray(data.empresas)) {
+                empresa = data.empresas.find(item => item.empresa == empresaId);
                 if (!empresa) {
-                    empresa = data[0];
-                    console.info('Empresa não encontrada para ID, usando primeira empresa do JSON:', empresa.empresa);
+                    console.warn(`Empresa ${empresaId} não encontrada. Usando primeira empresa.`);
+                    empresa = data.empresas[0];
                 }
             }
 
@@ -314,10 +314,26 @@
                 return false;
             }
 
-            // armazenar como array para indexação por posição (0 => primeiro mainframe)
-            armazenamentoDados = empresa.mainframes.slice();
+            console.log(`Empresa encontrada: ${empresa.empresa} | Total de mainframes: ${empresa.mainframes.length}`);
 
-            console.log("Dados carregados:", armazenamentoDados);
+            // Se houver MAC selecionado, filtrar apenas esse mainframe
+            if (mainframeMac) {
+                const mainframeEncontrado = empresa.mainframes.find(mf => mf.mac === mainframeMac);
+                if (mainframeEncontrado) {
+                    armazenamentoDados = [mainframeEncontrado];
+                    console.log(`Filtrando por MAC: ${mainframeMac}. Mainframe encontrado:`, mainframeEncontrado);
+                    if (mainframeNome) {
+                        document.getElementById("mainfrane-title").innerText = mainframeNome;
+                    }
+                } else {
+                    console.warn(`MAC ${mainframeMac} não encontrado. Exibindo todos os mainframes da empresa.`);
+                    armazenamentoDados = empresa.mainframes.slice();
+                }
+            } else {
+                armazenamentoDados = empresa.mainframes.slice();
+            }
+
+            console.log("Dados carregados para exibição:", armazenamentoDados);
             return true;
         } catch (error) {
             console.error("Erro ao buscar dados de armazenamento:", error);
@@ -328,6 +344,14 @@
     function renderMainframesList() {
         const container = document.getElementById("mainframes-cad");
         container.innerHTML = "";
+
+        // Se houver apenas 1 mainframe (veio de detalhesMainframe), não mostrar lista
+        if (armazenamentoDados.length === 1 && sessionStorage.getItem('MAINFRAME_MAC')) {
+            container.style.display = "none";
+            return;
+        }
+
+        container.style.display = "block";
 
         armazenamentoDados.forEach((mf, idx) => {
             const nomeDisplay = `${mf.fabricante} ${mf.modelo}`;
@@ -582,7 +606,12 @@
         });
     }
 
-    // ===== ATUALIZAR DADOS PERIODICAMENTE =====
+    function voltarParaMainframe() {
+        sessionStorage.removeItem('MAINFRAME_MAC');
+        sessionStorage.removeItem('MAINFRAME_NOME');
+        window.location.href = 'detalhesMainframe.html';
+    }
+
     function atualizarDadosPeriodicamente() {
         updateInterval = setInterval(() => {
             atualizarGraficosComDados(mainframeAtualId);

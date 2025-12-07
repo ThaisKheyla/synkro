@@ -81,7 +81,7 @@
                             </div>
                         </div>
 
-                        <div class="kpi-card kpi-disk" onclick="window.location.href='detalhesArmazenamento.html'">
+                        <div class="kpi-card kpi-disk" onclick="irParaArmazenamento()">
                             <div id="bolinha-disk" class=""></div>
                             <div class="kpi-icone"><i class="ri-hard-drive-2-line"></i></div>
                             <div class="kpi-info">
@@ -502,6 +502,15 @@
         function resetMainframeClick() {
             document.querySelectorAll(".mainframe-evento")
                 .forEach(el => el.classList.remove("clicked"));
+        }
+
+        function irParaArmazenamento() {
+            const mf = mainframesData[currentMainframeId];
+            if (mf && mf.mac) {
+                sessionStorage.setItem('MAINFRAME_MAC', mf.mac);
+                sessionStorage.setItem('MAINFRAME_NOME', mf.nome);
+                window.location.href = 'detalhesArmazenamento.html';
+            }
         }
 
         const modal = document.getElementById("modalOverlay")

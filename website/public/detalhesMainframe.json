@@ -1,0 +1,85 @@
+[
+  {
+    "empresa": "1",
+    "mainframes": [
+      {
+        "Fabricante": "IBM",
+        "modelo": "z15",
+        "mac": "44033349251011",
+        "cpu": 87.5,
+        "ram": 72.3,
+        "disk": 65.8,
+        "throughput": 145.2,
+        "latencia": 12.5,
+        "iops": 8500,
+        "eventos": 3,
+        "tempoAlerta": "há 2 horas",
+        "dt": "2025-12-07 15:30:00",
+        "metricas": [
+          92.1,
+          87.5,
+          76.4,
+          68.9,
+          72.3,
+          81.2,
+          55.7,
+          65.8,
+          43.2,
+          78.5
+        ]
+      },
+      {
+        "Fabricante": "Fujitsu",
+        "modelo": "Primergy",
+        "mac": "44033349251012",
+        "cpu": 62.1,
+        "ram": 48.9,
+        "disk": 52.3,
+        "throughput": 98.7,
+        "latencia": 8.2,
+        "iops": 5200,
+        "eventos": 1,
+        "tempoAlerta": "há 5 horas",
+        "dt": "2025-12-07 14:45:00",
+        "metricas": [
+          76.5,
+          62.1,
+          58.3,
+          71.2,
+          48.9,
+          61.8,
+          45.6,
+          52.3,
+          38.9,
+          65.4
+        ]
+      },
+      {
+        "Fabricante": "Oracle",
+        "modelo": "SPARC T8",
+        "mac": "44033349251013",
+        "cpu": 91.3,
+        "ram": 85.6,
+        "disk": 78.9,
+        "throughput": 210.5,
+        "latencia": 15.8,
+        "iops": 12100,
+        "eventos": 5,
+        "tempoAlerta": "há 1 hora",
+        "dt": "2025-12-07 16:00:00",
+        "metricas": [
+          88.2,
+          91.3,
+          89.7,
+          84.5,
+          85.6,
+          87.2,
+          76.3,
+          78.9,
+          72.1,
+          82.5
+        ]
+      }
+    ]
+  }
+]
