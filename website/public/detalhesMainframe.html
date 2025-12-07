@@ -92,15 +92,17 @@
                                 <div class="kpi-desc">Armazenamento Utilizado</div>
                             </div>
                         </div>
+                        <div class="botom-kpi">
 
-                        <div onclick="window.location.href='dashboardProcesso.html'" class="kpi-card kpi-info">
-                            <div class="kpi-icone"><i class="ri-align-left"></i></div>
-                            <div class="kpi-info">Processos</div>
-                        </div>
+                            <div onclick="window.location.href='dashboardProcesso.html'" class="kpi-card kpi-info">
+                                <div class="kpi-icone"><i class="ri-align-left"></i></div>
+                                <div class="kpi-info">Processos</div>
+                            </div>
 
-                        <div class="kpi-card kpi-info" id="openModalBtn">
-                            <div class="kpi-icone"><i class="ri-information-fill"></i></div>
-                            <div class="kpi-info">Informações</div>
+                            <div class="kpi-card kpi-info" id="openModalBtn">
+                                <div class="kpi-icone"><i class="ri-information-fill"></i></div>
+                                <div class="kpi-info">Informações</div>
+                            </div>
                         </div>
                     </div>
 
@@ -350,7 +352,7 @@
                 document.getElementById("bolinha-cpu").classList.add("bolinha-red")
                 document.getElementById('cpuAlertN').className = ("kpi-valor-alert-2")
             } else if (mf.cpu[4] >= (metricaCpu * 0.80)) {
-                document.getElementById("bolinha-cpu").classList.add("bolinha-red")
+                document.getElementById("bolinha-cpu").classList.add("bolinha-orange")
                 document.getElementById('cpuAlertN').className = ("kpi-valor-alert-1")
             }
 
@@ -367,7 +369,7 @@
                 document.getElementById("bolinha-disk").classList.add("bolinha-red")
                 document.getElementById('diskAlertN').className = ("kpi-valor-alert-2")
             } else if (mf.disk[4] >= (metricaDisk * 0.80)) {
-                document.getElementById("bolinha-disk").classList.add("bolinha-red")
+                document.getElementById("bolinha-disk").classList.add("bolinha-orange")
                 document.getElementById('diskAlertN').className = ("kpi-valor-alert-1")
             }
 

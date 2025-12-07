@@ -305,8 +305,7 @@ body {
 .conteudo-dashboard {
     flex: 1;
     max-width: 1400px;
-    margin: 10px;
-    height: calc(100vh - var(--spacing-md) * 2);
+    height: 100vh;
     background: var(--azul-escuro);
     border-radius: 16px;
     overflow-y: auto;
@@ -314,18 +313,13 @@ body {
     min-height: 0;
     flex-shrink: 1;
     display: flex;
-    padding-right: 10px;
     align-items: center;
-    padding: 0 var(--spacing-md);
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--azul-medio) transparent;
     scroll-behavior: smooth;
-    /* rolagem suave */
     max-height: 100vh;
-    /* garante que o scroll fique dentro da tela */
-    padding-right: 24px;
-    /* evita que o conteúdo fique colado */
+
 }
 
 .main-container {
@@ -497,7 +491,7 @@ body {
 .mainframes-cadastrados {
     flex: 1;
     margin: 10px;
-    min-width: 210px;
+    min-width: auto;
     max-width: 120px;
     width: 240px;
     height: 98%;
