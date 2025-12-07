@@ -72,29 +72,22 @@
 
 .subtitleKpi {
     display: flex;
-    justify-items: center;
+    justify-items: auto;
     justify-content: space-between;
-    width: 75px;  
-    white-space: nowrap;  
+    width: 75px;
 }
 
-.botom-kpi{
-    display: flex;
-    justify-content: space-between;
-}
 .subtitleKpi-disk {
     display: flex;
     justify-items: auto;
     justify-content: space-between;
     width: 90px;
-    white-space: nowrap;  
 }
 
 
 .kpi-card {
     flex: 1;
-    min-width: 140px;
-    min-width: 160px;
+    min-width: 100px;
     padding: 8px 10px;
     border-radius: 8px;
     background: var(--azul-medio);
@@ -131,9 +124,7 @@
     border-color: #38bdf8;
     text-shadow: black;
     font-weight: bold;
-    padding: 0px 10px;
-    margin: 5px;
-    cursor: pointer;    
+    cursor: pointer;
 }
 
 .kpi-card.kpi-info:hover {

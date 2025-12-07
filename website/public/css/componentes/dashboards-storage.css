@@ -1497,7 +1497,6 @@ canvas {
   padding: 12px;
 }
 
-/* Crosshair for interactive chart */
 .chart-crosshair {
   position: absolute;
   pointer-events: none;
@@ -1655,7 +1654,7 @@ canvas {
 .limite-critico .titulo {
     font-size: 12px;
     font-weight: 800;
-    color: rgba(239,68,68,0.8);
+    color: var(--accent-light);
     text-transform: uppercase;
     letter-spacing: 0.3px;
     margin-bottom: 4px;
@@ -1664,7 +1663,7 @@ canvas {
 .limite-critico .dias {
     font-size: 22px;
     font-weight: 950;
-    color: #ef4444;
+    color: var(--gray-300);
     letter-spacing: -0.6px;
 }
 
@@ -1700,7 +1699,7 @@ canvas {
 }
 
 .limite-critico .descricao {
-    font-size: 8px;
+    font-size: 11px;
     color: rgba(226,232,240,0.7);
     line-height: 1.4;
     margin-bottom: 6px;
@@ -2081,9 +2080,9 @@ canvas {
 }
 
 .crescimento-historico .titulo {
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
-    color: rgba(99,102,241,1);
+    color: var(--accent-light);
     text-transform: uppercase;
     margin-bottom: 2px;
     letter-spacing: 0.5px;
@@ -2111,8 +2110,8 @@ canvas {
 }
 
 .crescimento-historico .resumo-label {
-    font-size: 8px;
-    color: rgba(226,232,240,0.6);
+    font-size: 10px;
+    color: var(--branco);
     margin-bottom: 2px;
 }
 
@@ -2238,8 +2237,8 @@ canvas {
 }
 
 .indicador-saude .subtitulo {
-    font-size: 8.5px;
-    color: rgba(226,232,240,0.65);
+    font-size: 15px;
+    color: var(--gray-400);
     font-weight: 600;
 }
 
@@ -2264,4 +2263,49 @@ canvas {
     font-weight: 800;
     color: rgba(239,68,68,1);
     text-transform: uppercase;
+}
+
+
+.metricas-uso {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.bloco {
+  flex: 1;
+}
+
+.rotulo {
+  font-size: 9px;
+  color: rgba(226, 232, 240, 0.5);
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.valor {
+  font-size: 20px;
+  font-weight: 950;
+  letter-spacing: -0.8px;
+}
+
+.valor.ocupado {
+  color: var(--warning); /* pode ser definido no seu tema */
+}
+
+.valor.livre {
+  color: rgba(16, 185, 129, 0.9);
+}
+
+.valor.total {
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.divisor {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
 }

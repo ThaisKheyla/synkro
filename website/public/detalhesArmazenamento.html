@@ -17,7 +17,7 @@
     <script src="./js/sessao.js"></script>
 </head>
 
-<body onload="validarSessaoSynkro()">
+<body onload="window.onload && window.onload()">
     <div class="layout-principal">
         <aside class="barra-lateral">
             <div class="logo">Synkro</div>
@@ -48,7 +48,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="dashMainframesCompleto.html" class="ativo">
+                        <a href="detalhesMainframe.html" class="ativo">
                             <i class="ri-database-2-line"></i>
                             Mainframes
                         </a>
@@ -71,37 +71,25 @@
                     <div class="alertas-container">
                         <div class="alerta alerta-emergencia">
                             <i class="ri-alert-line"></i>
-                            <span>MF2:</span> Disco 94% (limite excedido)
-                        </div>
-                        <div class="alerta alerta-normal">
-                            <i class="ri-alert-line"></i>
-                            <span>MF5:</span> Latência 12 ms
-                        </div>
-                        <div class="alerta alerta-urgente">
-                            <i class="ri-error-warning-line"></i>
-                            <span>MF1:</span> Volume crítico
+                            <span id="mainframe-alerta-nome">Mainframe 01:</span> MacAdress: <span
+                                id="mainframe-alerta-mac">00:1B:44:11:3A:B7</span>
                         </div>
                     </div>
+                    <div onclick="window.location.href='detalhesMainframe.html'">> VOLTAR</div>
                 </div>
+            </div>
+
+            <!-- Lista de Mainframes -->
+            <div class="mainframes-list" id="mainframes-cad">
             </div>
 
             <div class="dashboard-tabs">
                 <button class="tab-btn ativo" onclick="mostrarDashboard('visao-geral')">
-                    <i class="ri-dashboard-2-line"></i> Visão Geral
-                </button>
-                <button class="tab-btn" onclick="mostrarDashboard('storage')">
-                    <i class="ri-database-line"></i> Storage
-                </button>
-                <button class="tab-btn" onclick="mostrarDashboard('iops')">
-                    <i class="ri-speed-line"></i> IOPS
-                </button>
-                <button class="tab-btn" onclick="mostrarDashboard('latencia')">
-                    <i class="ri-timer-line"></i> Latência
+                    <i class="ri-dashboard-2-line"></i> Visão Geral <span id="mainfrane-title"></span>
                 </button>
             </div>
 
             <div class="dashboard-content ativo" id="dashboard-visao-geral">
-                <!-- Título + Descrição -->
                 <div class="titulo-descricao">
                     <p class="texto-descricao">
                         Dashboard em tempo real com métricas críticas de performance
@@ -109,30 +97,13 @@
                 </div>
 
 
-                <!-- LAYOUT -->
+                <!-- layout -->
                 <div class="layout">
-                    <!-- LARGE LEFT: Capacidade Actual + Histórico (2x2) -->
                     <div class="div-principal">
-                        <div style="
-                  position: absolute;
-                  top: -50%;
-                  right: -30%;
-                  width: 300px;
-                  height: 300px;
-                  background: radial-gradient(
-                    circle,
-                    rgba(124, 58, 237, 0.12),
-                    transparent
-                  );
-                  pointer-events: none;
-                  border-radius: 50%;
-                "></div>
-
-                        <!-- Health Status Indicator -->
                         <div class="indicador-saude">
                             <div class="texto">
                                 <div class="titulo">Estado de Ocupação</div>
-                                <div class="subtitulo">Capacidade de disco em tempo real</div>
+                                <div class="subtitulo">Capacidade total do disco</div>
                             </div>
 
                             <div class="alerta">
@@ -140,89 +111,28 @@
                                 <span>MUITO URGENTE</span>
                             </div>
                         </div>
+                        
+                        <!-- Métricas de Uso -->
+                        <div class="metricas-uso">
+                            <div class="bloco">
+                                <div class="rotulo">Ocupado</div>
+                                <div class="valor ocupado">78%</div>
+                            </div>
 
-                        <!-- Usage Metrics -->
-                        <div style="
-                  display: flex;
-                  justify-content: space-between;
-                  margin-bottom: 12px;
-                  gap: 16px;
-                  position: relative;
-                  z-index: 2;
-                ">
-                            <div style="flex: 1">
-                                <div style="
-                      font-size: 9px;
-                      color: rgba(226, 232, 240, 0.5);
-                      margin-bottom: 3px;
-                      text-transform: uppercase;
-                      font-weight: 700;
-                    ">
-                                    Ocupado
-                                </div>
-                                <div style="
-                                            font-size: 20px;
-                                            font-weight: 950;
-                                            color: #38bdf8;
-                                            letter-spacing: -0.8px;
-                                        ">
-                                    78% 
-                                </div>
+                            <div class="divisor"></div>
+
+                            <div class="bloco">
+                                <div class="rotulo">Livre</div>
+                                <div class="valor livre">22%</div>
                             </div>
-                            <div style="width: 1px; background: rgba(255, 255, 255, 0.1)"></div>
-                            <div style="flex: 1">
-                                <div style="
-                      font-size: 9px;
-                      color: rgba(226, 232, 240, 0.5);
-                      margin-bottom: 3px;
-                      text-transform: uppercase;
-                      font-weight: 700;
-                    ">
-                                    Total
-                                </div>
-                                <div style="
-                                            font-size: 20px;
-                                            font-weight: 950;
-                                            color: rgba(226, 232, 240, 0.8);
-                                            letter-spacing: -0.8px;
-                                        ">
-                                    100%
-                                </div>
-                            </div>
-                            <div style="width: 1px; background: rgba(255, 255, 255, 0.1)"></div>
-                            <div style="flex: 1">
-                                <div style="
-                      font-size: 9px;
-                      color: rgba(226, 232, 240, 0.5);
-                      margin-bottom: 3px;
-                      text-transform: uppercase;
-                      font-weight: 700;
-">
-                                    Livre
-                                </div>
-                                <div style="
-                                            font-size: 20px;
-                                            font-weight: 950;
-                                            color: rgba(16, 185, 129, 0.9);
-                                            letter-spacing: -0.8px;
-                                        ">
-                                    22%
-                                </div>
+
+                            <div class="divisor"></div>
+
+                            <div class="bloco">
+                                <div class="rotulo">Total</div>
+                                <div class="valor total">100%</div>
                             </div>
                         </div>
-
-                        <!-- Progress bar com porcentagem -->
-                        <div class="barra-progresso">
-                            <div class="barra-container">
-                                <div class="barra-fundo">
-                                    <div class="barra-preenchimento"></div>
-                                </div>
-                            </div>
-                            <div class="barra-valor">
-                                <span>78%</span>
-                            </div>
-                        </div>
-
 
 
                         <!-- Chart -->
@@ -247,7 +157,7 @@
                             </div>
                         </div>
                         <div class="conteudo">
-                            <div class="descricao">Dias até 95% ocupação</div>
+                            <div class="descricao">Estimativa para o nível máximo de ocupação</div>
                         </div>
                     </div>
 
@@ -257,7 +167,7 @@
                         <div class="cabecalho">
                             <div>
                                 <div class="titulo">Taxa Diária</div>
-                                <div class="valor">+204GB</div>
+                                <div class="valor">+15%</div>
                             </div>
                             <div class="urgencia">
                                 <div class="icone">
@@ -271,9 +181,8 @@
                             </div>
                         </div>
                         <div class="conteudo">
-                            <div class="descricao">Crescimento médio diário</div>
                             <div class="acao">
-                                <i class="ri-arrow-right-line"></i>Tendência: Estável (mesma velocidade)
+                                <i class="ri-arrow-right-line"></i>Crescimento médio diário com base no dia anterior
                             </div>
                         </div>
                     </div>
@@ -284,17 +193,13 @@
                         <div class="decoracao"></div>
                         <div class="cabecalho">
                             <div>
-                                <div class="titulo">Crescimento - 30 Dias</div>
-                                <div class="subtitulo">Tendência de ocupação em tempo real</div>
+                                <div class="titulo">Ocupação a cada 1 minutos</div>
                             </div>
                             <div class="resumos">
+
                                 <div class="resumo">
-                                    <div class="resumo-label">Média</div>
-                                    <div class="resumo-valor">12.2TB</div>
-                                </div>
-                                <div class="resumo">
-                                    <div class="resumo-label">Alta</div>
-                                    <div class="resumo-valor">14.2TB</div>
+                                    <div class="resumo-label">Pico atual</div>
+                                    <div class="resumo-valor">74.2%</div>
                                 </div>
                             </div>
                         </div>
@@ -302,7 +207,6 @@
                             <canvas id="growthTrendLine"></canvas>
                         </div>
                     </div>
-
 
                     <!-- Métrica 3: Latência -->
                     <div class="latencia">
@@ -319,9 +223,8 @@
                             </div>
                         </div>
                         <div class="conteudo">
-                            <div class="descricao">Valor máximo registrado • Crítico &gt;25ms</div>
                             <div class="acao">
-                                <i class="ri-check-line"></i>Sistema operando normalmente
+                                <i class="ri-check-line"></i>Valor máximo registrado • Crítico &gt;25ms
                             </div>
                         </div>
                     </div>
@@ -342,235 +245,26 @@
                             </div>
                         </div>
                         <div class="conteudo">
-                            <div class="descricao">Operações I/O por segundo • Capacidade ótima</div>
                             <div class="acao">
-                                <i class="ri-arrow-right-line"></i>Disponível para carga: 5.8K IOPS
+                                <i class="ri-arrow-right-line"></i>Operações I/O por minuto • Capacidade ótima
                             </div>
                         </div>
                     </div>
-
-                </div>
-            </div>
-
-            <div class="dashboard-content" id="dashboard-storage">
-                <h2 class="dashboard-titulo">
-                    Dashboard - Capacidade / Storage Usage
-                </h2>
-                <p class="dashboard-descricao">Monitoramento de espaço em disco</p>
-
-                <div class="storage-grid">
-                    <!-- Left: Main dashboard card -->
-                    <div class="storage-card resumo-card storage-main-card">
-                        <!-- Header com status -->
-                        <div class="storage-header">
-                            <div>
-                                <div class="kpi-label">Status do armazenamento</div>
-                                <div class="kpi-subtexto">Visão principal</div>
-                            </div>
-                        </div>
-
-                        <!-- Big usage display -->
-                        <div class="storage-usage">
-                            <div style="display: flex; align-items: baseline; gap: 12px">
-                                <div class="storage-percent">72%</div>
-                            </div>
-                            <div class="storage-progress progress-72"><span></span></div>
-                        </div>
-
-                        <!-- Chart -->
-                        <div class="chart-container" style="margin-top: 14px; height: 200px; position: relative">
-                            <div class="chart-crosshair" id="storageCrosshair">
-                                <div class="crosshair-x"></div>
-                                <div class="crosshair-y"></div>
-                                <div class="crosshair-label" id="crosshairLabel"></div>
-                            </div>
-                            <canvas id="storageTrendChart"></canvas>
-                        </div>
-
-                        <!-- Alert -->
-                        <div class="storage-alert alert-box-critical" style="margin-top: 14px">
-                            <div class="alert-description-critical">
-                                ~18 dias até 95% — ação recomendada: arquivar dados
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right: KPI column -->
-                    <aside class="storage-side">
-                        <div class="small-card">
-                            <div class="small-title">Espaço livre</div>
-                            <div class="small-value">22% <span style="font-size:10px;color:rgba(226,232,240,0.65);font-weight:600;margin-left:4px;">100%)</span></div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-title">Espaço usado</div>
-                            <div class="small-value">78% <span style="font-size:10px;color:rgba(226,232,240,0.65);font-weight:600;margin-left:4px;">(100%)</span></div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-title">Taxa crescimento</div>
-                            <div class="small-value">20.4% <span style="font-size:10px;color:rgba(226,232,240,0.65);font-weight:600;margin-left:4px;">(+204 GB/dia)</span></div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-title">Previsão esgot.</div>
-                            <div class="small-value">(~18 dias)</div>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-
-            <div class="dashboard-content" id="dashboard-iops">
-                <h2 class="dashboard-titulo">
-                    Dashboard - IOPS (Operações por Segundo)
-                </h2>
-                <p class="dashboard-descricao">Medição de carga e gargalos de I/O</p>
-
-                <div class="storage-grid">
-                    <!-- Left: Main IOPS chart card -->
-                    <div class="storage-card resumo-card storage-main-card">
-                        <div class="storage-header">
-                            <div>
-                                <div class="kpi-label">Histórico de IOPS</div>
-                                <div class="kpi-subtexto">Operações de leitura + escrita</div>
-                            </div>
-                        </div>
-
-                        <div class="chart-container" style="margin-top: 12px; min-height: 220px; position: relative">
-                            <div class="chart-crosshair" id="iopsCrosshair">
-                                <div class="crosshair-x"></div>
-                                <div class="crosshair-y"></div>
-                                <div class="crosshair-label" id="iopsCrosshairLabel"></div>
-                            </div>
-                            <canvas id="iopsLineChart"></canvas>
-                        </div>
-
-                        <div class="iops-legend" style="
-                  margin-top: 12px;
-                  display: flex;
-                  gap: 16px;
-                  font-size: 10px;
-                ">
-                            <div style="display: flex; align-items: center; gap: 6px">
-                                <div style="
-                      width: 8px;
-                      height: 8px;
-                      background: #38bdf8;
-                      border-radius: 50%;
-                    "></div>
-                                <span>Leitura (ops/s)</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 6px">
-                                <div style="
-                      width: 8px;
-                      height: 8px;
-                      background: #fbbf24;
-                      border-radius: 50%;
-                    "></div>
-                                <span>Escrita (ops/s)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right: KPI column -->
-                    <aside class="storage-side">
-                        <div class="small-card">
-                            <div class="small-title">IOPS Leitura</div>
-                            <div class="small-value">2.100</div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-title">IOPS Escrita</div>
-                            <div class="small-value">1.800</div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-title">IOPS Total</div>
-                            <div class="small-value">3.900</div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-title">Pico (5 min)</div>
-                            <div class="small-value">5.200</div>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-
-            <div class="dashboard-content" id="dashboard-latencia">
-                <h2 class="dashboard-titulo">⏱ Latência (ms)</h2>
-                <p class="dashboard-descricao">
-                    Métrica crítica — quando sobe, o sistema trava
-                </p>
-
-                <div class="storage-grid">
-                    <!-- Left: Main latency chart card -->
-                    <div class="storage-card resumo-card storage-main-card">
-                        <div class="storage-header">
-                            <div>
-                                <div class="kpi-label">Histórico de Latência</div>
-                                <div class="kpi-subtexto">Tempo de resposta do sistema</div>
-                            </div>
-                        </div>
-
-                        <div class="chart-container" style="margin-top: 12px; min-height: 220px; position: relative">
-                            <div class="chart-crosshair" id="latenciaCrosshair">
-                                <div class="crosshair-x"></div>
-                                <div class="crosshair-y"></div>
-                                <div class="crosshair-label" id="latenciaCrosshairLabel"></div>
-                            </div>
-                            <canvas id="latenciaLineChart"></canvas>
-                        </div>
-
-                        <div class="iops-legend" style="
-                  margin-top: 12px;
-                  display: flex;
-                  gap: 16px;
-                  font-size: 10px;
-                ">
-                            <div style="display: flex; align-items: center; gap: 6px">
-                                <div style="
-                      width: 8px;
-                      height: 8px;
-                      background: #10b981;
-                      border-radius: 50%;
-                    "></div>
-                                <span>Leitura (ms)</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 6px">
-                                <div style="
-                      width: 8px;
-                      height: 8px;
-                      background: #ef4444;
-                      border-radius: 50%;
-                    "></div>
-                                <span>Escrita (ms)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right: KPI column -->
-                    <aside class="storage-side">
-                        <div class="small-card">
-                            <div class="small-title">Latência Máxima</div>
-                            <div class="small-value">18.5 ms</div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-title">Latência Leitura</div>
-                            <div class="small-value">4.1 ms</div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-title">Latência Escrita</div>
-                            <div class="small-value">8.3 ms</div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-title">Média (últimas 24h)</div>
-                            <div class="small-value">6.2 ms</div>
-                        </div>
-                    </aside>
                 </div>
             </div>
         </main>
     </div>
-    <script src="./js/dashboards-storage.js?v=20251118.6"></script>
+    <script src="./js/dashboards-storage.js"></script>
+    <script src="./js/detalhesArmazenamento.js"></script>
 </body>
 <script>
+    let armazenamentoDados = {};
+    let mainframeAtualId = 0;
+    let espacoChart = null;
+    let growthChart = null;
+    let updateInterval = null;
 
-    // Cores do site (Dark + Purple theme)
+    // ===== COLORS =====
     const primaryColor = "rgba(124, 58, 237, 1)";
     const secondaryColor = "rgba(16, 185, 129, 1)";
     const tertiaryColor = "rgba(99, 102, 241, 1)";
@@ -589,28 +283,244 @@
         padding: 12,
     };
 
-    // ===== GROWTH TREND LINE (Histórico 30 dias) - Enhanced =====
-    const growthTrendCtx = document.getElementById("growthTrendLine");
-    if (growthTrendCtx) {
+    // ===== BUSCAR DADOS DO JSON =====
+    async function buscarJsonArmazenamento() {
+        try {
+            const resposta = await fetch(`/s3Route/dados/detalhesArmazenamento.json`);
+            const data = await resposta.json();
+            console.log("Dados de Armazenamento:", data);
+
+            let empresaId = sessionStorage.ID_EMPRESA_USUARIO;
+            // supondo que `mac` e `empresa` já estejam definidos
+
+
+            if (empresaId !== undefined && empresaId !== null) {
+                // tentar converter para número quando aplicável
+                const n = Number(empresaId);
+                if (!Number.isNaN(n)) empresaId = n;
+            }
+
+            let empresa = null;
+            if (Array.isArray(data)) {
+                empresa = data.find(item => item.empresa == empresaId);
+                if (!empresa) {
+                    empresa = data[0];
+                    console.info('Empresa não encontrada para ID, usando primeira empresa do JSON:', empresa.empresa);
+                }
+            }
+
+            if (!empresa || !Array.isArray(empresa.mainframes)) {
+                console.error('Estrutura de dados inválida em detalhesArmazenamento.json');
+                return false;
+            }
+
+            // armazenar como array para indexação por posição (0 => primeiro mainframe)
+            armazenamentoDados = empresa.mainframes.slice();
+
+            console.log("Dados carregados:", armazenamentoDados);
+            return true;
+        } catch (error) {
+            console.error("Erro ao buscar dados de armazenamento:", error);
+            return false;
+        }
+    }
+
+    function renderMainframesList() {
+        const container = document.getElementById("mainframes-cad");
+        container.innerHTML = "";
+
+        armazenamentoDados.forEach((mf, idx) => {
+            const nomeDisplay = `${mf.fabricante} ${mf.modelo}`;
+            container.innerHTML += `
+                <a href="#" onclick="carregarDetalhesMainframe(${idx}); return false;">
+                    <div id="mainF${idx}" class="mainframe-evento" style="
+                        padding: 12px 16px;
+                        background: rgba(99, 102, 241, 0.1);
+                        border: 2px solid rgba(99, 102, 241, 0.3);
+                        border-radius: 8px;
+                        cursor: pointer;
+                        white-space: nowrap;
+                        transition: all 0.3s;
+                    ">
+                        <div style="font-weight: 600; color: rgba(226, 232, 240, 0.9);">${(idx + 1)}</div>
+                        <div style="font-size: 12px; color: rgba(226, 232, 240, 0.6);">${nomeDisplay}</div>
+                    </div>
+                </a>
+            `;
+        });
+    }
+
+    // ===== CARREGAR DETALHES DE UM MAINFRAME =====
+    function carregarDetalhesMainframe(id) {
+        mainframeAtualId = id;
+
+        // Atualizar estado visual
+        armazenamentoDados.forEach((mf, idx) => {
+            const element = document.getElementById(`mainF${idx}`);
+            if (element) {
+                if (idx == id) {
+                    element.classList.add("clicked");
+                    element.style.borderColor = "rgba(99, 102, 241, 1)";
+                    element.style.background = "rgba(99, 102, 241, 0.2)";
+                } else {
+                    element.classList.remove("clicked");
+                    element.style.borderColor = "rgba(99, 102, 241, 0.3)";
+                    element.style.background = "rgba(99, 102, 241, 0.1)";
+                }
+            }
+        });
+
+        atualizarGraficosComDados(id);
+    }
+
+    // ===== ATUALIZAR GRÁFICOS E MÉTRICAS =====
+    function atualizarGraficosComDados(id) {
+        const dados = armazenamentoDados[id];
+        
+        console.log('jabiraca radical' + armazenamentoDados[0] + armazenamentoDados[1]);
+
+        const nomeMainframe = `${dados.fabricante} ${dados.modelo}`;
+
+        document.getElementById("mainfrane-title").innerText = nomeMainframe;
+        document.getElementById("mainframe-alerta-nome").innerText = `${nomeMainframe}:`;
+        document.getElementById("mainframe-alerta-mac").innerText = dados.mac;
+
+        document.querySelector(".indicador-saude .titulo").textContent = `Estado de Ocupação (${dados.mac})`;
+        document.querySelector(".metricas-uso .bloco:nth-child(1) .valor").textContent = dados.uso_disco_percentual + "%";
+        document.querySelector(".metricas-uso .bloco:nth-child(3) .valor").textContent = (100 - dados.uso_disco_percentual) + "%";
+
+        const diasAte95 = dados.dias_ate_95pct ? dados.dias_ate_95pct.toFixed(0) : "N/A";
+        const crescDiario = dados.crescimento_diario_pct ? dados.crescimento_diario_pct.toFixed(2) : "0.00";
+
+        document.querySelector(".limite-critico .dias").textContent = `~${diasAte95}d`;
+        document.querySelector(".taxa-diaria .valor").textContent = `+${crescDiario}%`;
+        document.querySelector(".latencia .valor").textContent = `${dados.latencia_ms.toFixed(1)}ms`;
+        document.querySelector(".iops .valor").textContent = `${(dados.pico_iops / 1000).toFixed(1)}K`;
+
+        const picoAtual = Math.max(...dados.historico_disco);
+        document.querySelector(".resumo-valor").textContent = picoAtual.toFixed(1) + "%";
+
+        if (espacoChart) espacoChart.destroy();
+        if (growthChart) growthChart.destroy();
+
+        criarGraficoEspaco(dados);
+        criarGraficoCrescimento(dados);
+    }
+
+    // ===== CRIAR GRÁFICO DE ESPAÇO =====
+    function criarGraficoEspaco(dados) {
+        const espacoCtx = document.getElementById("espacoChart");
+        if (!espacoCtx) return;
+
+        const ctx = espacoCtx.getContext("2d");
+        const percentualLivre = 100 - dados.uso_disco_percentual;
+        
+        espacoChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: ["Uso"],
+                datasets: [
+                    {
+                        label: "Ocupado (%)",
+                        data: [dados.uso_disco_percentual],
+                        backgroundColor: "rgba(245, 158, 11, 0.8)",
+                        borderColor: "rgba(245, 158, 11, 0.6)",
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barPercentage: 1.0,
+                        categoryPercentage: 0.7,
+                    },
+                    {
+                        label: "Disponível (%)",
+                        data: [percentualLivre],
+                        backgroundColor: "rgba(16, 185, 129, 0.8)",
+                        borderColor: "rgba(16, 185, 129, 0.6)",
+                        borderWidth: 1.5,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barPercentage: 1.0,
+                        categoryPercentage: 0.7,
+                    },
+                ],
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        max: 100,
+                        grid: { color: "rgba(236, 72, 153, 0.06)", drawBorder: false },
+                        ticks: {
+                            color: "rgba(226,232,240,0.7)",
+                            font: { size: 10, weight: "600" },
+                            callback: function (value) {
+                                return value + "%";
+                            },
+                        },
+                    },
+                    y: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: {
+                            color: "rgba(226,232,240,0.7)",
+                            font: { size: 11, weight: "600" },
+                        },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        position: "top",
+                        labels: {
+                            color: "rgba(226,232,240,0.8)",
+                            font: { size: 11, weight: "600" },
+                            padding: 12,
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                        },
+                    },
+                    tooltip: Object.assign({}, tooltipOptions, {
+                        callbacks: {
+                            label: function (context) {
+                                return (
+                                    context.dataset.label +
+                                    ": " +
+                                    (context.parsed.x || 0).toFixed(1) +
+                                    "%"
+                                );
+                            },
+                        },
+                    }),
+                },
+            },
+        });
+    }
+
+    // ===== CRIAR GRÁFICO DE CRESCIMENTO =====
+    function criarGraficoCrescimento(dados) {
+        const growthTrendCtx = document.getElementById("growthTrendLine");
+        if (!growthTrendCtx) return;
+
         const ctx = growthTrendCtx.getContext("2d");
-        const gradient = ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            growthTrendCtx.height || 200
-        );
+        const gradient = ctx.createLinearGradient(0, 0, 0, growthTrendCtx.height || 200);
         gradient.addColorStop(0, "rgba(99, 102, 241, 0.4)");
         gradient.addColorStop(0.5, "rgba(99, 102, 241, 0.15)");
         gradient.addColorStop(1, "rgba(99, 102, 241, 0.01)");
 
-        new Chart(ctx, {
+        // Gerar labels para o histórico (timestamps ou minutos atrás)
+        const labels = dados.historico_datas && dados.historico_datas.length > 0
+            ? dados.historico_datas.map(d => d.split(' ')[1] || d)
+            : Array.from({ length: dados.historico_disco.length }, (_, i) => `${(i * 5)}min`);
+
+        growthChart = new Chart(ctx, {
             type: "line",
             data: {
-                labels: ["D-29", "D-25", "D-20", "D-15", "D-10", "D-5", "Hoje"],
+                labels: labels,
                 datasets: [
                     {
                         label: "Ocupação (%)",
-                        data: [10.2, 20.8, 31.5, 42.2, 63.0, 43.8, 74.2],
+                        data: dados.historico_disco,
                         borderColor: "rgba(99, 102, 241, 1)",
                         backgroundColor: gradient,
                         borderWidth: 3,
@@ -621,10 +531,6 @@
                         pointBackgroundColor: "rgba(6, 10, 18, 1)",
                         pointBorderWidth: 2.5,
                         pointBorderColor: "rgba(99, 102, 241, 1)",
-                        pointShadowOffsetX: 0,
-                        pointShadowOffsetY: 2,
-                        pointShadowBlur: 8,
-                        pointShadowColor: "rgba(99, 102, 241, 0.3)",
                     },
                 ],
             },
@@ -675,6 +581,25 @@
             },
         });
     }
+
+    // ===== ATUALIZAR DADOS PERIODICAMENTE =====
+    function atualizarDadosPeriodicamente() {
+        updateInterval = setInterval(() => {
+            atualizarGraficosComDados(mainframeAtualId);
+        }, 3000); // A cada 3 segundos
+    }
+
+    // ===== CARREGAR DADOS NA INICIALIZAÇÃO =====
+    window.onload = () => {
+        validarSessaoSynkro();
+        buscarJsonArmazenamento().then((sucesso) => {
+            if (sucesso) {
+                renderMainframesList();
+                carregarDetalhesMainframe(mainframeAtualId);
+                atualizarDadosPeriodicamente();
+            }
+        });
+    };
 
     // ===== PROJECTION LINE (Projeção próximos 30 dias) - Enhanced =====
     const projectionCtx = document.getElementById("projectionLine");
@@ -759,597 +684,6 @@
                     }),
                 },
             },
-        });
-    }
-
-    // ===== ESPACO CHART (Espaço em disco) - Enhanced =====
-    const espacoCtx = document.getElementById("espacoChart");
-    if (espacoCtx) {
-        const ctx = espacoCtx.getContext("2d");
-        new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: ["Uso"],
-                datasets: [
-                    {
-                        label: "Ocupado (%)",
-                        data: [78],
-                        backgroundColor: "rgba(245, 158, 11, 0.8)",
-                        borderColor: "rgba(245, 158, 11, 0.6)",
-                        borderWidth: 2,
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        barPercentage: 1.0,
-                        categoryPercentage: 0.7,
-                    },
-                    {
-                        label: "Disponível (%)",
-                        data: [22],
-                        backgroundColor: "rgba(16, 185, 129, 0.8)",
-                        borderColor: "rgba(16, 185, 129, 0.6)",
-                        borderWidth: 1.5,
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        barPercentage: 1.0,
-                        categoryPercentage: 0.7,
-                    },
-                ],
-            },
-            options: {
-                indexAxis: "y",
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        stacked: true,
-                        max: 100,
-                        grid: { color: "rgba(236, 72, 153, 0.06)", drawBorder: false },
-                        ticks: {
-                            color: "rgba(226,232,240,0.7)",
-                            font: { size: 10, weight: "600" },
-                            callback: function (value) {
-                                return value + "%";
-                            },
-                        },
-                    },
-                    y: {
-                        grid: { display: false, drawBorder: false },
-                        ticks: {
-                            color: "rgba(226,232,240,0.7)",
-                            font: { size: 11, weight: "600" },
-                        },
-                    },
-                },
-                plugins: {
-                    legend: {
-                        position: "top",
-                        labels: {
-                            color: "rgba(226,232,240,0.8)",
-                            font: { size: 11, weight: "600" },
-                            padding: 12,
-                            usePointStyle: true,
-                            pointStyle: "circle",
-                        },
-                    },
-                    tooltip: Object.assign({}, tooltipOptions, {
-                        callbacks: {
-                            label: function (context) {
-                                return (
-                                    context.dataset.label +
-                                    ": " +
-                                    (context.parsed.x || 0).toFixed(1) +
-                                    "%"
-                                );
-                            },
-                        },
-                    }),
-                },
-            },
-        });
-    }
-
-    const donutOptionsBase = {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "75%",
-        plugins: {
-            legend: { display: false },
-            tooltip: tooltipOptions,
-        },
-    };
-
-    // Gráfico Donut 1 (Uso por Tipo) - Legacy
-    const pie1Ctx = document.getElementById("overviewPie1");
-    if (pie1Ctx) {
-        new Chart(pie1Ctx.getContext("2d"), {
-            type: "doughnut",
-            data: {
-                labels: ["Dados Prod.", "Logs/Backup", "Relatórios"],
-                datasets: [
-                    {
-                        data: [45, 30, 25],
-                        backgroundColor: [primaryColor, secondaryColor, tertiaryColor],
-                        borderColor: "transparent",
-                        hoverOffset: 8,
-                    },
-                ],
-            },
-            options: donutOptionsBase,
-        });
-    }
-
-    const lineOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            x: {
-                grid: { color: gridColor, drawBorder: false },
-                ticks: { color: fontColor },
-            },
-            y: {
-                min: 600,
-                max: 1000,
-                grid: { color: gridColor, borderDash: [5, 5] },
-                ticks: {
-                    color: fontColor,
-                    callback: function (value) {
-                        return value + " GB";
-                    },
-                },
-            },
-        },
-        plugins: {
-            legend: { display: false },
-            tooltip: Object.assign({}, tooltipOptions, {
-                callbacks: {
-                    label: function (context) {
-                        let label = context.dataset.label || "";
-                        if (label) {
-                            label += ": ";
-                        }
-                        if (context.parsed.y !== null) {
-                            label += context.parsed.y + " GB";
-                        }
-                        return label;
-                    },
-                },
-            }),
-        },
-    };
-
-    // Gráfico de Linha (Tendência) - Legacy
-    const lineCtx = document.getElementById("overviewLine");
-    if (lineCtx) {
-        new Chart(lineCtx.getContext("2d"), {
-            type: "line",
-            data: {
-                labels: [
-                    "Dia 1",
-                    "Dia 5",
-                    "Dia 10",
-                    "Dia 15",
-                    "Dia 20",
-                    "Dia 25",
-                    "Dia 30",
-                ],
-                datasets: [
-                    {
-                        label: "Uso de Storage",
-                        data: [620, 650, 680, 700, 715, 720, 730],
-                        borderColor: primaryColor,
-                        backgroundColor: "rgba(124, 58, 237, 0.2)",
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 5,
-                        pointHoverRadius: 8,
-                    },
-                ],
-            },
-            options: lineOptions,
-        });
-    }
-
-    // ===== STORAGE TREND CHART COM CROSSHAIR INTERATIVO =====
-    const storageTrendCtx = document.getElementById("storageTrendChart");
-    if (storageTrendCtx) {
-        const ctx = storageTrendCtx.getContext("2d");
-        const gradientStorage = ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            storageTrendCtx.height || 220
-        );
-        gradientStorage.addColorStop(0, "rgba(56, 189, 248, 0.3)");
-        gradientStorage.addColorStop(0.5, "rgba(56, 189, 248, 0.1)");
-        gradientStorage.addColorStop(1, "rgba(56, 189, 248, 0.01)");
-
-        let storageTrendChart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: ["D-29", "D-25", "D-20", "D-15", "D-10", "D-5", "Hoje"],
-                datasets: [
-                    {
-                        label: "Ocupação (%)",
-                        data: [45, 50, 55, 62, 68, 70, 72],
-                        borderColor: "rgba(56, 189, 248, 1)",
-                        backgroundColor: gradientStorage,
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.45,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: "rgba(6, 10, 18, 1)",
-                        pointBorderWidth: 2,
-                        pointBorderColor: "rgba(56, 189, 248, 1)",
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: "nearest", intersect: false },
-                scales: {
-                    x: {
-                        grid: {
-                            color: "rgba(56, 189, 248, 0.08)",
-                            drawBorder: false,
-                            drawTicks: false,
-                        },
-                        ticks: {
-                            color: "rgba(226,232,240,0.6)",
-                            font: { size: 10, weight: "600" },
-                        },
-                    },
-                    y: {
-                        min: 40,
-                        max: 100,
-                        grid: {
-                            color: "rgba(56, 189, 248, 0.06)",
-                            borderDash: [6, 4],
-                            drawBorder: false,
-                        },
-                        ticks: {
-                            color: "rgba(226,232,240,0.6)",
-                            font: { size: 10, weight: "600" },
-                            callback: function (value) {
-                                return value + "%";
-                            },
-                            padding: 8,
-                        },
-                    },
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        enabled: false,
-                    },
-                },
-            },
-        });
-
-        // Crosshair interativo
-        const canvasContainer = storageTrendCtx.parentElement;
-        const crosshair = document.getElementById("storageCrosshair");
-        const crosshairLabel = document.getElementById("crosshairLabel");
-
-        canvasContainer.addEventListener("mousemove", function (e) {
-            const rect = storageTrendCtx.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            crosshair.classList.add("active");
-
-            // Posicionar as linhas do crosshair
-            const xLine = crosshair.querySelector(".crosshair-x");
-            const yLine = crosshair.querySelector(".crosshair-y");
-
-            xLine.style.top = y + "px";
-            yLine.style.left = x + "px";
-
-            // Calcular valores aproximados baseado na posição do mouse
-            const chartArea = storageTrendChart.chartArea;
-            const dataX = Math.round(
-                ((x - chartArea.left) / (chartArea.right - chartArea.left)) * 6
-            );
-            const dataY = Math.round(
-                100 -
-                ((y - chartArea.top) / (chartArea.bottom - chartArea.top)) * 60 +
-                40
-            );
-
-            const labels = storageTrendChart.data.labels;
-            const label = labels[Math.max(0, Math.min(6, dataX))] || labels[6];
-
-            crosshairLabel.textContent = `${label} • ${dataY}%`;
-        });
-
-        canvasContainer.addEventListener("mouseleave", function () {
-            crosshair.classList.remove("active");
-        });
-    }
-
-    // ===== IOPS LINE CHART COM CROSSHAIR INTERATIVO =====
-    const iopsLineCtx = document.getElementById("iopsLineChart");
-    if (iopsLineCtx) {
-        const ctx = iopsLineCtx.getContext("2d");
-        const gradientRead = ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            iopsLineCtx.height || 220
-        );
-        gradientRead.addColorStop(0, "rgba(56, 189, 248, 0.3)");
-        gradientRead.addColorStop(0.5, "rgba(56, 189, 248, 0.1)");
-        gradientRead.addColorStop(1, "rgba(56, 189, 248, 0.01)");
-
-        const gradientWrite = ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            iopsLineCtx.height || 220
-        );
-        gradientWrite.addColorStop(0, "rgba(251, 191, 36, 0.3)");
-        gradientWrite.addColorStop(0.5, "rgba(251, 191, 36, 0.1)");
-        gradientWrite.addColorStop(1, "rgba(251, 191, 36, 0.01)");
-
-        let iopsLineChart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: ["D-29", "D-25", "D-20", "D-15", "D-10", "D-5", "Hoje"],
-                datasets: [
-                    {
-                        label: "Leitura (IOPS)",
-                        data: [1800, 1900, 2000, 2050, 2100, 2080, 2100],
-                        borderColor: "rgba(56, 189, 248, 1)",
-                        backgroundColor: gradientRead,
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.45,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: "rgba(6, 10, 18, 1)",
-                        pointBorderWidth: 2,
-                        pointBorderColor: "rgba(56, 189, 248, 1)",
-                    },
-                    {
-                        label: "Escrita (IOPS)",
-                        data: [1400, 1500, 1600, 1700, 1750, 1800, 1800],
-                        borderColor: "rgba(251, 191, 36, 1)",
-                        backgroundColor: gradientWrite,
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.45,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: "rgba(6, 10, 18, 1)",
-                        pointBorderWidth: 2,
-                        pointBorderColor: "rgba(251, 191, 36, 1)",
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: "nearest", intersect: false },
-                scales: {
-                    x: {
-                        grid: {
-                            color: "rgba(56, 189, 248, 0.08)",
-                            drawBorder: false,
-                            drawTicks: false,
-                        },
-                        ticks: {
-                            color: "rgba(226,232,240,0.6)",
-                            font: { size: 10, weight: "600" },
-                        },
-                    },
-                    y: {
-                        min: 1000,
-                        max: 3000,
-                        grid: {
-                            color: "rgba(56, 189, 248, 0.06)",
-                            borderDash: [6, 4],
-                            drawBorder: false,
-                        },
-                        ticks: {
-                            color: "rgba(226,232,240,0.6)",
-                            font: { size: 10, weight: "600" },
-                            callback: function (value) {
-                                return value.toLocaleString();
-                            },
-                            padding: 8,
-                        },
-                    },
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        enabled: false,
-                    },
-                },
-            },
-        });
-
-        // Crosshair interativo para IOPS
-        const iopsContainer = iopsLineCtx.parentElement;
-        const iopsCrosshair = document.getElementById("iopsCrosshair");
-        const iopsCrosshairLabel = document.getElementById("iopsCrosshairLabel");
-
-        iopsContainer.addEventListener("mousemove", function (e) {
-            const rect = iopsLineCtx.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            iopsCrosshair.classList.add("active");
-
-            const xLine = iopsCrosshair.querySelector(".crosshair-x");
-            const yLine = iopsCrosshair.querySelector(".crosshair-y");
-
-            xLine.style.top = y + "px";
-            yLine.style.left = x + "px";
-
-            const chartArea = iopsLineChart.chartArea;
-            const dataX = Math.round(
-                ((x - chartArea.left) / (chartArea.right - chartArea.left)) * 6
-            );
-            const dataY = Math.round(
-                3000 -
-                ((y - chartArea.top) / (chartArea.bottom - chartArea.top)) * 2000 +
-                1000
-            );
-
-            const labels = iopsLineChart.data.labels;
-            const label = labels[Math.max(0, Math.min(6, dataX))] || labels[6];
-
-            iopsCrosshairLabel.textContent = `${label} • ${dataY.toLocaleString()} ops/s`;
-        });
-
-        iopsContainer.addEventListener("mouseleave", function () {
-            iopsCrosshair.classList.remove("active");
-        });
-    }
-
-    // ===== LATÊNCIA LINE CHART COM CROSSHAIR INTERATIVO =====
-    const latenciaLineCtx = document.getElementById("latenciaLineChart");
-    if (latenciaLineCtx) {
-        const ctx = latenciaLineCtx.getContext("2d");
-        const gradientReadLat = ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            latenciaLineCtx.height || 220
-        );
-        gradientReadLat.addColorStop(0, "rgba(16, 185, 129, 0.3)");
-        gradientReadLat.addColorStop(0.5, "rgba(16, 185, 129, 0.1)");
-        gradientReadLat.addColorStop(1, "rgba(16, 185, 129, 0.01)");
-
-        const gradientWriteLat = ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            latenciaLineCtx.height || 220
-        );
-        gradientWriteLat.addColorStop(0, "rgba(239, 68, 68, 0.3)");
-        gradientWriteLat.addColorStop(0.5, "rgba(239, 68, 68, 0.1)");
-        gradientWriteLat.addColorStop(1, "rgba(239, 68, 68, 0.01)");
-
-        let latenciaLineChart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: ["D-29", "D-25", "D-20", "D-15", "D-10", "D-5", "Hoje"],
-                datasets: [
-                    {
-                        label: "Leitura (ms)",
-                        data: [3.5, 3.8, 3.9, 4.0, 4.0, 4.1, 4.1],
-                        borderColor: "rgba(16, 185, 129, 1)",
-                        backgroundColor: gradientReadLat,
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.45,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: "rgba(6, 10, 18, 1)",
-                        pointBorderWidth: 2,
-                        pointBorderColor: "rgba(16, 185, 129, 1)",
-                    },
-                    {
-                        label: "Escrita (ms)",
-                        data: [6.2, 6.8, 7.2, 7.8, 8.0, 8.2, 8.3],
-                        borderColor: "rgba(239, 68, 68, 1)",
-                        backgroundColor: gradientWriteLat,
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.45,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: "rgba(6, 10, 18, 1)",
-                        pointBorderWidth: 2,
-                        pointBorderColor: "rgba(239, 68, 68, 1)",
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: "nearest", intersect: false },
-                scales: {
-                    x: {
-                        grid: {
-                            color: "rgba(56, 189, 248, 0.08)",
-                            drawBorder: false,
-                            drawTicks: false,
-                        },
-                        ticks: {
-                            color: "rgba(226,232,240,0.6)",
-                            font: { size: 10, weight: "600" },
-                        },
-                    },
-                    y: {
-                        min: 2,
-                        max: 12,
-                        grid: {
-                            color: "rgba(56, 189, 248, 0.06)",
-                            borderDash: [6, 4],
-                            drawBorder: false,
-                        },
-                        ticks: {
-                            color: "rgba(226,232,240,0.6)",
-                            font: { size: 10, weight: "600" },
-                            callback: function (value) {
-                                return value.toFixed(1) + " ms";
-                            },
-                            padding: 8,
-                        },
-                    },
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        enabled: false,
-                    },
-                },
-            },
-        });
-
-        // Crosshair interativo para Latência
-        const latenciaContainer = latenciaLineCtx.parentElement;
-        const latenciaCrosshair = document.getElementById("latenciaCrosshair");
-        const latenciaCrosshairLabel = document.getElementById(
-            "latenciaCrosshairLabel"
-        );
-
-        latenciaContainer.addEventListener("mousemove", function (e) {
-            const rect = latenciaLineCtx.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            latenciaCrosshair.classList.add("active");
-
-            const xLine = latenciaCrosshair.querySelector(".crosshair-x");
-            const yLine = latenciaCrosshair.querySelector(".crosshair-y");
-
-            xLine.style.top = y + "px";
-            yLine.style.left = x + "px";
-
-            const chartArea = latenciaLineChart.chartArea;
-            const dataX = Math.round(
-                ((x - chartArea.left) / (chartArea.right - chartArea.left)) * 6
-            );
-            const dataY = (
-                12 -
-                ((y - chartArea.top) / (chartArea.bottom - chartArea.top)) * 10 +
-                2
-            ).toFixed(1);
-
-            const labels = latenciaLineChart.data.labels;
-            const label = labels[Math.max(0, Math.min(6, dataX))] || labels[6];
-
-            latenciaCrosshairLabel.textContent = `${label} • ${dataY} ms`;
-        });
-
-        latenciaContainer.addEventListener("mouseleave", function () {
-            latenciaCrosshair.classList.remove("active");
         });
     }
 </script>

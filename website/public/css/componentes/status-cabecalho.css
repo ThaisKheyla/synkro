@@ -9,9 +9,10 @@
 
 .status-conteudo {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    gap: 16px;
+    gap: 41px;
+    flex-wrap: nowrap;
 }
 
 .titulo-conteudo {
