@@ -375,6 +375,36 @@
             inicializarGraficoComponentes();
         }
 
+        function setupPeriodoDropdown() {
+            const btn = document.getElementById('btnPeriodo');
+            const dropdown = document.getElementById('dropdownPeriodo');
+            if (!btn || !dropdown) return;
+
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            dropdown.querySelectorAll('li[data-periodo]').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const periodo = item.getAttribute('data-periodo');
+                    btn.innerHTML = item.innerText + ' <i class="ri-arrow-down-s-line"></i>';
+                    dropdown.style.display = 'none';
+                    atualizarDashboard(periodo);
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!dropdown.contains(e.target) && e.target !== btn) {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') dropdown.style.display = 'none';
+            });
+        }
+
         function atualizarDashboard(periodo) {
             periodoAtual = periodo;
             atualizarKPIsPrincipais(periodo);
@@ -388,6 +418,8 @@
             document.querySelectorAll('.filtro-btn').forEach(btn => {
                 btn.addEventListener('click', () => setFiltroTempo(btn.getAttribute('data-filtro')));
             });
+
+            setupPeriodoDropdown();
 
             if (window.dashboardData && Object.keys(window.dashboardData).length > 0) {
                 atualizarDashboard(periodoAtual);
