@@ -305,7 +305,6 @@ body {
 .conteudo-dashboard {
     flex: 1;
     max-width: 1400px;
-    height: 100vh;
     background: var(--azul-escuro);
     border-radius: 16px;
     overflow-y: auto;

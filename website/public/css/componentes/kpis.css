@@ -125,6 +125,7 @@
     text-shadow: black;
     font-weight: bold;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 .kpi-card.kpi-info:hover {
