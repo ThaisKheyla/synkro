@@ -148,6 +148,13 @@
 
     <script>
         const SLA_CONTRATADO = 99.9;
+        //padrao itil
+        const SLA_TARGETS = {
+            alta: 60,      
+            media: 180,    
+            baixa: 480     
+        };
+
         let periodoAtual = 'semana';
         let tempoFiltro = 'all';
 
@@ -161,19 +168,16 @@
             hostData._hostName = hostName;
             return hostData;
         }
-    
-        // Aguarda os dados chegarem da API
+
         window.addEventListener('dashboardDataLoaded', (e) => {
-            // já populado pelo dashboard.js
             console.log("Dashboard atualizado com dados do S3!");
-            // atualiza visual com período atual
             atualizarDashboard(periodoAtual);
         });
-    
+
         function formatPercent(n, decimals = 1) {
             return Number(n).toFixed(decimals) + '%';
         }
-    
+
         function minutesToHuman(minutes) {
             if (minutes === null || minutes === undefined) return '-';
             const m = Math.round(minutes);
@@ -182,51 +186,50 @@
             const mm = m % 60;
             return `${hh}h${mm > 0 ? ' ' + mm + 'm' : ''}`;
         }
-    
+
         function calcularImpactoSLA(alertasMf, kpisTotal) {
             if (!kpisTotal || kpisTotal === 0) return '0%';
             const impacto = (alertasMf / kpisTotal) * 1.0;
             return formatPercent(impacto, 2);
         }
-    
+
         function atualizarKPIsPrincipais(periodo) {
             const data = getPeriodoData(periodo);
             if (!data) {
                 console.warn(`Dados do período ${periodo} não encontrados.`);
-                
                 document.getElementById('kpiTotalAlertas').textContent = '0';
                 document.getElementById('kpiMainframesCritico').textContent = '-';
                 document.getElementById('kpiComponenteCritico').textContent = '-';
                 document.getElementById('kpiDisponibilidade').textContent = '0%';
                 return;
             }
-    
+
             const kpis = data.kpis || {};
             const componentes = data.componentes || {};
-    
+
             document.getElementById('kpiTotalAlertas').textContent = kpis.totalAlertas ?? '0';
-    
+
             const breakdownEl = document.getElementById('kpiBreakdown');
             breakdownEl.innerHTML = `
                 <span style="color:var(--perigo)">Muito Urgentes: ${kpis.muitoUrgentes ?? 0}</span>
                 <span style="color:var(--very-urgent); margin-left:8px">Urgentes: ${kpis.urgentes ?? 0}</span>
                 <span style="color:var(--accent-light); margin-left:8px">Emergências: ${kpis.emergencias ?? 0}</span>
             `;
-    
+
             document.getElementById('kpiMainframesCritico').textContent = data._hostName || '-';
-    
+
             const componenteMaior = kpis.componenteCritico || (
                 (componentes.cpu && componentes.cpu.max >= (componentes.ram?.max||0) && componentes.cpu.max >= (componentes.disco?.max||0)) ? 'CPU' :
                 (componentes.ram && componentes.ram.max >= (componentes.cpu?.max||0) && componentes.ram.max >= (componentes.disco?.max||0)) ? 'RAM' : 'DISCO'
             );
-    
+
             document.getElementById('kpiComponenteCritico').textContent =
                 `${componenteMaior} — pico: ${kpis.picoCpu ?? '-'}`;
-    
+
             const disponibilidade = kpis.disponibilidade ?? 0;
             const kpiDisponibilidadeEl = document.getElementById('kpiDisponibilidade');
             kpiDisponibilidadeEl.textContent = disponibilidade + '%';
-    
+
             const badgeEl = document.getElementById('kpiSlaBadge');
             const diff = (disponibilidade - SLA_CONTRATADO);
             if (diff >= 0) {
@@ -240,26 +243,25 @@
                 badgeEl.style.color = 'white';
                 badgeEl.textContent = `Fora do SLA (${diff.toFixed(2)}%)`;
             }
-    
-            // RTO (no seu JSON: estimadoMinutos)
+
             if (data.rto && typeof data.rto.estimadoMinutos !== 'undefined') {
                 const target = minutesToHuman(data.rto.estimadoMinutos);
                 document.getElementById('kpiPico').textContent = `RTO estimado: ${target}`;
             }
         }
-    
+
         function inicializarGraficoMainframes() {
             const canvas = document.getElementById('graficoMainframes');
             if (!canvas) return;
             if (window.chartMainframes) window.chartMainframes.destroy();
-    
+
             const raw = window.dashboardData && window.dashboardData[periodoAtual];
             if (!raw) return;
             const labels = Object.keys(raw || {});
             const values = labels.map(name => (raw[name]?.kpis?.totalAlertas) ?? 0);
-    
+
             const colors = values.map(v => v > 50 ? '#ef4444' : (v > 10 ? '#f97316' : '#22c55e'));
-    
+
             const ctx = canvas.getContext('2d');
             window.chartMainframes = new Chart(ctx, {
                 type: 'bar',
@@ -276,31 +278,55 @@
                 }
             });
         }
-    
+
         function inicializarGraficoComponentes() {
             if (!['all', 'alta', 'media', 'baixa'].includes(tempoFiltro)) tempoFiltro = 'all';
-    
+
             const canvas = document.getElementById('graficoComponentes');
             if (!canvas) return;
             if (window.chartComponentes) window.chartComponentes.destroy();
-    
+
             const data = getPeriodoData(periodoAtual);
             if (!data) return;
-    
+
             const tempo = data.tempoSolucao || {};
 
             let labels, atualValues, targetValues;
             if (tempoFiltro === 'all') {
                 labels = ['Alta', 'Média', 'Baixa'];
-                atualValues = [tempo.alta?.atualMinutes ?? 0, tempo.media?.atualMinutes ?? 0, tempo.baixa?.atualMinutes ?? 0];
+                atualValues = [
+                    tempo.alta?.atualMinutes ?? 0,
+                    tempo.media?.atualMinutes ?? 0,
+                    tempo.baixa?.atualMinutes ?? 0
+                ];
+                // targets: usar do JSON se existir, senão usar mockado
+                targetValues = [
+                    tempo.alta?.targetMinutes ?? SLA_TARGETS.alta,
+                    tempo.media?.targetMinutes ?? SLA_TARGETS.media,
+                    tempo.baixa?.targetMinutes ?? SLA_TARGETS.baixa
+                ];
             } else {
                 const key = tempoFiltro;
                 labels = [key.charAt(0).toUpperCase() + key.slice(1)];
                 atualValues = [tempo[key]?.atualMinutes ?? 0];
+                targetValues = [tempo[key]?.targetMinutes ?? SLA_TARGETS[key]];
             }
-    
-            const datasets = [{ label: 'Tempo médio atual (min)', data: atualValues, backgroundColor: atualValues.map(v => v > 60 ? 'rgb(239,68,68)' : 'rgb(34,197,94)'), borderRadius: 8 }];
-    
+
+            const datasets = [
+                {
+                    label: 'SLA alvo (min)',
+                    data: targetValues,
+                    backgroundColor: 'rgba(99,102,241,0.6)',
+                    borderRadius: 8
+                },
+                {
+                    label: 'Tempo médio atual (min)',
+                    data: atualValues,
+                    backgroundColor: atualValues.map((v, i) => v <= targetValues[i] ? 'rgb(34,197,94)' : 'rgb(239,68,68)'),
+                    borderRadius: 8
+                }
+            ];
+
             const ctx = canvas.getContext('2d');
             window.chartComponentes = new Chart(ctx, {
                 type: 'bar',
@@ -310,12 +336,25 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: true, position: 'bottom', labels: { color: '#cbd5e1', font: { size: 14, weight: '700' } } },
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                color: '#cbd5e1',
+                                font: { size: 14, weight: '700' },
+                                boxWidth: 18,
+                                boxHeight: 18,
+                                padding: 12,
+                                usePointStyle: true
+                            }
+                        },
                         tooltip: {
                             callbacks: {
                                 label: function (context) {
                                     const raw = context.raw;
-                                    return `${context.dataset.label}: ${minutesToHuman(raw)} (${raw} min)`;
+                                    const label = context.dataset.label;
+                                    const human = minutesToHuman(raw);
+                                    return `${label}: ${human} (${raw} min)`;
                                 }
                             }
                         }
@@ -327,7 +366,7 @@
                 }
             });
         }
-    
+
         function setFiltroTempo(filtro) {
             tempoFiltro = filtro;
             document.querySelectorAll('.filtro-btn').forEach(b =>
@@ -335,21 +374,21 @@
             );
             inicializarGraficoComponentes();
         }
-    
+
         function atualizarDashboard(periodo) {
             periodoAtual = periodo;
             atualizarKPIsPrincipais(periodo);
             inicializarGraficoMainframes();
             inicializarGraficoComponentes();
         }
-    
+
         window.onload = function () {
             if (typeof validarSessaoSynkro === 'function') validarSessaoSynkro();
-    
+
             document.querySelectorAll('.filtro-btn').forEach(btn => {
                 btn.addEventListener('click', () => setFiltroTempo(btn.getAttribute('data-filtro')));
             });
-    
+
             if (window.dashboardData && Object.keys(window.dashboardData).length > 0) {
                 atualizarDashboard(periodoAtual);
             }
