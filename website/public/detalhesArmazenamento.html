@@ -15,6 +15,74 @@
     <link rel="stylesheet" href="./css/componentes/dashboards-storage.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="./js/sessao.js"></script>
+    <style>
+        .status-conteudo {
+            position: relative;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.22);
+            color: rgba(226, 232, 240, 0.95);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+        }
+
+        .btn-voltar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(16, 24, 40, 0.25);
+        }
+
+        .btn-voltar:active {
+            transform: translateY(0);
+        }
+
+        /* Alert / MAC styling */
+        .alerta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+
+        .alerta .alerta-text {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            color: rgba(226, 232, 240, 0.9);
+        }
+
+        .mac-badge {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Segoe UI Mono', monospace;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(226, 232, 240, 0.95);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+
+        .mac-label {
+            color: rgba(226, 232, 240, 0.6);
+            font-size: 13px;
+        }
+
+        .alerta-status {
+            font-weight: 700;
+            color: rgba(226, 232, 240, 0.9);
+            margin-left: 6px;
+        }
+    </style>
 </head>
 
 <body onload="window.onload && window.onload()">
@@ -71,11 +139,16 @@
                     <div class="alertas-container">
                         <div class="alerta alerta-emergencia">
                             <i class="ri-alert-line"></i>
-                            <span id="mainframe-alerta-nome">Mainframe 01:</span> MacAdress: <span
-                                id="mainframe-alerta-mac">00:1B:44:11:3A:B7</span>
+                            <div class="alerta-text">
+                                <span id="mainframe-alerta-nome">Mainframe 01:</span>
+                                <span class="mac-label">MAC</span>
+                                <span id="mainframe-alerta-mac" class="mac-badge">00:1B:44:11:3A:B7</span>
+                                <span id="mainframe-alerta-status" class="alerta-status"></span>
+                            </div>
                         </div>
                     </div>
-                    <div onclick="voltarParaMainframe()">></div>
+                    <button type="button" class="btn-voltar" onclick="voltarParaMainframe()"
+                        aria-label="Voltar para lista de mainframes">← Voltar</button>
                 </div>
             </div>
 
@@ -107,11 +180,10 @@
                             </div>
 
                             <div class="alerta">
-                                <i class="ri-alert-fill"></i>
                                 <span>MUITO URGENTE</span>
                             </div>
                         </div>
-                        
+
                         <!-- Métricas de Uso -->
                         <div class="metricas-uso">
                             <div class="bloco">
@@ -255,7 +327,6 @@
         </main>
     </div>
     <script src="./js/dashboards-storage.js"></script>
-    <script src="./js/detalhesArmazenamento.js"></script>
 </body>
 <script>
     let armazenamentoDados = {};
@@ -352,68 +423,29 @@
         }
 
         container.style.display = "block";
-
-        armazenamentoDados.forEach((mf, idx) => {
-            const nomeDisplay = `${mf.fabricante} ${mf.modelo}`;
-            container.innerHTML += `
-                <a href="#" onclick="carregarDetalhesMainframe(${idx}); return false;">
-                    <div id="mainF${idx}" class="mainframe-evento" style="
-                        padding: 12px 16px;
-                        background: rgba(99, 102, 241, 0.1);
-                        border: 2px solid rgba(99, 102, 241, 0.3);
-                        border-radius: 8px;
-                        cursor: pointer;
-                        white-space: nowrap;
-                        transition: all 0.3s;
-                    ">
-                        <div style="font-weight: 600; color: rgba(226, 232, 240, 0.9);">${(idx + 1)}</div>
-                        <div style="font-size: 12px; color: rgba(226, 232, 240, 0.6);">${nomeDisplay}</div>
-                    </div>
-                </a>
-            `;
-        });
-    }
-
-    // ===== CARREGAR DETALHES DE UM MAINFRAME =====
-    function carregarDetalhesMainframe(id) {
-        mainframeAtualId = id;
-
-        // Atualizar estado visual
-        armazenamentoDados.forEach((mf, idx) => {
-            const element = document.getElementById(`mainF${idx}`);
-            if (element) {
-                if (idx == id) {
-                    element.classList.add("clicked");
-                    element.style.borderColor = "rgba(99, 102, 241, 1)";
-                    element.style.background = "rgba(99, 102, 241, 0.2)";
-                } else {
-                    element.classList.remove("clicked");
-                    element.style.borderColor = "rgba(99, 102, 241, 0.3)";
-                    element.style.background = "rgba(99, 102, 241, 0.1)";
-                }
-            }
-        });
-
-        atualizarGraficosComDados(id);
     }
 
     // ===== FUNÇÃO PARA DETERMINAR STATUS DE ALERTA =====
     function determinarStatusAlerta(ocupacao, min, max) {
-        if (ocupacao >= max) {
+        // Calcular percentual da ocupação em relação ao max (0-100%)
+        const percentualDoMax = (ocupacao / max) * 100;
+
+        // Definir status baseado na proximidade do máximo (ignorar min)
+        if (percentualDoMax >= 85) {
             return { status: "Emergência", cor: "#ef4444", bgCor: "rgba(239, 68, 68, 0.1)" };
-        } else if (ocupacao >= max * 0.85) {
+        } else if (percentualDoMax >= 70) {
             return { status: "Muito Urgente", cor: "#f97316", bgCor: "rgba(249, 115, 22, 0.1)" };
-        } else if (ocupacao >= max * 0.70) {
+        } else if (percentualDoMax >= 60) {
             return { status: "Urgente", cor: "#eab308", bgCor: "rgba(234, 179, 8, 0.1)" };
         } else {
             return { status: "Normal", cor: "#10b981", bgCor: "rgba(16, 185, 129, 0.1)" };
         }
     }
-    
+
     // ===== ATUALIZAR GRÁFICOS E MÉTRICAS =====
     function atualizarGraficosComDados(id) {
         const dados = armazenamentoDados[id];
-        
+
         const nomeMainframe = `${dados.fabricante} ${dados.modelo}`;
         const statusAlerta = determinarStatusAlerta(dados.uso_disco_percentual, dados.min, dados.max);
 
@@ -421,19 +453,31 @@
         document.getElementById("mainframe-alerta-nome").innerText = `${nomeMainframe}:`;
         document.getElementById("mainframe-alerta-mac").innerText = dados.mac;
 
-        // Atualizar status de alerta
+        // Atualizar status de alerta no cabeçalho
         const alertaContainer = document.querySelector(".alerta-emergencia");
         if (alertaContainer) {
             alertaContainer.style.borderColor = statusAlerta.cor;
             alertaContainer.style.backgroundColor = statusAlerta.bgCor;
         }
-        const alertaSpan = alertaContainer ? alertaContainer.querySelector("span:last-child") : null;
-        if (alertaSpan) {
-            alertaSpan.textContent = statusAlerta.status;
-            alertaSpan.style.color = statusAlerta.cor;
+        const alertaStatusElem = document.getElementById("mainframe-alerta-status");
+        if (alertaStatusElem) {
+            alertaStatusElem.textContent = statusAlerta.status;
+            alertaStatusElem.style.color = statusAlerta.cor;
         }
 
-        document.querySelector(".indicador-saude .titulo").textContent = `Estado de Ocupação (${dados.mac})`;
+        // Atualizar status de alerta dentro do .indicador-saude
+        const alertaIndicador = document.querySelector(".indicador-saude .alerta");
+        if (alertaIndicador) {
+            const alertaSpan = alertaIndicador.querySelector("span");
+            if (alertaSpan) {
+                alertaSpan.textContent = statusAlerta.status;
+                alertaSpan.style.color = statusAlerta.cor;
+            }
+            alertaIndicador.style.borderColor = statusAlerta.cor;
+            alertaIndicador.style.backgroundColor = statusAlerta.bgCor;
+        }
+
+        document.querySelector(".indicador-saude .titulo").textContent = `Estado de Ocupação`;
         const ocupado = dados.uso_disco_percentual || 0;
         const livre = 100 - ocupado;
         document.querySelector(".metricas-uso .bloco:nth-child(1) .valor").textContent = ocupado.toFixed(2) + "%";
@@ -444,8 +488,17 @@
 
         document.querySelector(".limite-critico .dias").textContent = `~${diasAte95}d`;
         document.querySelector(".taxa-diaria .valor").textContent = `+${crescDiario}%`;
-        document.querySelector(".latencia .valor").textContent = `${dados.latencia_ms.toFixed(1)}ms`;
-        document.querySelector(".iops .valor").textContent = `${(dados.pico_iops / 1000).toFixed(1)}K`;
+        document.querySelector(".latencia .valor").textContent = `${(Number(dados.latencia_ms) || 0).toFixed(1)}ms`;
+        // Formatar IOPS: mostrar em inteiro se <1000, ou em K se >=1000
+        const picoIops = Number(dados.pico_iops) || 0;
+        const totalIops = Number(dados.iops_total) || 0;
+        const displayIops = picoIops >= 1000 ? `${(picoIops / 1000).toFixed(1)}K` : `${picoIops}`;
+
+        document.querySelector(".iops .valor").textContent = `${displayIops} IOPS`;
+        const iopsAux = document.querySelector(".iops .conteudo .acao");
+        if (iopsAux) {
+            iopsAux.textContent = `Total IOPS: ${totalIops} • Pico: ${picoIops}`;
+        }
 
         const picoAtual = dados.historico_disco && dados.historico_disco.length > 0 ? Math.max(...dados.historico_disco) : 0;
         document.querySelector(".resumo-valor").textContent = picoAtual.toFixed(1) + "%";
@@ -464,7 +517,7 @@
 
         const ctx = espacoCtx.getContext("2d");
         const percentualLivre = 100 - dados.uso_disco_percentual;
-        
+
         espacoChart = new Chart(ctx, {
             type: "bar",
             data: {
@@ -558,18 +611,21 @@
         gradient.addColorStop(0.5, "rgba(99, 102, 241, 0.15)");
         gradient.addColorStop(1, "rgba(99, 102, 241, 0.01)");
 
-        // Gerar labels em minutos (ex: "Agora", "1min atrás", "2min atrás", etc)
+        // Gerar labels em minutos (ex: "Agora", "1min atrás", "2min atrás", etc) - até 60 minutos
         const labels = [];
         if (dados.historico_disco && dados.historico_disco.length > 0) {
             for (let i = 0; i < dados.historico_disco.length; i++) {
                 if (i === 0) {
                     labels.push("Agora");
+                } else if (i % 10 === 0) {
+                    // Mostrar cada 10 minutos
+                    labels.push(`${i}m`);
                 } else {
-                    labels.push(`${i}min atrás`);
+                    labels.push(i.toString()); // Mostrar número do minuto mesmo sem texto
                 }
             }
         } else {
-            labels = Array.from({ length: 5 }, (_, i) => i === 0 ? "Agora" : `${i}min atrás`);
+            labels = Array.from({ length: 60 }, (_, i) => i === 0 ? "Agora" : (i % 10 === 0 ? `${i}m` : i.toString()));
         }
 
         growthChart = new Chart(ctx, {
@@ -659,7 +715,7 @@
         buscarJsonArmazenamento().then((sucesso) => {
             if (sucesso) {
                 renderMainframesList();
-                carregarDetalhesMainframe(mainframeAtualId);
+                atualizarGraficosComDados(mainframeAtualId);
                 atualizarDadosPeriodicamente();
             }
         });
