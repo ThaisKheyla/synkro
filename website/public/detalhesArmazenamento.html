@@ -397,31 +397,57 @@
         atualizarGraficosComDados(id);
     }
 
+    // ===== FUNÇÃO PARA DETERMINAR STATUS DE ALERTA =====
+    function determinarStatusAlerta(ocupacao, min, max) {
+        if (ocupacao >= max) {
+            return { status: "Emergência", cor: "#ef4444", bgCor: "rgba(239, 68, 68, 0.1)" };
+        } else if (ocupacao >= max * 0.85) {
+            return { status: "Muito Urgente", cor: "#f97316", bgCor: "rgba(249, 115, 22, 0.1)" };
+        } else if (ocupacao >= max * 0.70) {
+            return { status: "Urgente", cor: "#eab308", bgCor: "rgba(234, 179, 8, 0.1)" };
+        } else {
+            return { status: "Normal", cor: "#10b981", bgCor: "rgba(16, 185, 129, 0.1)" };
+        }
+    }
+    
     // ===== ATUALIZAR GRÁFICOS E MÉTRICAS =====
     function atualizarGraficosComDados(id) {
         const dados = armazenamentoDados[id];
         
-        console.log('jabiraca radical' + armazenamentoDados[0] + armazenamentoDados[1]);
-
         const nomeMainframe = `${dados.fabricante} ${dados.modelo}`;
+        const statusAlerta = determinarStatusAlerta(dados.uso_disco_percentual, dados.min, dados.max);
 
         document.getElementById("mainfrane-title").innerText = nomeMainframe;
         document.getElementById("mainframe-alerta-nome").innerText = `${nomeMainframe}:`;
         document.getElementById("mainframe-alerta-mac").innerText = dados.mac;
 
+        // Atualizar status de alerta
+        const alertaContainer = document.querySelector(".alerta-emergencia");
+        if (alertaContainer) {
+            alertaContainer.style.borderColor = statusAlerta.cor;
+            alertaContainer.style.backgroundColor = statusAlerta.bgCor;
+        }
+        const alertaSpan = alertaContainer ? alertaContainer.querySelector("span:last-child") : null;
+        if (alertaSpan) {
+            alertaSpan.textContent = statusAlerta.status;
+            alertaSpan.style.color = statusAlerta.cor;
+        }
+
         document.querySelector(".indicador-saude .titulo").textContent = `Estado de Ocupação (${dados.mac})`;
-        document.querySelector(".metricas-uso .bloco:nth-child(1) .valor").textContent = dados.uso_disco_percentual + "%";
-        document.querySelector(".metricas-uso .bloco:nth-child(3) .valor").textContent = (100 - dados.uso_disco_percentual) + "%";
+        const ocupado = dados.uso_disco_percentual || 0;
+        const livre = 100 - ocupado;
+        document.querySelector(".metricas-uso .bloco:nth-child(1) .valor").textContent = ocupado.toFixed(2) + "%";
+        document.querySelector(".metricas-uso .bloco:nth-child(3) .valor").textContent = livre.toFixed(2) + "%";
 
         const diasAte95 = dados.dias_ate_95pct ? dados.dias_ate_95pct.toFixed(0) : "N/A";
-        const crescDiario = dados.crescimento_diario_pct ? dados.crescimento_diario_pct.toFixed(2) : "0.00";
+        const crescDiario = dados.crescimento_diario_pct ? Math.abs(dados.crescimento_diario_pct).toFixed(2) : "0.00";
 
         document.querySelector(".limite-critico .dias").textContent = `~${diasAte95}d`;
         document.querySelector(".taxa-diaria .valor").textContent = `+${crescDiario}%`;
         document.querySelector(".latencia .valor").textContent = `${dados.latencia_ms.toFixed(1)}ms`;
         document.querySelector(".iops .valor").textContent = `${(dados.pico_iops / 1000).toFixed(1)}K`;
 
-        const picoAtual = Math.max(...dados.historico_disco);
+        const picoAtual = dados.historico_disco && dados.historico_disco.length > 0 ? Math.max(...dados.historico_disco) : 0;
         document.querySelector(".resumo-valor").textContent = picoAtual.toFixed(1) + "%";
 
         if (espacoChart) espacoChart.destroy();
@@ -532,10 +558,19 @@
         gradient.addColorStop(0.5, "rgba(99, 102, 241, 0.15)");
         gradient.addColorStop(1, "rgba(99, 102, 241, 0.01)");
 
-        // Gerar labels para o histórico (timestamps ou minutos atrás)
-        const labels = dados.historico_datas && dados.historico_datas.length > 0
-            ? dados.historico_datas.map(d => d.split(' ')[1] || d)
-            : Array.from({ length: dados.historico_disco.length }, (_, i) => `${(i * 5)}min`);
+        // Gerar labels em minutos (ex: "Agora", "1min atrás", "2min atrás", etc)
+        const labels = [];
+        if (dados.historico_disco && dados.historico_disco.length > 0) {
+            for (let i = 0; i < dados.historico_disco.length; i++) {
+                if (i === 0) {
+                    labels.push("Agora");
+                } else {
+                    labels.push(`${i}min atrás`);
+                }
+            }
+        } else {
+            labels = Array.from({ length: 5 }, (_, i) => i === 0 ? "Agora" : `${i}min atrás`);
+        }
 
         growthChart = new Chart(ctx, {
             type: "line",
@@ -544,7 +579,7 @@
                 datasets: [
                     {
                         label: "Ocupação (%)",
-                        data: dados.historico_disco,
+                        data: dados.historico_disco || [],
                         borderColor: "rgba(99, 102, 241, 1)",
                         backgroundColor: gradient,
                         borderWidth: 3,
