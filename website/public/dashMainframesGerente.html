@@ -174,13 +174,7 @@
             </section>
         </main>
     </div>
-
-    <!-- ====== SCRIPTS ======
-         Use o JS existente (já testado). Mantive o seu código praticamente intacto,
-         com pequenos ajustes de inicialização para compatibilidade com a nova estrutura.
-    -->
     <script>
-        /* ========== CONFIGURAÇÃO VARIÁVEIS ========== */
         const ARQUIVO_ALERTA_S3 = "alertas.json"; // ajuste conforme sua rota
         const ID_SESSAO_MAINFRAME = 'ID_MAINFRAME_SELECIONADO';
 
@@ -254,8 +248,6 @@
         function processarKPIsTopo(dados) {
             document.getElementById('kpi-total').innerText = dados.length || 0;
             atualizarCriticidadeBadge('kpi-total-badge', dados.length);
-
-            // === TEMPO DESDE O ÚLTIMO ALERTA ===
             const datas = dados.map(a => parseDate(a.dtHora)).sort((a, b) => b - a);
             const ultimo = datas[0];
             document.getElementById("kpi-ultimo-alerta").innerText = calcularTempoDesde(ultimo);
@@ -332,7 +324,6 @@
             });
         }
 
-        /* ========== ANÁLISE DINÂMICA ========== */
         function atualizarDashboardAnalise(dias) {
             const hoje = new Date();
             const dataLimite = new Date();
@@ -348,13 +339,6 @@
             renderGraficosBarra(dadosFiltrados);
             renderCardPicoAzul(dadosFiltrados, dias);
         }
-
-        /* ========== FUNÇÕES DE RENDER (mesmas que você já tinha, mantidas) ========== */
-        /* renderCardPicoAzul, calcularTendencia, renderGraficoLinha, renderGraficosBarra,
-           utilitários parseDate, normalizarComponente, getKeyMax, getTopComponent, etc.
-           - copiei as mesmas funções da versão anterior (você já as tinha), sem alterar lógica.
-           - para manter a resposta curta, suponho que estas funções já existam (se quiser, eu colo aqui de novo).
-        */
 
         function renderCardPicoAzul(dados, dias) {
             const lbl1 = document.getElementById('blue-label-1');
@@ -475,7 +459,6 @@
 
             const badge = document.getElementById('trendBadge');
 
-            // === CASO ESPECIAL: sem período anterior ===
             if (countAnt === 0) {
                 if (countAtual > 0) {
                     badge.innerHTML = `Novo`;
@@ -486,8 +469,6 @@
                 }
                 return;
             }
-
-            // === CÁLCULO DA PORCENTAGEM ===
             const diff = countAtual - countAnt;
             const pct = ((diff / countAnt) * 100).toFixed(1);
 
