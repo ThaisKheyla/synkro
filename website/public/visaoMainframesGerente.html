@@ -100,7 +100,7 @@
             container.innerHTML = "<li><i class='ri-loader-4-line ri-spin'></i> Carregando dados do S3...</li>";
 
             try {
-                // 1. Busca o JSON bruto do endpoint S3: /dados/alertas.json
+                // Busca o JSON bruto do endpoint S3: /dados/alertas.json
                 const resposta = await fetch(`/dados/${ARQUIVO_ALERTA_S3}`);
 
                 if (!resposta.ok) {
@@ -122,14 +122,14 @@
                         return [];
                     }
 
-                    // 1) Extrai macs únicos do JSON
+                    // Extrai macs únicos do JSON
                     const macsUnicos = Array.from(new Set(alertas.map(a => String(a.macAdress).trim())));
 
-                    // 2) Para armazenar info por mac (ou erro)
+                    // Para armazenar info por mac (ou erro)
                     const mapaMacParaEmpresa = new Map();
                     const macsComErro = [];
 
-                    // 3) Faz as requisições em paralelo (map -> Promise)
+                    // Faz as requisições em paralelo (map -> Promise)
                     const promises = macsUnicos.map(async (mac) => {
                         try {
                             const url = `/mainframes/empresaPorMac/${encodeURIComponent(mac)}`;
@@ -171,17 +171,17 @@
                         }
                     });
 
-                    // 4) Aguardar todas
+                    // Aguardar todas
                     await Promise.all(promises);
 
-                    // 5) Monta lista filtrada: só alertas cujo mac pertence à mesma empresa do usuário
+                    // Monta lista filtrada: só alertas cujo mac pertence à mesma empresa do usuário
                     const filtrados = alertas.filter(a => {
                         const mac = String(a.macAdress).trim();
                         const idEmpresaDoMac = mapaMacParaEmpresa.get(mac);
                         return idEmpresaDoMac !== undefined && idEmpresaDoMac !== null && String(idEmpresaDoMac) === String(idEmpresaUsuario);
                     });
 
-                    // 6) Log de macs problemáticos pra você investigar no backend
+                    // Log de macs problemáticos pra você investigar no backend
                     if (macsComErro.length > 0) {
                         console.warn('Macs com erro/sem resposta válida (investigar backend):', macsComErro.slice(0, 10));
                     }
@@ -259,8 +259,6 @@
             });
         }
 
-
-        // Funções antigas de KPI e status (carregarKpisEStatus) não são mais necessárias e foram removidas.
     </script>
 </body>
 
